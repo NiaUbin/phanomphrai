@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
 
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -17,6 +19,12 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const pathname = usePathname();
+  
+  // ไม่แสดง Navbar ในหน้า Admin
+  if (pathname?.startsWith('/admin-phanomphrai')) {
+    return null;
+  }
 
   return (
     <nav

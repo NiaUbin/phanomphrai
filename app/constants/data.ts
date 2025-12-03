@@ -57,8 +57,8 @@ export const portfolioItems = [
     id: '2',
     src: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
     alt: 'Townhouses',
-    title: 'บ้านแถว',
-    description: 'สร้างบ้านแถวสไตล์โมเดิร์น',
+    title: 'บ้านสองชั้น',
+    description: 'สร้างบ้านได้สไตล์แบบของคุณ',
   },
   {
     id: '3',

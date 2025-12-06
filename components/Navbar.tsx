@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function Navbar() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
@@ -48,6 +47,7 @@ export default function Navbar() {
   }, []);
 
   const pathname = usePathname();
+  const router = useRouter();
   
   // ไม่แสดง Navbar ในหน้า Admin
   if (pathname?.startsWith('/admin-phanomphrai')) {
@@ -62,12 +62,44 @@ export default function Navbar() {
     { href: '/#contact', id: 'contact', label: 'ติดต่อเรา' },
   ];
 
-  const categoryLinks = [
-    { href: '/materials', label: 'วัสดุก่อสร้าง' },
-    { href: '#', label: 'เครื่องมือช่าง' },
-    { href: '#', label: 'อุปกรณ์ไฟฟ้า' },
-    { href: '#', label: 'สีและทาสี' },
-  ];
+  // ฟังก์ชันสำหรับจัดการ navigation ที่ทำงานได้ทั้งในหน้าแรกและหน้า house detail
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // ถ้าเป็น home link (href="/") และไม่ได้อยู่หน้าแรก
+    if (href === '/' && pathname !== '/') {
+      e.preventDefault();
+      // ใช้ router.push เพื่อ navigate ไปหน้าแรก
+      router.push('/');
+      return;
+    }
+    
+    // ถ้าเป็น hash link
+    if (href.includes('#')) {
+      e.preventDefault();
+      const hash = href.split('#')[1];
+      
+      // ถ้าไม่ได้อยู่หน้าแรก ต้องไปหน้าแรกก่อน
+      if (pathname !== '/') {
+        // ไปหน้าแรกพร้อม hash แล้วให้ browser จัดการ scroll
+        router.push(href);
+      } else {
+        // ถ้าอยู่หน้าแรกแล้ว ให้ใช้ smooth scroll
+        const element = document.getElementById(hash);
+        if (element) {
+          const offset = 100;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - offset;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        } else {
+          // ถ้าไม่เจอ element ให้ใช้ router.push เป็น fallback
+          router.push(href);
+        }
+      }
+    }
+    // ถ้าไม่ใช่ hash link และเป็น home link อยู่แล้ว ให้ทำงานปกติ (ไม่ต้องทำอะไร)
+  };
 
   const isActive = (linkId: string) => {
     // ถ้าไม่ได้อยู่หน้า home ให้ active เฉพาะลิงก์ที่ตรงกับ pathname
@@ -132,7 +164,24 @@ export default function Navbar() {
                   stroke="currentColor" strokeWidth="1.5"
                 />
               </svg>
-              <Link href="/" className="font-bold text-blue-600 text-lg sm:text-xl">
+              <Link 
+                href="/" 
+                onClick={(e) => {
+                  if (pathname !== '/') {
+                    e.preventDefault();
+                    // Scroll ไปด้านบนก่อน แล้วค่อย navigate
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    });
+                    // รอให้ scroll เสร็จก่อน navigate
+                    setTimeout(() => {
+                      router.push('/');
+                    }, 300);
+                  }
+                }}
+                className="font-bold text-blue-600 text-lg sm:text-xl transition-opacity hover:opacity-80"
+              >
                 PHANOMPHRAI
               </Link>
             </div>
@@ -145,6 +194,7 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
                     className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-full ${
                       active 
                         ? 'text-blue-600 bg-blue-50' 
@@ -159,52 +209,6 @@ export default function Navbar() {
                   </Link>
                 );
               })}
-              
-              {/* Categories Dropdown - Desktop */}
-              <div
-                className="relative px-2"
-                onMouseEnter={() => setIsDropdownOpen(true)}
-                onMouseLeave={() => setIsDropdownOpen(false)}
-              >
-                <button 
-                  className={`flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-full ${
-                    isDropdownOpen ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-                  }`}
-                >
-                  หมวดหมู่
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
-                  >
-                    <path
-                      d="M6 9L12 15L18 9"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-
-                {isDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 overflow-hidden transform origin-top animate-in fade-in slide-in-from-top-2 duration-200">
-                    {categoryLinks.map((link) => (
-                      <Link
-                        key={link.label}
-                        href={link.href}
-                        onClick={() => setIsDropdownOpen(false)}
-                        className="block px-4 py-2.5 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150 text-sm first:rounded-t-lg last:rounded-b-lg"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
             </div>
 
             {/* Right Section: Phone + Hamburger */}
@@ -265,7 +269,10 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={(e) => {
+                      handleNavClick(e, link.href);
+                      setIsMobileMenuOpen(false);
+                    }}
                     className={`block py-3 px-4 rounded-xl font-medium transition-colors ${
                       active 
                         ? 'text-blue-600 bg-blue-50' 
@@ -276,21 +283,6 @@ export default function Navbar() {
                   </Link>
                 );
               })}
-              
-              {/* Categories Section - Mobile */}
-              <div className="pt-2 border-t border-gray-100 mt-2">
-                <p className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider">หมวดหมู่</p>
-                {categoryLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-3 px-4 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
             </div>
           </div>
         </div>

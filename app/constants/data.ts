@@ -1,14 +1,14 @@
 // รูปภาพสำหรับ Hero Section (ส่วนหัวของหน้าเว็บ)
 export const constructionImages = [
   'https://img.iproperty.com.my/angel/1110x624-crop/wp-content/uploads/sites/6/2023/07/Construction-residential-new-house-in-progress-at-building-site-budjet.jpg',
-  'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1920&q=80', // เปลี่ยนรูปที่มีปัญหาเป็นรูปก่อสร้างสวยๆ จาก Unsplash
-  'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1920&q=80',
+  'https://plus.unsplash.com/premium_photo-1683121330629-4a158551f37f?q=80&w=2342&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', // เปลี่ยนรูปที่มีปัญหาเป็นรูปก่อสร้างสวยๆ จาก Unsplash
+  'https://plus.unsplash.com/premium_photo-1682141511588-b40e020dac54?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEwfHx8ZW58MHx8fHx8',
   'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1920&q=80',
   'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1920&q=80',
 ];
 
 // รูปภาพสำหรับ Slider ใน Hero Section (ใช้ 3 รูปแรก)
-export const sliderImages = constructionImages.slice(0, 3);
+export const sliderImages = constructionImages.slice(0, 4);
 
 // ข้อมูลสำหรับ Services Section (ส่วนการันตีคุณภาพ - Carousel)
 export const services = [

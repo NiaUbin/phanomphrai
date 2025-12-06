@@ -144,7 +144,11 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
   // Images
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [mainImagePreview, setMainImagePreview] = useState<string | null>(null);
+  const [mainImageUrl, setMainImageUrl] = useState<string>(''); // สำหรับใส่ URL โดยตรง
+  const [mainImageUrlInput, setMainImageUrlInput] = useState<string>(''); // สำหรับ input field
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+  const [galleryUrlsInput, setGalleryUrlsInput] = useState<string>(''); // สำหรับ input field
+  const [confirmedGalleryUrls, setConfirmedGalleryUrls] = useState<string[]>([]); // URL ที่ยืนยันแล้ว
   const [existingGallery, setExistingGallery] = useState<string[]>([]);
 
   useEffect(() => {
@@ -178,7 +182,44 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
       const file = e.target.files[0];
       setImageFile(file);
       setMainImagePreview(URL.createObjectURL(file));
+      setMainImageUrl(''); // ล้าง URL เมื่อเลือกไฟล์
     }
+  };
+
+  const handleMainImageUrlChange = (url: string) => {
+    setMainImageUrlInput(url);
+  };
+
+  const confirmMainImageUrl = () => {
+    const url = mainImageUrlInput.trim();
+    if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+      setMainImageUrl(url);
+      setMainImagePreview(url);
+      setImageFile(null); // ล้างไฟล์เมื่อใส่ URL
+      if (mainImageInputRef.current) {
+        mainImageInputRef.current.value = '';
+      }
+    } else {
+      alert('กรุณาใส่ URL ที่ถูกต้อง (ต้องขึ้นต้นด้วย http:// หรือ https://)');
+    }
+  };
+
+  const confirmGalleryUrls = () => {
+    const urls = galleryUrlsInput
+      .split(/[,\n]/)
+      .map(url => url.trim())
+      .filter(url => url.length > 0 && (url.startsWith('http://') || url.startsWith('https://')));
+    
+    if (urls.length > 0) {
+      setConfirmedGalleryUrls(prev => [...prev, ...urls]);
+      setGalleryUrlsInput(''); // ล้าง input
+    } else {
+      alert('กรุณาใส่ URL ที่ถูกต้อง (ต้องขึ้นต้นด้วย http:// หรือ https://)');
+    }
+  };
+
+  const removeConfirmedGalleryUrl = (index: number) => {
+    setConfirmedGalleryUrls(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,33 +242,53 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
     setIsLoading(true);
 
     try {
-      let mainImageUrl = mainImagePreview || '';
-      if (imageFile) {
-        const storageRef = ref(storage, `house-images/main/${Date.now()}-${imageFile.name}`);
-        const snapshot = await uploadBytes(storageRef, imageFile);
-        mainImageUrl = await getDownloadURL(snapshot.ref);
+      let finalMainImageUrl = mainImagePreview || '';
+      
+      // ถ้ามีไฟล์ให้อัปโหลด (ถ้ามี Firebase Storage)
+      if (imageFile && storage) {
+        try {
+          const storageRef = ref(storage, `house-images/main/${Date.now()}-${imageFile.name}`);
+          const snapshot = await uploadBytes(storageRef, imageFile);
+          finalMainImageUrl = await getDownloadURL(snapshot.ref);
+        } catch (storageError) {
+          console.warn('Firebase Storage not available, using URL instead');
+          // ถ้าไม่มี Storage ให้ใช้ URL ที่ใส่เข้ามา
+          finalMainImageUrl = mainImageUrl || mainImagePreview || '';
+        }
+      } else {
+        // ใช้ URL ที่ใส่เข้ามาโดยตรง
+        finalMainImageUrl = mainImageUrl || mainImagePreview || '';
       }
 
       const newGalleryUrls: string[] = [];
-      if (galleryFiles.length > 0) {
-        const uploadPromises = galleryFiles.map(async (file) => {
-          const storageRef = ref(storage, `house-images/gallery/${Date.now()}-${file.name}`);
-          const snapshot = await uploadBytes(storageRef, file);
-          return getDownloadURL(snapshot.ref);
-        });
-        const uploadedUrls = await Promise.all(uploadPromises);
-        newGalleryUrls.push(...uploadedUrls);
+      
+      // อัปโหลดไฟล์ Gallery (ถ้ามี Firebase Storage)
+      if (galleryFiles.length > 0 && storage) {
+        try {
+          const uploadPromises = galleryFiles.map(async (file) => {
+            const storageRef = ref(storage, `house-images/gallery/${Date.now()}-${file.name}`);
+            const snapshot = await uploadBytes(storageRef, file);
+            return getDownloadURL(snapshot.ref);
+          });
+          const uploadedUrls = await Promise.all(uploadPromises);
+          newGalleryUrls.push(...uploadedUrls);
+        } catch (storageError) {
+          console.warn('Firebase Storage not available for gallery images');
+        }
       }
+      
+      // เพิ่ม URL Gallery ที่ยืนยันแล้ว
+      newGalleryUrls.push(...confirmedGalleryUrls);
 
       const finalGalleryUrls = [...existingGallery, ...newGalleryUrls];
-      const allImagesArray = mainImageUrl ? [mainImageUrl, ...finalGalleryUrls] : [...finalGalleryUrls];
+      const allImagesArray = finalMainImageUrl ? [finalMainImageUrl, ...finalGalleryUrls] : [...finalGalleryUrls];
 
       // Remove customId from data before saving
       const { customId, ...restFormData } = formData;
 
       const houseData = {
         ...restFormData,
-        mainImage: mainImageUrl,
+        mainImage: finalMainImageUrl,
         images: allImagesArray,
         specifications: {
           bedrooms: formData.bedrooms,
@@ -509,8 +570,7 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
                 {/* ราคา */}
                 <div className="space-y-2">
                   <label htmlFor="price" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                    ราคา
+                    ราคา <span className="text-gray-400 text-xs font-normal">(ไม่บังคับ)</span>
                   </label>
                   <div className="relative">
                     <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
@@ -519,7 +579,6 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
                     <input 
                       id="price" 
                       type="text" 
-                      required 
                       placeholder="เช่น เริ่มต้น 3.5 ล้านบาท"
                       className="w-full rounded-xl border-gray-200 p-3.5 pl-11 border-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all text-gray-900 placeholder:text-gray-400"
                       value={formData.price} 
@@ -577,10 +636,8 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
               {/* ห้องนอน */}
               <div className="bg-white rounded-xl p-4 border border-emerald-100 shadow-sm hover:shadow-md transition-all">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-emerald-600">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5H18V15H4.5v-4.5zM3.75 18h15A2.25 2.25 0 0021 15.75v-6a2.25 2.25 0 00-2.25-2.25h-15A2.25 2.25 0 001.5 9.75v6A2.25 2.25 0 003.75 18z" />
-                    </svg>
+                  <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-xl">
+                    🛏️
                   </div>
                   <label htmlFor="bedrooms" className="text-sm font-bold text-gray-700">ห้องนอน</label>
                 </div>
@@ -597,10 +654,8 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
               {/* ห้องน้ำ */}
               <div className="bg-white rounded-xl p-4 border border-emerald-100 shadow-sm hover:shadow-md transition-all">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-blue-600">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-xl">
+                    🚽
                   </div>
                   <label htmlFor="bathrooms" className="text-sm font-bold text-gray-700">ห้องน้ำ</label>
                 </div>
@@ -754,6 +809,38 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
                   )}
                 </div>
                 
+                {/* ใส่ URL รูปภาพ */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-gray-600 flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                    </svg>
+                    หรือใส่ URL รูปภาพ
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      placeholder="https://example.com/image.jpg"
+                      value={mainImageUrlInput}
+                      onChange={(e) => handleMainImageUrlChange(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          confirmMainImageUrl();
+                        }
+                      }}
+                      className="flex-1 rounded-lg border-gray-200 p-2.5 border-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all text-gray-900 text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={confirmMainImageUrl}
+                      className="px-4 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold text-sm whitespace-nowrap"
+                    >
+                      ตกลง
+                    </button>
+                  </div>
+                </div>
+                
                 <div className="relative border-2 border-dashed border-purple-200 rounded-2xl overflow-hidden hover:border-purple-400 transition-all bg-white group">
                   <input 
                     id="mainImage" 
@@ -795,8 +882,56 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
                     รูปภาพเพิ่มเติม (Gallery)
                   </label>
                   <span className="text-xs text-purple-600 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200 font-semibold">
-                    {existingGallery.length + galleryFiles.length} รูป
+                    {existingGallery.length + galleryFiles.length + confirmedGalleryUrls.length} รูป
                   </span>
+                </div>
+                
+                {/* ใส่ URL รูปภาพ Gallery */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-gray-600 flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                    </svg>
+                    หรือใส่ URL รูปภาพ (คั่นด้วย comma หรือขึ้นบรรทัดใหม่)
+                  </label>
+                  <div className="space-y-2">
+                    <textarea
+                      rows={3}
+                      placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg&#10;หรือคั่นด้วย comma: url1, url2, url3"
+                      value={galleryUrlsInput}
+                      onChange={(e) => setGalleryUrlsInput(e.target.value)}
+                      className="w-full rounded-lg border-gray-200 p-2.5 border-2 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:outline-none transition-all text-gray-900 text-sm resize-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={confirmGalleryUrls}
+                      className="w-full px-4 py-2.5 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors font-semibold text-sm"
+                    >
+                      ยืนยัน
+                    </button>
+                  </div>
+                  
+                  {/* แสดง URL ที่ยืนยันแล้ว */}
+                  {confirmedGalleryUrls.length > 0 && (
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-3">
+                      {confirmedGalleryUrls.map((url, idx) => (
+                        <div key={`confirmed-${idx}`} className="relative aspect-square rounded-xl overflow-hidden border-2 border-green-200 group hover:border-green-400 transition-all shadow-sm">
+                          <img src={url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                          <div className="absolute top-1.5 left-1.5 bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-md font-semibold">
+                            URL
+                          </div>
+                          <button 
+                            type="button" 
+                            onClick={() => removeConfirmedGalleryUrl(idx)}
+                            aria-label={`ลบรูปภาพที่ ${idx + 1}`}
+                            className="absolute top-1.5 right-1.5 bg-red-500 text-white rounded-full p-1.5 shadow-lg opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all transform hover:scale-110"
+                          >
+                            <Icons.XMark />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 
                 <div className="relative border-2 border-dashed border-pink-200 rounded-2xl overflow-hidden hover:border-pink-400 transition-all bg-white cursor-pointer">

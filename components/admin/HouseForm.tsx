@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { db, storage } from '@/lib/firebase';
-import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, setDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Icons } from './Icons';
 import { House } from '@/types';
@@ -14,8 +14,109 @@ interface HouseFormProps {
   onCancel?: () => void;
 }
 
+// Success Modal Component - Clean & Minimal
+function SuccessModal({ 
+  isOpen, 
+  onClose, 
+  data,
+  isEdit 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  data: { id: string; title: string; mainImage: string } | null;
+  isEdit: boolean;
+}) {
+  if (!isOpen || !data) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        onClick={onClose} 
+      />
+      
+      {/* Modal */}
+      <div className="relative bg-white rounded-2xl shadow-xl max-w-sm w-full overflow-hidden">
+        
+        {/* Header */}
+        <div className="p-6 text-center border-b border-gray-100">
+          {/* Icon */}
+          <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 ${
+            isEdit ? 'bg-orange-100' : 'bg-emerald-100'
+          }`}>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              strokeWidth={2.5} 
+              stroke="currentColor" 
+              className={`w-8 h-8 ${isEdit ? 'text-orange-600' : 'text-emerald-600'}`}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+          
+          <h2 className="text-xl font-bold text-gray-900">
+            {isEdit ? 'แก้ไขสำเร็จ' : 'บันทึกสำเร็จ'}
+          </h2>
+          <p className="text-gray-500 text-sm mt-1">
+            {isEdit ? 'ข้อมูลถูกอัปเดตเรียบร้อยแล้ว' : 'ข้อมูลถูกบันทึกลงฐานข้อมูลแล้ว'}
+          </p>
+        </div>
+
+        {/* Content */}
+        <div className="p-5">
+          {/* Preview */}
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl mb-4">
+            {data.mainImage && (
+              <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                <img src={data.mainImage} alt={data.title} className="w-full h-full object-cover" />
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-gray-900 truncate text-sm">{data.title}</p>
+              <code className="text-xs text-gray-500 font-mono truncate block">
+                {data.id}
+              </code>
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-3">
+            <button
+              onClick={onClose}
+              className={`flex-1 py-3 rounded-xl font-semibold text-white transition-colors ${
+                isEdit 
+                  ? 'bg-orange-500 hover:bg-orange-600' 
+                  : 'bg-emerald-500 hover:bg-emerald-600'
+              }`}
+            >
+              เสร็จสิ้น
+            </button>
+            <a
+              href={`/house/${data.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-5 py-3 rounded-xl font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+              ดู
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [savedData, setSavedData] = useState<{ id: string; title: string; mainImage: string } | null>(null);
+  const [idError, setIdError] = useState<string | null>(null);
   
   // Refs for clearing file inputs
   const mainImageInputRef = useRef<HTMLInputElement>(null);
@@ -23,6 +124,7 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
 
   // Form Data
   const [formData, setFormData] = useState({
+    customId: '',
     title: '',
     price: '',
     description: '',
@@ -30,6 +132,13 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
     bedrooms: '',
     bathrooms: '',
     area: '',
+    // งานเพิ่มเติม - สามารถแก้ไขชื่อหัวข้อได้
+    work1Label: 'งานไฟฟ้า',
+    work1Detail: '',
+    work2Label: 'งานประปา',
+    work2Detail: '',
+    work3Label: 'งานอื่นๆ',
+    work3Detail: '',
   });
 
   // Images
@@ -41,6 +150,7 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
   useEffect(() => {
     if (initialData) {
       setFormData({
+        customId: initialData.id || '',
         title: initialData.title || '',
         price: initialData.price || '',
         description: initialData.description || '',
@@ -48,6 +158,12 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
         bedrooms: initialData.specifications?.bedrooms || '',
         bathrooms: initialData.specifications?.bathrooms || '',
         area: initialData.specifications?.area || '',
+        work1Label: initialData.specifications?.work1Label || 'งานไฟฟ้า',
+        work1Detail: initialData.specifications?.work1Detail || '',
+        work2Label: initialData.specifications?.work2Label || 'งานประปา',
+        work2Detail: initialData.specifications?.work2Detail || '',
+        work3Label: initialData.specifications?.work3Label || 'งานอื่นๆ',
+        work3Detail: initialData.specifications?.work3Detail || '',
       });
       setMainImagePreview(initialData.mainImage || null);
       if (initialData.images && Array.isArray(initialData.images)) {
@@ -106,31 +222,68 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
       const finalGalleryUrls = [...existingGallery, ...newGalleryUrls];
       const allImagesArray = mainImageUrl ? [mainImageUrl, ...finalGalleryUrls] : [...finalGalleryUrls];
 
+      // Remove customId from data before saving
+      const { customId, ...restFormData } = formData;
+
       const houseData = {
-        ...formData,
+        ...restFormData,
         mainImage: mainImageUrl,
         images: allImagesArray,
         specifications: {
           bedrooms: formData.bedrooms,
           bathrooms: formData.bathrooms,
-          area: formData.area
+          area: formData.area,
+          work1Label: formData.work1Label,
+          work1Detail: formData.work1Detail,
+          work2Label: formData.work2Label,
+          work2Detail: formData.work2Detail,
+          work3Label: formData.work3Label,
+          work3Detail: formData.work3Detail,
         },
         updatedAt: new Date()
       };
 
+      let savedId = '';
+
       if (initialData?.id) {
+        // แก้ไขข้อมูล
         await updateDoc(doc(db, 'houses', initialData.id), houseData);
-        alert('✅ แก้ไขข้อมูลสำเร็จ!');
-      } else {
-        await addDoc(collection(db, 'houses'), {
+        savedId = initialData.id;
+      } else if (formData.customId && formData.customId.trim() !== '') {
+        // บันทึกด้วย Custom ID - เช็คซ้ำก่อน
+        const cleanId = formData.customId.trim().replace(/\s+/g, '-').toLowerCase();
+        
+        // ตรวจสอบว่า ID นี้มีอยู่แล้วหรือไม่
+        const existingDoc = await getDoc(doc(db, 'houses', cleanId));
+        if (existingDoc.exists()) {
+          setIsLoading(false);
+          setIdError(`ID "${cleanId}" มีอยู่ในระบบแล้ว กรุณาใช้ ID อื่น`);
+          return;
+        }
+        
+        await setDoc(doc(db, 'houses', cleanId), {
           ...houseData,
           features: [],
           createdAt: new Date()
         });
-        alert('✅ บันทึกข้อมูลสำเร็จ!');
+        savedId = cleanId;
+      } else {
+        // บันทึกด้วย Auto ID
+        const docRef = await addDoc(collection(db, 'houses'), {
+          ...houseData,
+          features: [],
+          createdAt: new Date()
+        });
+        savedId = docRef.id;
       }
       
-      onSuccess();
+      // Show success modal
+      setSavedData({
+        id: savedId,
+        title: formData.title,
+        mainImage: mainImageUrl
+      });
+      setShowSuccess(true);
 
     } catch (error) {
       console.error('Error:', error);
@@ -138,6 +291,12 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSuccessClose = () => {
+    setShowSuccess(false);
+    setSavedData(null);
+    onSuccess();
   };
 
   return (
@@ -247,9 +406,88 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
                 <h2 className="text-lg font-bold text-gray-900">ข้อมูลทั่วไป</h2>
                 <p className="text-sm text-gray-500">ชื่อโครงการและรายละเอียด</p>
               </div>
-            </div>
+            </div> 
             
             <div className="space-y-5">
+              {/* ID ผลงาน - แสดงเฉพาะตอนสร้างใหม่ */}
+              {!initialData && (
+                <div className={`p-4 rounded-xl border transition-all ${
+                  idError 
+                    ? 'bg-red-50 border-red-200' 
+                    : 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-100'
+                }`}>
+                  <div className="space-y-2">
+                    <label htmlFor="customId" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-4 h-4 ${idError ? 'text-red-500' : 'text-indigo-500'}`}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
+                      </svg>
+                      ID ผลงาน
+                      <span className="text-xs text-gray-400 font-normal">(ไม่บังคับ)</span>
+                    </label>
+                    <div className="relative">
+                      <input 
+                        id="customId" 
+                        type="text" 
+                        placeholder="เช่น house-001, modern-villa-2024"
+                        className={`w-full rounded-xl p-3.5 border-2 focus:ring-2 focus:outline-none transition-all text-gray-900 placeholder:text-gray-400 font-mono ${
+                          idError 
+                            ? 'border-red-300 focus:ring-red-500 focus:border-red-500 bg-white' 
+                            : 'border-indigo-200 focus:ring-indigo-500 focus:border-indigo-500'
+                        }`}
+                        value={formData.customId} 
+                        onChange={(e) => {
+                          setFormData({...formData, customId: e.target.value});
+                          setIdError(null); // ล้าง error เมื่อมีการพิมพ์
+                        }} 
+                      />
+                      {idError && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-red-500">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Error Message */}
+                    {idError && (
+                      <div className="flex items-center gap-2 p-3 bg-red-100 rounded-lg border border-red-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-red-600 flex-shrink-0">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        </svg>
+                        <span className="text-sm font-medium text-red-700">{idError}</span>
+                      </div>
+                    )}
+                    
+                    {!idError && (
+                      <p className="text-xs text-gray-500 flex items-start gap-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5 mt-0.5 text-indigo-400 shrink-0">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                        </svg>
+                        ถ้าไม่ระบุ ระบบจะสร้าง ID อัตโนมัติ • ID จะถูกใช้เป็น URL: /house/<span className="font-mono text-indigo-600">{formData.customId || 'auto-id'}</span>
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* แสดง ID ถ้าเป็นการแก้ไข */}
+              {initialData && (
+                <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-400">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
+                    </svg>
+                    <div>
+                      <span className="text-xs text-gray-500">Document ID:</span>
+                      <code className="ml-2 bg-gray-200 px-2 py-0.5 rounded text-sm font-mono text-gray-700">
+                        {initialData.id}
+                      </code>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* ชื่อโครงการ */}
                 <div className="space-y-2">
@@ -335,7 +573,7 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
               </div>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
               {/* ห้องนอน */}
               <div className="bg-white rounded-xl p-4 border border-emerald-100 shadow-sm hover:shadow-md transition-all">
                 <div className="flex items-center gap-3 mb-3">
@@ -396,6 +634,94 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
                     onChange={(e) => setFormData({...formData, area: e.target.value})} 
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 font-medium">ตร.ม.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* รายละเอียดงานเพิ่มเติม */}
+            <div className="border-t border-emerald-100 pt-6">
+              <div className="flex items-center gap-2 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-emerald-600">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+                </svg>
+                <h3 className="text-sm font-bold text-gray-700">รายละเอียดงานเพิ่มเติม</h3>
+                <span className="text-xs text-gray-400">(สามารถแก้ไขชื่อหัวข้อได้)</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {/* งานที่ 1 */}
+                <div className="bg-white rounded-xl p-4 border border-yellow-100 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-yellow-600">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                      </svg>
+                    </div>
+                    <input 
+                      type="text"
+                      placeholder="ชื่อหัวข้อ เช่น งานไฟฟ้า"
+                      className="flex-1 rounded-lg border-yellow-200 p-2 border-2 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 focus:outline-none transition-all text-gray-900 text-sm font-bold"
+                      value={formData.work1Label} 
+                      onChange={(e) => setFormData({...formData, work1Label: e.target.value})} 
+                    />
+                  </div>
+                  <textarea 
+                    rows={3}
+                    placeholder="เช่น เดินสายไฟ 10 จุด, ต่อสายไฟ 3 เฟส, ติดตั้งปลั๊กไฟ 20 จุด"
+                    className="w-full rounded-lg border-gray-200 p-3 border-2 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 focus:outline-none transition-all text-gray-900 text-sm resize-none"
+                    value={formData.work1Detail} 
+                    onChange={(e) => setFormData({...formData, work1Detail: e.target.value})} 
+                  />
+                </div>
+
+                {/* งานที่ 2 */}
+                <div className="bg-white rounded-xl p-4 border border-cyan-100 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-cyan-600">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+                      </svg>
+                    </div>
+                    <input 
+                      type="text"
+                      placeholder="ชื่อหัวข้อ เช่น งานประปา"
+                      className="flex-1 rounded-lg border-cyan-200 p-2 border-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 focus:outline-none transition-all text-gray-900 text-sm font-bold"
+                      value={formData.work2Label} 
+                      onChange={(e) => setFormData({...formData, work2Label: e.target.value})} 
+                    />
+                  </div>
+                  <textarea 
+                    rows={3}
+                    placeholder="เช่น เดินท่อน้ำ PVC, ติดตั้งปั๊มน้ำ, ติดตั้งถังเก็บน้ำ 1000 ลิตร"
+                    className="w-full rounded-lg border-gray-200 p-3 border-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 focus:outline-none transition-all text-gray-900 text-sm resize-none"
+                    value={formData.work2Detail} 
+                    onChange={(e) => setFormData({...formData, work2Detail: e.target.value})} 
+                  />
+                </div>
+
+                {/* งานที่ 3 */}
+                <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-all sm:col-span-2 lg:col-span-1">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-600">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                      </svg>
+                    </div>
+                    <input 
+                      type="text"
+                      placeholder="ชื่อหัวข้อ เช่น งานอื่นๆ"
+                      className="flex-1 rounded-lg border-gray-300 p-2 border-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-400 focus:outline-none transition-all text-gray-900 text-sm font-bold"
+                      value={formData.work3Label} 
+                      onChange={(e) => setFormData({...formData, work3Label: e.target.value})} 
+                    />
+                  </div>
+                  <textarea 
+                    rows={3}
+                    placeholder="เช่น ทาสีบ้าน, ปูกระเบื้อง, ติดตั้งประตู-หน้าต่าง, งานเหล็กดัด"
+                    className="w-full rounded-lg border-gray-200 p-3 border-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-400 focus:outline-none transition-all text-gray-900 text-sm resize-none"
+                    value={formData.work3Detail} 
+                    onChange={(e) => setFormData({...formData, work3Detail: e.target.value})} 
+                  />
                 </div>
               </div>
             </div>
@@ -582,6 +908,14 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
 
         </form>
       </div>
+
+      {/* Success Modal */}
+      <SuccessModal 
+        isOpen={showSuccess} 
+        onClose={handleSuccessClose} 
+        data={savedData}
+        isEdit={!!initialData}
+      />
     </div>
   );
 }

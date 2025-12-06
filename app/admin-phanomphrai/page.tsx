@@ -5,21 +5,43 @@ import Link from 'next/link';
 import { Icons } from '@/components/admin/Icons';
 import HouseForm from '@/components/admin/HouseForm';
 import HouseList from '@/components/admin/HouseList';
+import GalleryForm from '@/components/admin/GalleryForm';
+import GalleryList from '@/components/admin/GalleryList';
+import HeroForm from '@/components/admin/HeroForm';
 import { House } from '@/types';
 
+interface GalleryItem {
+  id?: string;
+  description: string;
+  imageUrl: string;
+  order?: number;
+}
+
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<'add' | 'edit'>('add');
+  const [activeTab, setActiveTab] = useState<'add' | 'edit' | 'gallery' | 'hero'>('add');
   const [editingHouse, setEditingHouse] = useState<House | null>(null);
+  const [editingGallery, setEditingGallery] = useState<GalleryItem | null>(null);
+  const [galleryMode, setGalleryMode] = useState<'list' | 'add' | 'edit'>('list');
 
   const handleEdit = (house: House) => {
     setEditingHouse(house);
     setActiveTab('edit');
   };
 
+  const handleEditGallery = (item: GalleryItem) => {
+    setEditingGallery(item);
+    setGalleryMode('edit');
+  };
+
   const handleSuccess = () => {
     if (activeTab === 'edit') {
       setEditingHouse(null);
     }
+  };
+
+  const handleGallerySuccess = () => {
+    setEditingGallery(null);
+    setGalleryMode('list');
   };
 
   return (
@@ -44,7 +66,7 @@ export default function AdminPage() {
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-          <p className="px-3 mb-3 text-xs font-bold text-gray-400 uppercase tracking-wider">เมนูหลัก</p>
+          <p className="px-3 mb-3 text-xs font-bold text-gray-400 uppercase tracking-wider">ผลงาน</p>
           
           <button
             onClick={() => { setActiveTab('add'); setEditingHouse(null); }}
@@ -77,6 +99,50 @@ export default function AdminPage() {
             <div className="flex-1 text-left">
               <span className="font-semibold block text-sm">จัดการผลงาน</span>
               <span className={`text-xs ${activeTab === 'edit' ? 'text-blue-100' : 'text-gray-400'}`}>แก้ไข / ลบ รายการ</span>
+            </div>
+          </button>
+
+          <div className="pt-4 mt-2 border-t border-gray-100">
+            <p className="px-3 mb-3 text-xs font-bold text-gray-400 uppercase tracking-wider">การันตีคุณภาพ</p>
+          </div>
+
+          <button
+            onClick={() => { setActiveTab('gallery'); setEditingGallery(null); setGalleryMode('list'); }}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${
+              activeTab === 'gallery' 
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30' 
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
+          >
+            <div className={`p-2 rounded-lg ${activeTab === 'gallery' ? 'bg-white/20' : 'bg-gray-100'}`}>
+              <Icons.Star />
+            </div>
+            <div className="flex-1 text-left">
+              <span className="font-semibold block text-sm">การันตีคุณภาพ</span>
+              <span className={`text-xs ${activeTab === 'gallery' ? 'text-amber-100' : 'text-gray-400'}`}>จัดการรูปภาพการันตี</span>
+            </div>
+          </button>
+
+          <div className="pt-4 mt-2 border-t border-gray-100">
+            <p className="px-3 mb-3 text-xs font-bold text-gray-400 uppercase tracking-wider">ตั้งค่าหน้าเว็บ</p>
+          </div>
+
+          <button
+            onClick={() => setActiveTab('hero')}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${
+              activeTab === 'hero' 
+                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30' 
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
+          >
+            <div className={`p-2 rounded-lg ${activeTab === 'hero' ? 'bg-white/20' : 'bg-gray-100'}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+              </svg>
+            </div>
+            <div className="flex-1 text-left">
+              <span className="font-semibold block text-sm">Hero Section</span>
+              <span className={`text-xs ${activeTab === 'hero' ? 'text-purple-100' : 'text-gray-400'}`}>แก้ไขข้อความหน้าแรก</span>
             </div>
           </button>
 
@@ -144,10 +210,10 @@ export default function AdminPage() {
           </Link>
         </div>
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
           <button
             onClick={() => { setActiveTab('add'); setEditingHouse(null); }}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'add' 
                 ? 'bg-blue-500 text-white shadow-lg' 
                 : 'bg-gray-100 text-gray-600'
@@ -159,7 +225,7 @@ export default function AdminPage() {
           
           <button
             onClick={() => { setActiveTab('edit'); setEditingHouse(null); }}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'edit' 
                 ? 'bg-blue-500 text-white shadow-lg' 
                 : 'bg-gray-100 text-gray-600'
@@ -167,6 +233,32 @@ export default function AdminPage() {
           >
             <Icons.List />
             จัดการผลงาน
+          </button>
+
+          <button
+            onClick={() => { setActiveTab('gallery'); setEditingGallery(null); setGalleryMode('list'); }}
+            className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${
+              activeTab === 'gallery' 
+                ? 'bg-amber-500 text-white shadow-lg' 
+                : 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            <Icons.Star />
+            การันตีคุณภาพ
+          </button>
+
+          <button
+            onClick={() => setActiveTab('hero')}
+            className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${
+              activeTab === 'hero' 
+                ? 'bg-purple-500 text-white shadow-lg' 
+                : 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+            Hero Section
           </button>
         </div>
       </div>
@@ -189,6 +281,61 @@ export default function AdminPage() {
                 onSuccess={handleSuccess} 
                 onCancel={() => setEditingHouse(null)}
               />
+            )}
+
+            {activeTab === 'gallery' && (
+              <div className="space-y-6">
+                {/* Sub-navigation for Gallery */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => { setGalleryMode('add'); setEditingGallery(null); }}
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all ${
+                      galleryMode === 'add' || galleryMode === 'edit'
+                        ? 'bg-amber-500 text-white shadow-lg'
+                        : 'bg-white text-gray-600 border border-gray-200 hover:border-amber-300 hover:bg-amber-50'
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    {galleryMode === 'edit' ? '✏️ กำลังแก้ไข' : '➕ เพิ่มใหม่'}
+                  </button>
+                  <button
+                    onClick={() => { setGalleryMode('list'); setEditingGallery(null); }}
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all ${
+                      galleryMode === 'list'
+                        ? 'bg-amber-500 text-white shadow-lg'
+                        : 'bg-white text-gray-600 border border-gray-200 hover:border-amber-300 hover:bg-amber-50'
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                    </svg>
+                    📋 ดูทั้งหมด
+                  </button>
+                </div>
+
+                {/* Content based on mode */}
+                {galleryMode === 'list' && (
+                  <GalleryList onEdit={handleEditGallery} />
+                )}
+
+                {galleryMode === 'add' && (
+                  <GalleryForm onSuccess={handleGallerySuccess} />
+                )}
+
+                {galleryMode === 'edit' && editingGallery && (
+                  <GalleryForm 
+                    initialData={editingGallery}
+                    onSuccess={handleGallerySuccess}
+                    onCancel={() => { setEditingGallery(null); setGalleryMode('list'); }}
+                  />
+                )}
+              </div>
+            )}
+
+            {activeTab === 'hero' && (
+              <HeroForm />
             )}
           </div>
         </div>

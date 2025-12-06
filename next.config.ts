@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   output: 'export',
   
   images: {
-    unoptimized: true, // <--- สำคัญมาก: ต้องใส่บรรทัดนี้เมื่อใช้ output: 'export'
+    unoptimized: true, // จำเป็นสำหรับ Static Export
     remotePatterns: [
       {
         protocol: 'https',
@@ -22,6 +22,19 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: 'p-construction.samplebigbang.com',
       },
+      // --- ส่วนที่เพิ่ม/แก้ไข ---
+      {
+        protocol: 'https',
+        hostname: '*.googleusercontent.com',
+      },
+      {
+        protocol: 'http',
+        hostname: '*.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.iproperty.com.my',
+      }
     ],
   },
 };

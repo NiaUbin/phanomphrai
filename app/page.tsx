@@ -5,6 +5,7 @@ import PromotionSection from '@/components/sections/PromotionSection';
 import AboutSection from '@/components/sections/AboutSection';
 import ContactSection from '@/components/sections/ContactSection';
 
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-900">

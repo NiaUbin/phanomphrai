@@ -1,20 +1,79 @@
-/**
- * PortfolioSection - ส่วนผลงานของเรา (Portfolio/Works Section)
- * แสดงผลงานในรูปแบบ Grid (3 คอลัมน์) พร้อม hover effects
- * แต่ละการ์ดสามารถคลิกเพื่อไปดูรายละเอียดเพิ่มเติม
- */
 'use client';
 
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { portfolioItems } from '@/app/constants/data';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { House } from '@/types';
 
-export default function PortfolioSection() {
+// รับ props ชื่อ works มาจากหน้าหลัก (Optional)
+export default function PortfolioSection({ works: initialWorks }: { works?: House[] }) {
+  const [works, setWorks] = useState<House[]>(initialWorks || []);
+  const [loading, setLoading] = useState<boolean>(!initialWorks);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // ถ้ามีข้อมูลจาก props แล้ว ไม่ต้อง fetch ใหม่
+    if (initialWorks) {
+      setWorks(initialWorks);
+      setLoading(false);
+      return;
+    }
+
+    const fetchWorks = async () => {
+      try {
+        // ดึงข้อมูลทั้งหมดจาก houses (เอา orderBy ออกก่อนเพื่อทดสอบ)
+        const q = collection(db, 'houses');
+        const querySnapshot = await getDocs(q);
+        const fetchedWorks = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as House));
+        setWorks(fetchedWorks);
+      } catch (err) {
+        console.error("Error fetching portfolio items:", err);
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorks();
+  }, [initialWorks]);
+
+  if (error) {
+    return (
+      <section id="portfolio" className="py-10 bg-gray-100 text-center text-red-600">
+        <p>Error loading portfolio: {error}</p>
+        <p className="text-sm text-gray-500 mt-2">Please check your Firestore Security Rules.</p>
+      </section>
+    );
+  }
+
+  // ถ้าโหลดเสร็จแล้วและไม่มีข้อมูลเลย ให้แสดงข้อความว่าไม่มีข้อมูล
+  if (!loading && (!works || works.length === 0)) {
+    return (
+      <section id="portfolio" className="pt-6 sm:pt-8 md:pt-10 pb-10 sm:pb-12 md:pb-16 lg:pb-20 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
+          <div className="text-center mb-6 sm:mb-8 md:mb-10">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
+              ผลงานของเรา
+            </h2>
+            <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-3 sm:mb-4">
+              ยังไม่มีข้อมูลผลงานในขณะนี้
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section id="portfolio" className="py-10 sm:py-12 md:py-16 lg:py-20 bg-gray-100">
+    <section id="portfolio" className="pt-6 sm:pt-8 md:pt-10 pb-10 sm:pb-12 md:pb-16 lg:pb-20 bg-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
-        {/* Image Gallery Header */}
-        <div className="text-center mb-8 sm:mb-10 md:mb-12">
+        {/* Header */}
+        <div className="text-center mb-6 sm:mb-8 md:mb-10">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
             ผลงานของเรา
           </h2>
@@ -26,17 +85,17 @@ export default function PortfolioSection() {
           </div>
         </div>
 
-        {/* Image Gallery */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-1">
-          {portfolioItems.map((img) => (
+        {/* Image Gallery Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+          {works.map((item) => (
             <Link
-              key={img.id}
-              href={`/house/${img.id}`}
+              key={item.id}
+              href={`/house/${item.id}`}
               className="group relative w-full h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px] rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-500 border border-gray-200 hover:border-yellow-400 block cursor-pointer bg-white active:scale-[0.98]"
             >
               <Image
-                src={img.src}
-                alt={img.alt}
+                src={item.mainImage || '/placeholder.jpg'} // ใช้รูปหลักจาก DB
+                alt={item.title}
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-700"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -54,10 +113,10 @@ export default function PortfolioSection() {
                   <div className="h-0.5 w-10 sm:w-12 bg-yellow-400 mb-2 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 delay-100" />
                 </div>
                 <h3 className="text-white font-bold text-base sm:text-lg md:text-xl mb-1 sm:mb-2 drop-shadow-2xl group-hover:text-yellow-400 transition-colors duration-300 leading-tight">
-                  {img.title}
+                  {item.title}
                 </h3>
                 <p className="text-white/95 text-xs sm:text-sm md:text-base leading-relaxed drop-shadow-lg line-clamp-2">
-                  {img.description}
+                  {item.description}
                 </p>
                 
                 {/* View More Indicator */}
@@ -102,4 +161,3 @@ export default function PortfolioSection() {
     </section>
   );
 }
-

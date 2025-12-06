@@ -1,7 +1,7 @@
 // รูปภาพสำหรับ Hero Section (ส่วนหัวของหน้าเว็บ)
 export const constructionImages = [
-  'https://lirp.cdn-website.com/dc135f28/dms3rep/multi/opt/0_0-7ebd0683-640w.jpg',
-  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80',
+  'https://img.iproperty.com.my/angel/1110x624-crop/wp-content/uploads/sites/6/2023/07/Construction-residential-new-house-in-progress-at-building-site-budjet.jpg',
+  'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1920&q=80', // เปลี่ยนรูปที่มีปัญหาเป็นรูปก่อสร้างสวยๆ จาก Unsplash
   'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1920&q=80',
   'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1920&q=80',
   'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1920&q=80',

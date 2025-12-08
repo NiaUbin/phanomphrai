@@ -23,6 +23,24 @@ export default function HouseList({ onEdit }: HouseListProps) {
         id: doc.id,
         ...doc.data()
       } as House));
+      // เรียงลำดับตาม order (1, 2, 3, ... ถ้าไม่มี order = แสดงท้ายสุด)
+      housesData.sort((a, b) => {
+        // แปลง order เป็น number ถ้ายังเป็น string
+        const orderA = typeof a.order === 'number' ? a.order : (a.order ? parseInt(String(a.order), 10) : 999999);
+        const orderB = typeof b.order === 'number' ? b.order : (b.order ? parseInt(String(b.order), 10) : 999999);
+        
+        // ถ้า order เท่ากัน ให้เรียงตาม createdAt (ถ้ามี) หรือ id
+        if (orderA === orderB) {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          if (dateA !== dateB) {
+            return dateB - dateA; // ใหม่ก่อน
+          }
+          return (a.id || '').localeCompare(b.id || '');
+        }
+        
+        return orderA - orderB;
+      });
       setHouses(housesData);
     } catch (error) {
       console.error("Error fetching houses:", error);
@@ -156,6 +174,7 @@ export default function HouseList({ onEdit }: HouseListProps) {
         <table className="w-full text-left border-collapse">
           <thead>
                 <tr className="bg-gradient-to-r from-gray-50 to-gray-50/50 border-b-2 border-gray-200">
+                  <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider w-20">ลำดับ</th>
                   <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider w-32">รูปภาพ</th>
                   <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider min-w-[200px]">ชื่อโครงการ</th>
                   <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider">รายละเอียด</th>
@@ -169,6 +188,19 @@ export default function HouseList({ onEdit }: HouseListProps) {
                     key={house.id} 
                     className="group hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/30 transition-all duration-200"
                   >
+                    <td className="py-5 px-6">
+                      <div className="flex items-center justify-center">
+                        {house.order ? (
+                          <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-200 text-gray-700 font-semibold text-sm border border-gray-300">
+                            {house.order}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 text-gray-400 font-medium text-xs border border-gray-200">
+                            -
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="py-5 px-6">
                       <div className="w-24 h-16 sm:w-28 sm:h-20 rounded-lg overflow-hidden bg-gray-100 shadow-sm border border-gray-200 group-hover:shadow-md group-hover:border-blue-200 transition-all">
                     {house.mainImage ? (

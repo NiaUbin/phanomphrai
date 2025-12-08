@@ -19,6 +19,7 @@ export interface House {
         work3Detail?: string;     // รายละเอียดงานที่ 3
     };
     features?: string[];
+    order?: number; // ลำดับการแสดงผล (น้อย = แสดงก่อน)
     createdAt?: Date | string;
     updatedAt?: Date | string;
 }

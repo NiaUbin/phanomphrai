@@ -66,3 +66,5 @@ body {
   animation: text-fade-up 900ms ease-out forwards;
   animation-delay: 200ms;
 }
+
+/* Toast animations - ใช้ transition แทน animation สำหรับ smooth fade out */

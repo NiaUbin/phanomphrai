@@ -202,7 +202,7 @@ export default function HouseDetailClient() {
 
         {/* Main Image */}
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="relative w-full aspect-[3/2] overflow-hidden rounded-lg shadow-lg border border-gray-200">
+          <div className="relative w-full aspect-[3/2] overflow-hidden shadow-xl border border-gray-200">
             {house.mainImage && (
               <Image
                 src={house.mainImage}

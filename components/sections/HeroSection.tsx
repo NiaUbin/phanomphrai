@@ -111,7 +111,7 @@ export default function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 md:px-8 pt-12 sm:pt-16 md:pt-20 pb-12 sm:pb-14 md:pb-20">
+      <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 md:px-8 pt-6 sm:pt-8 md:pt-10 pb-12 sm:pb-14 md:pb-20">
         <h1 className="text-fade-in text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight drop-shadow-2xl mb-3 sm:mb-4 md:mb-5 px-4">
           {content.title}
         </h1>

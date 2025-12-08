@@ -26,8 +26,8 @@ import {
 export default function Footer() {
   const pathname = usePathname();
 
-  // Hide footer in admin area
-  if (pathname?.startsWith('/admin-phanomphrai')) return null;
+  // แสดง Footer เฉพาะหน้าหลักเท่านั้น
+  if (pathname !== '/') return null;
 
   return (
     <footer className="bg-white border-t border-gray-200 text-gray-700">

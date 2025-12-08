@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
@@ -11,6 +12,7 @@ interface GalleryItem {
   description: string;
   imageUrl: string;
   order?: number;
+  houseId?: string; // ID ของ house ที่เชื่อมโยง
 }
 
 export default function ServicesSection() {
@@ -164,21 +166,16 @@ export default function ServicesSection() {
                   msOverflowStyle: 'none',
                 }}
               >
-                {items.map((item) => (
-                  <div
-                    key={item.id}
-                    data-service-card
-                    className="shrink-0 snap-center pt-2 sm:pt-4"
-                  >
-                    {/* Card Container */}
-                    <div className="relative w-[200px] sm:w-[240px] md:w-[260px] aspect-[4/5] bg-gray-200 group rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+                {items.map((item) => {
+                  const CardContent = (
+                    <div className="relative w-[200px] sm:w-[240px] md:w-[260px] aspect-[4/5] bg-gray-200 group rounded-lg shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
                       
                       {/* Image */}
                       <Image
                         src={item.imageUrl}
                         alt={item.description}
                         fill
-                        className="object-cover"
+                        className="object-cover transition-transform duration-700 ease-out hover:drop-shadow-lg"
                         sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 260px"
                       />
 
@@ -189,9 +186,40 @@ export default function ServicesSection() {
                         </p>
                       </div>
 
+                      {/* View More Indicator */}
+                      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
+                        <div className="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-md">
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="text-gray-800"
+                          >
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+
                     </div>
-                  </div>
-                ))}
+                  );
+
+                  return (
+                    <div
+                      key={item.id}
+                      data-service-card
+                      className="shrink-0 snap-center pt-2 sm:pt-4"
+                    >
+                      <Link href={`/gallery/${item.id}`} className="block">
+                        {CardContent}
+                      </Link>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

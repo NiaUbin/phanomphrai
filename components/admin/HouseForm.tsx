@@ -14,17 +14,62 @@ interface HouseFormProps {
   onCancel?: () => void;
 }
 
-// Success Modal Component - Clean & Minimal
+// Success Toast Component - แสดงกลางจอ
+function SuccessToast({ 
+  isOpen, 
+  message,
+  fadeOut 
+}: { 
+  isOpen: boolean; 
+  message: string;
+  fadeOut: boolean;
+}) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+      {/* Backdrop */}
+      <div className={`absolute inset-0 bg-black/20 transition-opacity duration-300 ${fadeOut ? 'opacity-0' : 'opacity-100'}`} />
+      
+      {/* Toast Card */}
+      <div className={`relative bg-white rounded-xl shadow-lg border border-gray-200 p-6 max-w-sm w-full pointer-events-auto transition-all duration-300 ${fadeOut ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
+        <div className="flex flex-col items-center text-center">
+          {/* Icon Circle */}
+          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              strokeWidth={2.5} 
+              stroke="currentColor" 
+              className="w-8 h-8 text-gray-700"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+          
+          {/* Message */}
+          <h3 className="text-xl font-semibold text-gray-800 mb-1">
+            {message}
+          </h3>
+          <p className="text-gray-500 text-sm">
+            โครงการถูกบันทึกเรียบร้อยแล้ว
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Success Modal Component - Clean & Minimal (สำหรับการแก้ไข)
 function SuccessModal({ 
   isOpen, 
   onClose, 
-  data,
-  isEdit 
+  data
 }: { 
   isOpen: boolean; 
   onClose: () => void; 
   data: { id: string; title: string; mainImage: string } | null;
-  isEdit: boolean;
 }) {
   if (!isOpen || !data) return null;
 
@@ -42,27 +87,21 @@ function SuccessModal({
         {/* Header */}
         <div className="p-6 text-center border-b border-gray-100">
           {/* Icon */}
-          <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 ${
-            isEdit ? 'bg-orange-100' : 'bg-emerald-100'
-          }`}>
+          <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 bg-orange-100">
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               fill="none" 
               viewBox="0 0 24 24" 
               strokeWidth={2.5} 
               stroke="currentColor" 
-              className={`w-8 h-8 ${isEdit ? 'text-orange-600' : 'text-emerald-600'}`}
+              className="w-8 h-8 text-orange-600"
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
           </div>
           
-          <h2 className="text-xl font-bold text-gray-900">
-            {isEdit ? 'แก้ไขสำเร็จ' : 'บันทึกสำเร็จ'}
-          </h2>
-          <p className="text-gray-500 text-sm mt-1">
-            {isEdit ? 'ข้อมูลถูกอัปเดตเรียบร้อยแล้ว' : 'ข้อมูลถูกบันทึกลงฐานข้อมูลแล้ว'}
-          </p>
+          <h2 className="text-xl font-bold text-gray-900">แก้ไขสำเร็จ</h2>
+          <p className="text-gray-500 text-sm mt-1">ข้อมูลถูกอัปเดตเรียบร้อยแล้ว</p>
         </div>
 
         {/* Content */}
@@ -86,11 +125,7 @@ function SuccessModal({
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className={`flex-1 py-3 rounded-xl font-semibold text-white transition-colors ${
-                isEdit 
-                  ? 'bg-orange-500 hover:bg-orange-600' 
-                  : 'bg-emerald-500 hover:bg-emerald-600'
-              }`}
+              className="flex-1 py-3 rounded-xl font-semibold text-white transition-colors bg-orange-500 hover:bg-orange-600"
             >
               เสร็จสิ้น
             </button>
@@ -117,6 +152,9 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
   const [showSuccess, setShowSuccess] = useState(false);
   const [savedData, setSavedData] = useState<{ id: string; title: string; mainImage: string } | null>(null);
   const [idError, setIdError] = useState<string | null>(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastFadeOut, setToastFadeOut] = useState(false);
   
   // Refs for clearing file inputs
   const mainImageInputRef = useRef<HTMLInputElement>(null);
@@ -132,6 +170,7 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
     bedrooms: '',
     bathrooms: '',
     area: '',
+    order: '', // ลำดับการแสดงผล
     // งานเพิ่มเติม - สามารถแก้ไขชื่อหัวข้อได้
     work1Label: 'งานไฟฟ้า',
     work1Detail: '',
@@ -162,6 +201,7 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
         bedrooms: initialData.specifications?.bedrooms || '',
         bathrooms: initialData.specifications?.bathrooms || '',
         area: initialData.specifications?.area || '',
+        order: initialData.order?.toString() || '',
         work1Label: initialData.specifications?.work1Label || 'งานไฟฟ้า',
         work1Detail: initialData.specifications?.work1Detail || '',
         work2Label: initialData.specifications?.work2Label || 'งานประปา',
@@ -284,9 +324,39 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
       const allImagesArray = finalMainImageUrl ? [finalMainImageUrl, ...finalGalleryUrls] : [...finalGalleryUrls];
 
       // Remove customId from data before saving
-      const { customId, ...restFormData } = formData;
+      const { customId, order, ...restFormData } = formData;
 
-      const houseData = {
+      // สร้าง houseData โดยไม่รวม order ถ้าไม่มีค่า
+      const houseData: {
+        title: string;
+        price: string;
+        description: string;
+        fullDescription: string;
+        bedrooms: string;
+        bathrooms: string;
+        area: string;
+        work1Label: string;
+        work1Detail: string;
+        work2Label: string;
+        work2Detail: string;
+        work3Label: string;
+        work3Detail: string;
+        mainImage: string;
+        images: string[];
+        specifications: {
+          bedrooms: string;
+          bathrooms: string;
+          area: string;
+          work1Label: string;
+          work1Detail: string;
+          work2Label: string;
+          work2Detail: string;
+          work3Label: string;
+          work3Detail: string;
+        };
+        updatedAt: Date;
+        order?: number;
+      } = {
         ...restFormData,
         mainImage: finalMainImageUrl,
         images: allImagesArray,
@@ -303,6 +373,14 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
         },
         updatedAt: new Date()
       };
+
+      // เพิ่ม order เฉพาะเมื่อมีค่า (ไม่ใช่ empty string)
+      if (order && order.trim() !== '') {
+        const orderNum = parseInt(order);
+        if (!isNaN(orderNum)) {
+          houseData.order = orderNum;
+        }
+      }
 
       let savedId = '';
 
@@ -338,13 +416,37 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
         savedId = docRef.id;
       }
       
-      // Show success modal
+      // Show success notification
+      if (initialData?.id) {
+        // แก้ไขข้อมูล - แสดง modal
       setSavedData({
         id: savedId,
         title: formData.title,
         mainImage: mainImageUrl
       });
       setShowSuccess(true);
+      } else {
+        // เพิ่มผลงานใหม่ - แสดง toast และรีเซ็ตฟอร์ม
+        setToastMessage('บันทึกสำเร็จ');
+        setShowToast(true);
+        setToastFadeOut(false);
+        
+        // รีเซ็ตฟอร์ม
+        resetForm();
+        
+        // เริ่ม fade out หลังจาก 1 วินาที
+        setTimeout(() => {
+          setToastFadeOut(true);
+          // ซ่อน toast หลังจาก fade out เสร็จ
+          setTimeout(() => {
+            setShowToast(false);
+            setToastFadeOut(false);
+          }, 300);
+        }, 1000);
+        
+        // เรียก onSuccess callback
+        onSuccess();
+      }
 
     } catch (error) {
       console.error('Error:', error);
@@ -358,6 +460,44 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
     setShowSuccess(false);
     setSavedData(null);
     onSuccess();
+  };
+
+  // Reset form function
+  const resetForm = () => {
+    setFormData({
+      customId: '',
+      title: '',
+      price: '',
+      description: '',
+      fullDescription: '',
+      bedrooms: '',
+      bathrooms: '',
+      area: '',
+      order: '',
+      work1Label: 'งานไฟฟ้า',
+      work1Detail: '',
+      work2Label: 'งานประปา',
+      work2Detail: '',
+      work3Label: 'งานอื่นๆ',
+      work3Detail: '',
+    });
+    setImageFile(null);
+    setMainImagePreview(null);
+    setMainImageUrl('');
+    setMainImageUrlInput('');
+    setGalleryFiles([]);
+    setGalleryUrlsInput('');
+    setConfirmedGalleryUrls([]);
+    setExistingGallery([]);
+    setIdError(null);
+    
+    // Clear file inputs
+    if (mainImageInputRef.current) {
+      mainImageInputRef.current.value = '';
+    }
+    if (galleryInputRef.current) {
+      galleryInputRef.current.value = '';
+    }
   };
 
   return (
@@ -583,6 +723,28 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
                       className="w-full rounded-xl border-gray-200 p-3.5 pl-11 border-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all text-gray-900 placeholder:text-gray-400"
                       value={formData.price} 
                       onChange={(e) => setFormData({...formData, price: e.target.value})} 
+                    />
+                  </div>
+                </div>
+
+                {/* ลำดับการแสดงผล */}
+                <div className="space-y-2">
+                  <label htmlFor="order" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                    ลำดับการแสดงผล <span className="text-gray-400 text-xs font-normal">(น้อย = แสดงก่อน)</span>
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 4.5h14.25M3 9h9.75m-9.75 3h9.75m-9.75 3h9.75m5.25-4.5V21m0 0l-4.5-4.5m4.5 4.5l-4.5-4.5" />
+                      </svg>
+                    </span>
+                    <input 
+                      id="order" 
+                      type="number" 
+                      placeholder="เช่น 1, 2, 3 (ว่าง = แสดงท้ายสุด)"
+                      className="w-full rounded-xl border-gray-200 p-3.5 pl-11 border-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all text-gray-900 placeholder:text-gray-400"
+                      value={formData.order} 
+                      onChange={(e) => setFormData({...formData, order: e.target.value})} 
                     />
                   </div>
                 </div>
@@ -1044,12 +1206,18 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
         </form>
       </div>
 
+      {/* Success Toast */}
+      <SuccessToast 
+        isOpen={showToast} 
+        message={toastMessage}
+        fadeOut={toastFadeOut}
+      />
+
       {/* Success Modal */}
       <SuccessModal 
         isOpen={showSuccess} 
         onClose={handleSuccessClose} 
         data={savedData}
-        isEdit={!!initialData}
       />
     </div>
   );

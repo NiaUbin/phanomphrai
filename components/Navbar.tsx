@@ -56,9 +56,9 @@ export default function Navbar() {
 
   const navLinks = [
     { href: '/', id: 'home', label: 'หน้าหลัก' },
-    { href: '/#services', id: 'services', label: 'บริการของเรา' },
-    { href: '/#about', id: 'about', label: 'เกี่ยวกับเรา' },
+    { href: '/#services', id: 'services', label: 'การันตีคุณภาพ' },
     { href: '/#portfolio', id: 'portfolio', label: 'ผลงาน' },
+    { href: '/#about', id: 'about', label: 'เกี่ยวกับเรา' },
     { href: '/#contact', id: 'contact', label: 'ติดต่อเรา' },
   ];
 

@@ -83,19 +83,19 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
   return (
     <>
       {/* Gallery Grid */}
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-1.5 sm:gap-2">
+      <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-1 sm:gap-1.5">
         {images.map((img, idx) => (
           <button
             key={idx}
             onClick={() => openLightbox(idx)}
-            className="relative aspect-square overflow-hidden rounded-md sm:rounded-lg group cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+            className="relative aspect-square overflow-hidden group cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
           >
             <Image
               src={img}
               alt={`${title} - ภาพที่ ${idx + 1}`}
               fill
               className="object-cover group-hover:scale-110 transition-transform duration-300"
-              sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 20vw, 16vw"
+              sizes="(max-width: 640px) 25vw, (max-width: 768px) 20vw, (max-width: 1024px) 16vw, 12vw"
             />
             {/* Hover Overlay */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-200 flex items-center justify-center">

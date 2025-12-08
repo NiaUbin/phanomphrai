@@ -16,20 +16,56 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
   useEffect(() => {
     // ถ้ามีข้อมูลจาก props แล้ว ไม่ต้อง fetch ใหม่
     if (initialWorks) {
-      setWorks(initialWorks);
+      // เรียงลำดับตาม order (1, 2, 3, ... ถ้าไม่มี order = แสดงท้ายสุด)
+      const sortedWorks = [...initialWorks].sort((a, b) => {
+        // แปลง order เป็น number ถ้ายังเป็น string
+        const orderA = typeof a.order === 'number' ? a.order : (a.order ? parseInt(String(a.order), 10) : 999999);
+        const orderB = typeof b.order === 'number' ? b.order : (b.order ? parseInt(String(b.order), 10) : 999999);
+        
+        // ถ้า order เท่ากัน ให้เรียงตาม createdAt (ถ้ามี) หรือ id
+        if (orderA === orderB) {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          if (dateA !== dateB) {
+            return dateB - dateA; // ใหม่ก่อน
+          }
+          return (a.id || '').localeCompare(b.id || '');
+        }
+        
+        return orderA - orderB;
+      });
+      setWorks(sortedWorks);
       setLoading(false);
       return;
     }
 
     const fetchWorks = async () => {
       try {
-        // ดึงข้อมูลทั้งหมดจาก houses (เอา orderBy ออกก่อนเพื่อทดสอบ)
+        // ดึงข้อมูลทั้งหมดจาก houses
         const q = collection(db, 'houses');
         const querySnapshot = await getDocs(q);
         const fetchedWorks = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         } as House));
+        // เรียงลำดับตาม order (1, 2, 3, ... ถ้าไม่มี order = แสดงท้ายสุด)
+        fetchedWorks.sort((a, b) => {
+          // แปลง order เป็น number ถ้ายังเป็น string
+          const orderA = typeof a.order === 'number' ? a.order : (a.order ? parseInt(String(a.order), 10) : 999999);
+          const orderB = typeof b.order === 'number' ? b.order : (b.order ? parseInt(String(b.order), 10) : 999999);
+          
+          // ถ้า order เท่ากัน ให้เรียงตาม createdAt (ถ้ามี) หรือ id
+          if (orderA === orderB) {
+            const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            if (dateA !== dateB) {
+              return dateB - dateA; // ใหม่ก่อน
+            }
+            return (a.id || '').localeCompare(b.id || '');
+          }
+          
+          return orderA - orderB;
+        });
         setWorks(fetchedWorks);
       } catch (err) {
         console.error("Error fetching portfolio items:", err);
@@ -86,7 +122,7 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
         </div>
 
         {/* Image Gallery Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-1 md:gap-1">
           {works.map((item) => (
             <Link
               key={item.id}

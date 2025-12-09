@@ -2,7 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'export',
-  
+
+  // Enable compression for better performance
+  // เปิดใช้การบีบอัดเพื่อประสิทธิภาพที่ดีขึ้น
+  compress: true,
+
+  // NOTE: swcMinify ถูกลบออกเพราะเป็น default ใน Next.js 15 แล้ว
+  // SWC minification is now enabled by default in Next.js 15
+
+  // Optimize images - การตั้งค่ารูปภาพ
   images: {
     unoptimized: true, // จำเป็นสำหรับ Static Export
     remotePatterns: [
@@ -36,6 +44,11 @@ const nextConfig: NextConfig = {
         hostname: 'img.iproperty.com.my',
       }
     ],
+  },
+
+  // Optimize bundle size
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
   },
 };
 

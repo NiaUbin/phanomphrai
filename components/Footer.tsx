@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -23,7 +23,7 @@ import {
   ClipboardList,
 } from 'lucide-react';
 
-export default function Footer() {
+function Footer() {
   const pathname = usePathname();
 
   // แสดง Footer เฉพาะหน้าหลักเท่านั้น
@@ -69,10 +69,10 @@ export default function Footer() {
               เมนูหลัก
             </h4>
             <ul className="space-y-3 text-sm">
-              <li><Link href="/" className="flex items-center gap-2 hover:text-blue-600 transition"><ChevronRight size={16}/> หน้าหลัก</Link></li>
-              <li><Link href="/#about" className="flex items-center gap-2 hover:text-blue-600 transition"><ChevronRight size={16}/> เกี่ยวกับเรา</Link></li>
-              <li><Link href="/#services" className="flex items-center gap-2 hover:text-blue-600 transition"><ChevronRight size={16}/> บริการ</Link></li>
-              <li><Link href="/#contact" className="flex items-center gap-2 hover:text-blue-600 transition"><ChevronRight size={16}/> ติดต่อเรา</Link></li>
+              <li><Link href="/" prefetch={true} className="flex items-center gap-2 hover:text-blue-600 transition"><ChevronRight size={16}/> หน้าหลัก</Link></li>
+              <li><Link href="/#about" prefetch={true} className="flex items-center gap-2 hover:text-blue-600 transition"><ChevronRight size={16}/> เกี่ยวกับเรา</Link></li>
+              <li><Link href="/#services" prefetch={true} className="flex items-center gap-2 hover:text-blue-600 transition"><ChevronRight size={16}/> บริการ</Link></li>
+              <li><Link href="/#contact" prefetch={true} className="flex items-center gap-2 hover:text-blue-600 transition"><ChevronRight size={16}/> ติดต่อเรา</Link></li>
             </ul>
           </div>
 
@@ -142,3 +142,5 @@ export default function Footer() {
     </footer>
   );
 }
+
+export default memo(Footer);

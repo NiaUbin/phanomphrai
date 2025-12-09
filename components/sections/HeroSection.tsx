@@ -101,9 +101,10 @@ export default function HeroSection() {
               alt={`Construction Background ${index + 1}`}
               fill
               priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
               className="object-cover"
               sizes="100vw"
-              quality={90}
+              quality={index === 0 ? 90 : 75}
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/70" />
           </div>

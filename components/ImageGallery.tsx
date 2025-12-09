@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import Image from 'next/image';
 
 interface ImageGalleryProps {
@@ -8,7 +8,7 @@ interface ImageGalleryProps {
   title: string;
 }
 
-export default function ImageGallery({ images, title }: ImageGalleryProps) {
+function ImageGallery({ images, title }: ImageGalleryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
@@ -94,6 +94,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
               src={img}
               alt={`${title} - ภาพที่ ${idx + 1}`}
               fill
+              loading={idx < 8 ? "eager" : "lazy"}
               className="object-cover group-hover:scale-110 transition-transform duration-300"
               sizes="(max-width: 640px) 25vw, (max-width: 768px) 20vw, (max-width: 1024px) 16vw, 12vw"
             />
@@ -195,6 +196,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
                   src={img}
                   alt={`Thumbnail ${idx + 1}`}
                   fill
+                  loading="lazy"
                   className="object-cover"
                   sizes="56px"
                 />
@@ -211,4 +213,6 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
     </>
   );
 }
+
+export default memo(ImageGallery);
 

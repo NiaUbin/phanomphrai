@@ -247,7 +247,8 @@ export default function HouseDetailClient() {
               <>
                 {house.specifications.bedrooms && (
                   <div className="flex items-center gap-2 text-gray-600">
-                    <span className="test-xl">🛏️</span>
+                    {/* ไอคอนห้องนอน */}
+                    <span className="text-xl">🛏️</span>
                     <span className="text-sm">{house.specifications.bedrooms} ห้องนอน</span>
                   </div>
                 )}

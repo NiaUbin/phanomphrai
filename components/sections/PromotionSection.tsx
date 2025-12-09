@@ -37,6 +37,7 @@ export default function PromotionSection() {
               src="http://p-construction.samplebigbang.com/user_file/p1hfls0k2j1keu1alu16bc1hd019td16.png"
               alt="Construction Site"
               fill
+              loading="lazy"
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />

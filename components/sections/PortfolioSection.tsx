@@ -127,12 +127,14 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
             <Link
               key={item.id}
               href={`/house/${item.id}`}
+              prefetch={true}
               className="group relative w-full h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px] rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-500 border border-gray-200 hover:border-yellow-400 block cursor-pointer bg-white active:scale-[0.98]"
             >
               <Image
                 src={item.mainImage || '/placeholder.jpg'} // ใช้รูปหลักจาก DB
                 alt={item.title}
                 fill
+                loading="lazy"
                 className="object-cover group-hover:scale-110 transition-transform duration-700"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               />

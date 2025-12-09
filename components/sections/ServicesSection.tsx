@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { services as fallbackServices } from '@/app/constants/data';
@@ -30,6 +30,7 @@ export default function ServicesSection() {
           data.push({ id: doc.id, ...doc.data() } as GalleryItem);
         });
         
+        // Sort data
         data.sort((a, b) => (a.order || 0) - (b.order || 0));
         
         if (data.length > 0) {
@@ -58,10 +59,15 @@ export default function ServicesSection() {
     fetchGallery();
   }, []);
 
+  // Memoize sorted items to prevent unnecessary re-renders
+  const sortedItems = useMemo(() => {
+    return [...items].sort((a, b) => (a.order || 0) - (b.order || 0));
+  }, [items]);
+
   // Track scroll position to update active dot
   const handleScroll = useCallback(() => {
     const container = serviceCarouselRef.current;
-    if (!container || items.length === 0) return;
+    if (!container || sortedItems.length === 0) return;
 
     const firstCard = container.querySelector<HTMLElement>('[data-service-card]');
     if (!firstCard) return;
@@ -71,8 +77,8 @@ export default function ServicesSection() {
     const scrollLeft = container.scrollLeft;
     const newIndex = Math.round(scrollLeft / (cardWidth + gap));
     
-    setActiveIndex(Math.min(Math.max(0, newIndex), items.length - 1));
-  }, [items.length]);
+    setActiveIndex(Math.min(Math.max(0, newIndex), sortedItems.length - 1));
+  }, [sortedItems.length]);
 
   useEffect(() => {
     const container = serviceCarouselRef.current;
@@ -166,7 +172,7 @@ export default function ServicesSection() {
                   msOverflowStyle: 'none',
                 }}
               >
-                {items.map((item) => {
+                {sortedItems.map((item) => {
                   const CardContent = (
                     <div className="relative w-[200px] sm:w-[240px] md:w-[260px] aspect-[4/5] bg-gray-200 group rounded-lg shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
                       
@@ -175,13 +181,14 @@ export default function ServicesSection() {
                         src={item.imageUrl}
                         alt={item.description}
                         fill
+                        loading="lazy"
                         className="object-cover transition-transform duration-700 ease-out hover:drop-shadow-lg"
                         sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 260px"
                       />
 
                       {/* Overlay Text Box */}
                       <div className="absolute bottom-0 left-3 right-3 sm:left-4 sm:right-4 translate-y-1/2 bg-white p-2 sm:p-3 shadow-lg flex items-center justify-center h-[90px] sm:h-[110px] z-20">
-                        <p className="text-gray-900 text-xs sm:text-sm font-medium text-center leading-relaxed line-clamp-3 sm:line-clamp-4">
+                        <p className="text-blue-800 text-xs sm:text-sm font-medium text-center leading-relaxed line-clamp-3 sm:line-clamp-4">
                           {item.description}
                         </p>
                       </div>
@@ -214,7 +221,7 @@ export default function ServicesSection() {
                       data-service-card
                       className="shrink-0 snap-center pt-2 sm:pt-4"
                     >
-                      <Link href={`/gallery/${item.id}`} className="block">
+                      <Link href={`/gallery/${item.id}`} prefetch={true} className="block">
                         {CardContent}
                       </Link>
                     </div>
@@ -225,7 +232,7 @@ export default function ServicesSection() {
 
             {/* Scroll Indicator Dots - Clickable */}
             <div className="flex justify-center mt-4 gap-1.5">
-              {items.map((_, index) => (
+              {sortedItems.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => scrollToIndex(index)}

@@ -1,14 +1,23 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { usePathname } from 'next/navigation';
 import HeroSection from '@/components/sections/HeroSection';
 import ServicesSection from '@/components/sections/ServicesSection';
-import PortfolioSection from '@/components/sections/PortfolioSection';
-import PromotionSection from '@/components/sections/PromotionSection';
-import AboutSection from '@/components/sections/AboutSection';
-import ContactSection from '@/components/sections/ContactSection';
 import HouseDetailClient from '@/app/house/[id]/HouseDetailClient';
+
+// Lazy load sections below the fold for better initial load performance
+const PortfolioSection = lazy(() => import('@/components/sections/PortfolioSection'));
+const PromotionSection = lazy(() => import('@/components/sections/PromotionSection'));
+const AboutSection = lazy(() => import('@/components/sections/AboutSection'));
+const ContactSection = lazy(() => import('@/components/sections/ContactSection'));
+
+// Loading fallback component
+const SectionLoader = () => (
+  <div className="flex justify-center items-center py-20">
+    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 export default function Home() {
   const pathname = usePathname();
@@ -87,10 +96,18 @@ export default function Home() {
     <div className={`min-h-screen bg-white text-gray-900 transition-opacity duration-200 ease-in-out ${isFading ? 'opacity-0' : 'opacity-100'}`}>
       <HeroSection />
       <ServicesSection />
-      <PortfolioSection />
-      <PromotionSection />
-      <AboutSection />
-      <ContactSection />
+      <Suspense fallback={<SectionLoader />}>
+        <PortfolioSection />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <PromotionSection />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <AboutSection />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <ContactSection />
+      </Suspense>
     </div>
   );
 }

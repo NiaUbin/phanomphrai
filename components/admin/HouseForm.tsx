@@ -290,7 +290,8 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
           const storageRef = ref(storage, `house-images/main/${Date.now()}-${imageFile.name}`);
           const snapshot = await uploadBytes(storageRef, imageFile);
           finalMainImageUrl = await getDownloadURL(snapshot.ref);
-        } catch (storageError) {
+        } catch {
+          // Firebase Storage ไม่พร้อมใช้งาน - ใช้ URL แทน
           console.warn('Firebase Storage not available, using URL instead');
           // ถ้าไม่มี Storage ให้ใช้ URL ที่ใส่เข้ามา
           finalMainImageUrl = mainImageUrl || mainImagePreview || '';
@@ -312,7 +313,8 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
           });
           const uploadedUrls = await Promise.all(uploadPromises);
           newGalleryUrls.push(...uploadedUrls);
-        } catch (storageError) {
+        } catch {
+          // Firebase Storage ไม่พร้อมใช้งานสำหรับภาพ Gallery
           console.warn('Firebase Storage not available for gallery images');
         }
       }
@@ -324,6 +326,8 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
       const allImagesArray = finalMainImageUrl ? [finalMainImageUrl, ...finalGalleryUrls] : [...finalGalleryUrls];
 
       // Remove customId from data before saving
+      // แยก customId และ order ออกจาก formData ก่อนบันทึก
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { customId, order, ...restFormData } = formData;
 
       // สร้าง houseData โดยไม่รวม order ถ้าไม่มีค่า

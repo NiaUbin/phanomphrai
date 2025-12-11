@@ -1,0 +1,30 @@
+{
+    "name": "PHANOMPHRAI",
+    "short_name": "PHANOMPHRAI",
+    "description": "รับออกแบบบ้าน สร้างบ้าน รับเหมาก่อสร้างครบวงจร",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#1e40af",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/apple-icon.svg",
+            "sizes": "180x180",
+            "type": "image/svg+xml",
+            "purpose": "apple touch icon"
+        }
+    ],
+    "categories": [
+        "business",
+        "construction"
+    ],
+    "lang": "th",
+    "dir": "ltr"
+}

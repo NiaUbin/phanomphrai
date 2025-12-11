@@ -20,6 +20,7 @@ export interface House {
     };
     features?: string[];
     order?: number; // ลำดับการแสดงผล (น้อย = แสดงก่อน)
+    isFeatured?: boolean; // แสดงใน "ผลงานล่าสุด" ที่ Footer
     createdAt?: Date | string;
     updatedAt?: Date | string;
 }

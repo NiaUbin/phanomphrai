@@ -1,10 +1,16 @@
-import { getDocs, collection } from 'firebase/firestore';
+import { getDocs, collection, doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import HouseDetailClient from './HouseDetailClient';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
+
+// Viewport แยกออกมาตาม Next.js 16
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 // ฟังก์ชันนี้จะทำงานตอน Build - จำเป็นสำหรับ static export
-// Generate static params สำหรับบ้านที่มีอยู่ตอน build
 export async function generateStaticParams() {
   try {
     const querySnapshot = await getDocs(collection(db, "houses"));
@@ -13,16 +19,69 @@ export async function generateStaticParams() {
     }));
   } catch (error) {
     console.error('Error generating static params:', error);
-    // ถ้าเกิด error ให้ return empty array เพื่อให้ build ผ่าน
-    // บ้านใหม่จะใช้ client-side rendering แทน (ผ่าน rewrites ใน firebase.json)
     return [];
   }
 }
 
-export async function generateMetadata(): Promise<Metadata> {
+// Dynamic Metadata สำหรับ SEO แต่ละหน้าบ้าน
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  
+  try {
+    const docRef = doc(db, "houses", id);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      const house = docSnap.data();
+      const title = house.title || 'รายละเอียดบ้าน';
+      const description = house.description || house.fullDescription || 'ดูรายละเอียดบ้านที่สร้างโดย PHANOMPHRAI';
+      const mainImage = house.mainImage || '/og-image.jpg';
+      
+      return {
+        title: `${title} | ผลงานสร้างบ้าน`,
+        description: `${description.slice(0, 150)}... ออกแบบและก่อสร้างโดย PHANOMPHRAI ทีมช่างมืออาชีพ`,
+        keywords: [
+          title,
+          "ผลงานสร้างบ้าน",
+          "ออกแบบบ้าน",
+          "รับสร้างบ้าน",
+          "แบบบ้านสวย",
+          "PHANOMPHRAI",
+          house.specifications?.style || "บ้านโมเดิร์น",
+        ],
+        openGraph: {
+          title: `${title} | PHANOMPHRAI`,
+          description: description.slice(0, 200),
+          type: "article",
+          url: `https://phanomphrai-c99bd.web.app/house/${id}`,
+          images: [
+            {
+              url: mainImage,
+              width: 1200,
+              height: 630,
+              alt: title,
+            },
+          ],
+        },
+        twitter: {
+          card: "summary_large_image",
+          title: `${title} | PHANOMPHRAI`,
+          description: description.slice(0, 150),
+          images: [mainImage],
+        },
+        alternates: {
+          canonical: `https://phanomphrai-c99bd.web.app/house/${id}`,
+        },
+      };
+    }
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+  }
+  
+  // Fallback metadata
   return {
-    title: 'รายละเอียดบ้าน - PHANOMPHRAI',
-    description: 'ดูรายละเอียดบ้านที่สร้างโดย PHANOMPHRAI',
+    title: 'รายละเอียดบ้าน | PHANOMPHRAI',
+    description: 'ดูรายละเอียดบ้านที่ออกแบบและก่อสร้างโดย PHANOMPHRAI ด้วยทีมช่างมืออาชีพ วัสดุคุณภาพ',
   };
 }
 

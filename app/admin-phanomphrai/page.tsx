@@ -45,7 +45,7 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-50 to-slate-100">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-100 via-gray-50 to-slate-100">
       {/* Sidebar - Fixed on Desktop */}
       <aside className="hidden md:flex fixed left-0 top-0 w-72 h-screen flex-col bg-white border-r border-gray-200 shadow-sm z-40">
         {/* Header */}
@@ -263,8 +263,8 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <main className="md:ml-72 min-h-screen">
+      {/* Main Content - Scrollable */}
+      <main className="md:ml-72 h-screen overflow-y-auto admin-scrollbar">
         <div className="pt-32 md:pt-8 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
             {activeTab === 'add' && (

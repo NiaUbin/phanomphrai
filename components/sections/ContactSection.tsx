@@ -1,7 +1,6 @@
 /**
  * ContactSection - ส่วนติดต่อเรา (Contact Section)
- * แสดงข้อมูลการติดต่อ: โทรศัพท์, อีเมล, ที่อยู่
- * พร้อมปุ่ม CTA สำหรับโทรศัพท์
+ * SEO: ติดต่อบริษัทรับสร้างบ้าน, ปรึกษาฟรี
  */
 export default function ContactSection() {
   const contactInfo = [
@@ -11,9 +10,25 @@ export default function ContactSection() {
       value: '092-262-0227',
       href: 'tel:0922620227',
       icon: (
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.75 19.75 0 0 1-8.63-3.57 19.5 19.5 0 0 1-6-6A19.75 19.75 0 0 1 2.08 4.18 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.72 13 13 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11l-1.3 1.3a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.11-.45 13 13 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+        </svg>
       ),
-      textSize: 'text-sm sm:text-base md:text-lg',
+      color: 'from-blue-500 to-indigo-600',
+      bgColor: 'bg-blue-50',
+    },
+    {
+      type: 'line',
+      title: 'LINE',
+      value: '@phanomphrai',
+      href: 'https://line.me/ti/p/~',
+      icon: (
+        <svg className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+        </svg>
+      ),
+      color: 'from-emerald-500 to-green-600',
+      bgColor: 'bg-emerald-50',
     },
     {
       type: 'email',
@@ -21,106 +36,105 @@ export default function ContactSection() {
       value: 'contact@phanomphrai.com',
       href: 'mailto:contact@phanomphrai.com',
       icon: (
-        <>
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-          <polyline points="22,6 12,13 2,6" />
-        </>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+        </svg>
       ),
-      textSize: 'text-xs sm:text-sm md:text-base',
-      colSpan: '',
-    },
-    {
-      type: 'address',
-      title: 'ที่อยู่',
-      value: 'กรุงเทพมหานคร, ประเทศไทย',
-      href: '#',
-      icon: (
-        <>
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-          <circle cx="12" cy="10" r="3" />
-        </>
-      ),
-      textSize: 'text-xs sm:text-sm md:text-base',
-      colSpan: 'md:col-span-2 lg:col-span-1',
+      color: 'from-amber-500 to-orange-600',
+      bgColor: 'bg-amber-50',
     },
   ];
 
   return (
-    <section id="contact" className="py-10 sm:py-12 md:py-16 lg:py-20 bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
-        <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 leading-tight text-gray-900 px-4">
-            พร้อมเริ่มต้นโครงการของคุณแล้วหรือยัง?
-          </h2>
-          <p className="text-gray-600 text-sm sm:text-base md:text-lg lg:text-xl mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed px-4">
-            ติดต่อเราวันนี้เพื่อรับคำปรึกษาฟรี ไม่มีค่าใช้จ่าย
-          </p>
-        </div>
+<section 
+  id="contact" 
+  className="py-16 sm:py-20 lg:py-28 bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 relative overflow-hidden"
+  aria-label="ติดต่อบริษัทรับสร้างบ้าน PHANOMPHRAI"
+>
+  {/* Background Decorations */}
+  <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute top-0 left-0 w-96 h-96 bg-blue-200/25 rounded-full blur-3xl" />
+    <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl" />
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-blue-100/25 rounded-full blur-3xl" />
+  </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 md:gap-7 mb-8 sm:mb-10 md:mb-12">
-          {contactInfo.map((info) => (
-            <div
-              key={info.type}
-              className={`bg-white rounded-xl p-5 sm:p-6 md:p-7 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-gray-100 hover:border-blue-400 text-center ${info.colSpan}`}
-            >
-              <div className="mb-3 sm:mb-4 flex justify-center">
-                <div className="bg-blue-100 rounded-full p-3 sm:p-4">
-                  <svg
-                    width="28"
-                    height="28"
-                    className="sm:w-8 sm:h-8 md:w-10 md:h-10 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    viewBox="0 0 24 24"
-                  >
-                    {info.icon}
-                  </svg>
-                </div>
-              </div>
-              <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 mb-2 sm:mb-3">
-                {info.title}
-              </h3>
-              {info.type === 'address' ? (
-                <p className="text-gray-600 leading-relaxed">{info.value}</p>
-              ) : (
-                <a
-                  href={info.href}
-                  className={`text-blue-600 hover:text-blue-700 font-semibold transition-colors ${info.textSize} ${info.type === 'email' ? 'break-all' : ''}`}
-                >
-                  {info.value}
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* CTA Button */}
-        <div className="text-center">
-          <a
-            href="tel:0922620227"
-            className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 md:px-10 py-4 sm:py-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm sm:text-base md:text-lg font-bold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transform"
-          >
-            <svg
-              width="20"
-              height="20"
-              className="sm:w-6 sm:h-6 md:w-7 md:h-7"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              viewBox="0 0 24 24"
-            >
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.75 19.75 0 0 1-8.63-3.57 19.5 19.5 0 0 1-6-6A19.75 19.75 0 0 1 2.08 4.18 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.72 13 13 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11l-1.3 1.3a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.11-.45 13 13 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
-            <span className="whitespace-nowrap">โทรเลย: 092-262-0227</span>
-          </a>
-        </div>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    
+    {/* Header */}
+    <div className="text-center mb-12 sm:mb-16">
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/40 backdrop-blur-lg text-blue-800 rounded-full text-sm font-semibold mb-6 border border-blue-200/50 shadow-sm">
+        <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+        พร้อมให้บริการ
       </div>
-    </section>
+
+      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-blue-900 mb-4 leading-tight">
+        เริ่มต้นโครงการ
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800">
+          บ้านในฝัน
+        </span>
+        ของคุณ
+      </h2>
+
+      <p className="text-blue-700/90 text-base sm:text-lg lg:text-xl max-w-2xl mx-auto">
+        ติดต่อเราวันนี้เพื่อรับคำปรึกษาฟรี ไม่มีค่าใช้จ่าย พร้อมประเมินราคาเบื้องต้น
+      </p>
+    </div>
+
+    {/* Contact Cards */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      {contactInfo.map((info) => (
+        <a
+          key={info.type}
+          href={info.href}
+          target={info.type === 'line' ? '_blank' : undefined}
+          rel={info.type === 'line' ? 'noopener noreferrer' : undefined}
+          className="group bg-white/70 backdrop-blur-xl rounded-2xl p-6 sm:p-8 border border-blue-200/40 hover:bg-white/90 hover:border-blue-300/70 transition-all duration-300 hover:-translate-y-1 shadow-sm"
+        >
+          <div className="flex flex-col items-center text-center">
+            <div
+              className={`w-16 h-16 ${info.bgColor} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow`}
+            >
+              <div className={`text-transparent bg-clip-text bg-gradient-to-r ${info.color}`}>
+                <div className="text-blue-700">{info.icon}</div>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-bold text-blue-900 mb-2">{info.title}</h3>
+            <p className="text-blue-700 font-medium group-hover:text-blue-900 transition-colors">
+              {info.value}
+            </p>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    {/* CTA */}
+    <div className="text-center">
+      <div className="inline-flex flex-col sm:flex-row gap-4">
+        <a
+          href="tel:0922620227"
+          className="group inline-flex items-center justify-center gap-3 px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-lg font-bold rounded-xl shadow-lg hover:-translate-y-1 active:scale-95 transition-all duration-300"
+        >
+          โทรเลย: 092-262-0227
+        </a>
+
+        <a
+          href="https://line.me/ti/p/~"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center justify-center gap-3 px-8 sm:px-10 py-4 sm:py-5 bg-[#06C755] text-white text-lg font-bold rounded-xl shadow-lg hover:-translate-y-1 active:scale-95 transition-all duration-300"
+        >
+          แชท LINE
+        </a>
+      </div>
+
+      <p className="mt-8 text-blue-700/80 text-sm flex items-center justify-center gap-2">
+        ปรึกษาฟรี ไม่มีค่าใช้จ่าย • ตอบกลับภายใน 24 ชั่วโมง
+      </p>
+    </div>
+  </div>
+</section>
+
+
   );
 }
-

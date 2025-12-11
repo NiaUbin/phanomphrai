@@ -1,0 +1,14 @@
+# robots.txt สำหรับ PHANOMPHRAI
+# https://phanomphrai-c99bd.web.app
+
+User-agent: *
+Allow: /
+
+# ไม่ให้ crawl หน้า admin
+Disallow: /admin-phanomphrai
+
+# ไม่ให้ crawl ไฟล์ Next.js
+Disallow: /_next/
+
+# Sitemap location
+Sitemap: https://phanomphrai-c99bd.web.app/sitemap.xml

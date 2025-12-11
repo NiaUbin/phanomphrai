@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { Icons } from './Icons';
 import { House } from '@/types';
 
@@ -64,6 +64,21 @@ export default function HouseList({ onEdit }: HouseListProps) {
     } catch (error) {
       console.error("Error deleting house:", error);
       alert("เกิดข้อผิดพลาดในการลบข้อมูล");
+    }
+  };
+
+  // Toggle featured status
+  const toggleFeatured = async (id: string, currentStatus: boolean) => {
+    try {
+      await updateDoc(doc(db, 'houses', id), {
+        isFeatured: !currentStatus
+      });
+      setHouses(prev => prev.map(h => 
+        h.id === id ? { ...h, isFeatured: !currentStatus } : h
+      ));
+    } catch (error) {
+      console.error("Error toggling featured:", error);
+      alert("เกิดข้อผิดพลาด");
     }
   };
 
@@ -179,6 +194,7 @@ export default function HouseList({ onEdit }: HouseListProps) {
                   <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider min-w-[200px]">ชื่อโครงการ</th>
                   <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider">รายละเอียด</th>
                   <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider">ราคา</th>
+                  <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider text-center">ผลงานล่าสุด</th>
                   <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider text-right">จัดการ</th>
             </tr>
           </thead>
@@ -256,6 +272,23 @@ export default function HouseList({ onEdit }: HouseListProps) {
                         {house.price || '-'}
                   </div>
                 </td>
+                    <td className="py-5 px-6">
+                      <div className="flex justify-center">
+                        <button
+                          onClick={() => house.id && toggleFeatured(house.id, house.isFeatured || false)}
+                          className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
+                            house.isFeatured 
+                              ? 'bg-blue-500' 
+                              : 'bg-gray-300'
+                          }`}
+                          title={house.isFeatured ? 'แสดงอยู่ใน Footer' : 'คลิกเพื่อแสดงใน Footer'}
+                        >
+                          <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 ${
+                            house.isFeatured ? 'translate-x-6' : 'translate-x-0'
+                          }`}></span>
+                        </button>
+                      </div>
+                    </td>
                     <td className="py-5 px-6">
                       <div className="flex justify-end gap-2">
                     <button

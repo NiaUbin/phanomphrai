@@ -129,7 +129,7 @@ export const metadata: Metadata = {
   
   // ===== ICONS =====
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.svg",
     apple: "/apple-icon.svg",
   },
   

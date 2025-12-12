@@ -8,6 +8,7 @@ import HouseList from '@/components/admin/HouseList';
 import GalleryForm from '@/components/admin/GalleryForm';
 import GalleryList from '@/components/admin/GalleryList';
 import HeroForm from '@/components/admin/HeroForm';
+import FooterForm from '@/components/admin/FooterForm';
 import { House } from '@/types';
 
 interface GalleryItem {
@@ -18,7 +19,7 @@ interface GalleryItem {
 }
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<'add' | 'edit' | 'gallery' | 'hero'>('add');
+  const [activeTab, setActiveTab] = useState<'add' | 'edit' | 'gallery' | 'hero' | 'footer'>('add');
   const [editingHouse, setEditingHouse] = useState<House | null>(null);
   const [editingGallery, setEditingGallery] = useState<GalleryItem | null>(null);
   const [galleryMode, setGalleryMode] = useState<'list' | 'add' | 'edit'>('list');
@@ -146,6 +147,25 @@ export default function AdminPage() {
             </div>
           </button>
 
+          <button
+            onClick={() => setActiveTab('footer')}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${
+              activeTab === 'footer' 
+                ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/30' 
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
+          >
+            <div className={`p-2 rounded-lg ${activeTab === 'footer' ? 'bg-white/20' : 'bg-gray-100'}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+              </svg>
+            </div>
+            <div className="flex-1 text-left">
+              <span className="font-semibold block text-sm">จัดการ Footer</span>
+              <span className={`text-xs ${activeTab === 'footer' ? 'text-teal-100' : 'text-gray-400'}`}>ที่อยู่ / เบอร์ / LINE</span>
+            </div>
+          </button>
+
           <div className="pt-4 mt-4 border-t border-gray-100">
             <p className="px-3 mb-3 text-xs font-bold text-gray-400 uppercase tracking-wider">ลิงก์</p>
             
@@ -260,6 +280,20 @@ export default function AdminPage() {
             </svg>
             Hero Section
           </button>
+
+          <button
+            onClick={() => setActiveTab('footer')}
+            className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${
+              activeTab === 'footer' 
+                ? 'bg-teal-500 text-white shadow-lg' 
+                : 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+            </svg>
+            Footer
+          </button>
         </div>
       </div>
 
@@ -336,6 +370,10 @@ export default function AdminPage() {
 
             {activeTab === 'hero' && (
               <HeroForm />
+            )}
+
+            {activeTab === 'footer' && (
+              <FooterForm />
             )}
           </div>
         </div>

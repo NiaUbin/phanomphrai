@@ -3,12 +3,12 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
-// Mapping สำหรับ hash sections
+// Mapping สำหรับ hash sections - SEO Friendly titles
 const hashTitleMap: Record<string, string> = {
-  'portfolio': 'หน้าผลงาน - PHANOMPHRAI',
-  'services': 'หน้าการันตี - PHANOMPHRAI',
-  'about': 'เกี่ยวกับเรา - PHANOMPHRAI',
-  'contact': 'ติดต่อเรา - PHANOMPHRAI',
+  'portfolio': 'ผลงานบ้านสร้างเสร็จ | รับสร้างบ้าน - PHANOMPHRAI',
+  'services': 'การันตีคุณภาพงานก่อสร้าง | รับประกันผลงาน - PHANOMPHRAI',
+  'about': 'เกี่ยวกับเรา | ทีมช่างมืออาชีพ - PHANOMPHRAI',
+  'contact': 'ติดต่อเรา | สอบถามราคาสร้างบ้าน - PHANOMPHRAI',
 };
 
 // Mapping สำหรับ routes
@@ -30,16 +30,16 @@ export default function DynamicTitle() {
       return;
     }
 
-    // ตรวจสอบหน้า house detail
+    // ตรวจสอบหน้า house detail - ข้ามไม่ต้องจัดการ
+    // ให้ HouseDetailClient.tsx จัดการ title ด้วยชื่อจริงของผลงาน
     if (isHouseDetail(pathname)) {
-      document.title = 'รายละเอียดบ้าน - PHANOMPHRAI';
-      return;
+      return; // ไม่ต้องทำอะไร ปล่อยให้ HouseDetailClient จัดการ
     }
 
-    // ตรวจสอบหน้า gallery detail
+    // ตรวจสอบหน้า gallery detail - ข้ามไม่ต้องจัดการ
+    // ให้ GalleryDetailClient.tsx จัดการ title ด้วยชื่อจริงของ gallery
     if (isGalleryDetail(pathname)) {
-      document.title = 'แกลเลอรี่ - PHANOMPHRAI';
-      return;
+      return; // ไม่ต้องทำอะไร ปล่อยให้ GalleryDetailClient จัดการ
     }
 
     // สำหรับหน้าแรก (/) ให้ตรวจสอบ hash

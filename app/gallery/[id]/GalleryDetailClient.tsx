@@ -89,6 +89,21 @@ export default function GalleryDetailClient() {
     fetchGalleryData();
   }, [id]);
 
+  // อัปเดต document.title ด้วยชื่อจริงของ gallery
+  useEffect(() => {
+    if (gallery?.title) {
+      document.title = `${gallery.title} | การันตีคุณภาพงาน - PHANOMPHRAI`;
+    } else if (gallery?.description) {
+      // ถ้าไม่มี title ใช้ description ตัดสั้น
+      const shortDesc = gallery.description.slice(0, 50);
+      document.title = `${shortDesc}... | การันตีคุณภาพงาน - PHANOMPHRAI`;
+    }
+    
+    return () => {
+      document.title = 'PHANOMPHRAI - สร้างบ้านในฝันของคุณ';
+    };
+  }, [gallery?.title, gallery?.description]);
+
   // ตรวจสอบ scroll position
   useEffect(() => {
     const handleScroll = () => {

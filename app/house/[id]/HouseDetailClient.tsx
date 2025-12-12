@@ -105,6 +105,18 @@ export default function HouseDetailClient() {
     fetchHouseData();
   }, [id]);
 
+  // อัปเดต document.title ด้วยชื่อผลงานจริง
+  useEffect(() => {
+    if (house?.title) {
+      document.title = `${house.title} | ผลงานสร้างบ้าน - PHANOMPHRAI`;
+    }
+    
+    return () => {
+      // Reset title เมื่อออกจากหน้า
+      document.title = 'PHANOMPHRAI - สร้างบ้านในฝันของคุณ';
+    };
+  }, [house?.title]);
+
   useEffect(() => {
     const handleScroll = () => {
       if (typeof window !== 'undefined') {

@@ -1,7 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { Icons } from './Icons';
@@ -218,12 +218,15 @@ export default function HouseList({ onEdit }: HouseListProps) {
                       </div>
                     </td>
                     <td className="py-5 px-6">
-                      <div className="w-24 h-16 sm:w-28 sm:h-20 rounded-lg overflow-hidden bg-gray-100 shadow-sm border border-gray-200 group-hover:shadow-md group-hover:border-blue-200 transition-all">
+                      <div className="relative w-24 h-16 sm:w-28 sm:h-20 rounded-lg overflow-hidden bg-gray-100 shadow-sm border border-gray-200 group-hover:shadow-md group-hover:border-blue-200 transition-all">
                     {house.mainImage ? (
-                          <img 
+                          <Image 
                             src={house.mainImage} 
                             alt={house.title} 
-                            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" 
+                            fill
+                            className="object-cover transform group-hover:scale-110 transition-transform duration-500" 
+                            sizes="(max-width: 640px) 96px, 112px"
+                            loading="lazy"
                           />
                     ) : (
                           <div className="w-full h-full flex items-center justify-center text-gray-300 bg-gray-50">

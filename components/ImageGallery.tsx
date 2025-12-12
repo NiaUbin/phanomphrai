@@ -89,8 +89,8 @@ function ImageGallery({ images, title }: ImageGalleryProps) {
               {/* Overlay */}
               {isLastVisible ? (
                 <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/80 flex flex-col items-center justify-center transition-all duration-300 group-hover:from-blue-900/80 group-hover:to-indigo-900/80">
-                  <span className="text-white font-bold text-2xl sm:text-3xl md:text-4xl drop-shadow-lg">+{remainingCount}</span>
-                  <p className="text-white/80 text-xs sm:text-sm font-medium mt-1">ดูเพิ่มเติม</p>
+                  <span className="text-white font-bold text-xl sm:text-2xl md:text-lg drop-shadow-lg mb-0.5 flex items-center justify-center">+{remainingCount}</span>
+                  <p className="text-white/90 text-xs sm:text-sm font-medium mt-0.5">ดูเพิ่มเติม</p>
                 </div>
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
@@ -194,7 +194,7 @@ function ImageGallery({ images, title }: ImageGalleryProps) {
               style={{ zIndex: 2147483647 }}
               aria-label="รูปถัดไป"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-7 h-7 group-hover:translate-x-0.5 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-7 h-7 group-hover:translate-x-0.5 transition-transform">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
               </svg>
             </button>
@@ -210,7 +210,7 @@ function ImageGallery({ images, title }: ImageGalleryProps) {
               className="bg-white/10 hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 text-white p-4 rounded-2xl transition-all duration-300 backdrop-blur-md border border-white/20 hover:border-blue-400 active:scale-95 shadow-xl"
               aria-label="รูปก่อนหน้า"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-7 h-7">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-7 h-7">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
               </svg>
             </button>
@@ -226,7 +226,7 @@ function ImageGallery({ images, title }: ImageGalleryProps) {
               className="bg-white/10 hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 text-white p-4 rounded-2xl transition-all duration-300 backdrop-blur-md border border-white/20 hover:border-blue-400 active:scale-95 shadow-xl"
               aria-label="รูปถัดไป"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-7 h-7">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-7 h-7">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
               </svg>
             </button>

@@ -3,15 +3,32 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { House } from '@/types';
+import PageLoadingOverlay from '@/components/PageLoadingOverlay';
 
 // รับ props ชื่อ works มาจากหน้าหลัก (Optional)
 export default function PortfolioSection({ works: initialWorks }: { works?: House[] }) {
+  const router = useRouter();
   const [works, setWorks] = useState<House[]>(initialWorks || []);
   const [loading, setLoading] = useState<boolean>(!initialWorks);
   const [error, setError] = useState<string | null>(null);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [targetHouseId, setTargetHouseId] = useState<string | null>(null);
+
+  // Handle card click - show loading overlay before navigation
+  const handleCardClick = (e: React.MouseEvent, houseId: string) => {
+    e.preventDefault();
+    setIsNavigating(true);
+    setTargetHouseId(houseId);
+    
+    // แสดง loading animation สักครู่ให้ลูกค้าเห็น (1.5 วินาที)
+    setTimeout(() => {
+      router.push(`/house/${houseId}`);
+    }, 1500);
+  };
 
   useEffect(() => {
     // ถ้ามีข้อมูลจาก props แล้ว ไม่ต้อง fetch ใหม่
@@ -106,11 +123,15 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
   }
 
   return (
-    <section id="portfolio" className="pt-6 sm:pt-8 md:pt-10 pb-10 sm:pb-12 md:pb-16 lg:pb-20 bg-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
-        {/* Header */}
-        <div className="text-center mb-6 sm:mb-8 md:mb-10">
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
+    <>
+      {/* Page Loading Overlay - แสดงเหนือทุกอย่าง */}
+      <PageLoadingOverlay isVisible={isNavigating} />
+      
+      <section id="portfolio" className="pt-6 sm:pt-8 md:pt-10 pb-10 sm:pb-12 md:pb-16 lg:pb-20 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
+          {/* Header */}
+          <div className="text-center mb-6 sm:mb-8 md:mb-10">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
             ผลงานของเรา
           </h2>
           <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-3 sm:mb-4">
@@ -121,14 +142,60 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
           </div>
         </div>
 
+        {/* Loading Skeleton - Glassmorphism Style */}
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-1 md:gap-1">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div
+                key={i}
+                className="relative w-full h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px] rounded-lg overflow-hidden group"
+                style={{ animationDelay: `${i * 0.1}s` }}
+              >
+                {/* Glassmorphism Background with Blur */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-white/40 to-white/30 backdrop-blur-2xl rounded-lg border border-white/60 shadow-xl shadow-white/20">
+                  {/* Animated Shimmer Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-shimmer" />
+                  
+                  {/* Subtle Pattern Overlay */}
+                  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.5)_1px,transparent_1px)] bg-[length:20px_20px]" />
+                  
+                  {/* Content Skeleton */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-5">
+                    {/* Title Skeleton */}
+                    <div className="h-5 sm:h-6 bg-white/70 backdrop-blur-sm rounded-lg mb-3 w-3/4 animate-pulse shadow-sm" />
+                    
+                    {/* Description Skeleton */}
+                    <div className="space-y-2 mb-2">
+                      <div className="h-3 bg-white/60 backdrop-blur-sm rounded w-full animate-pulse shadow-sm" style={{ animationDelay: '0.1s' }} />
+                      <div className="h-3 bg-white/60 backdrop-blur-sm rounded w-5/6 animate-pulse shadow-sm" style={{ animationDelay: '0.2s' }} />
+                    </div>
+                    
+                    {/* Bottom Accent Line */}
+                    <div className="h-0.5 w-12 bg-white/80 rounded-full mt-2 shadow-sm" />
+                  </div>
+                  
+                  {/* Top Corner Badge Skeleton */}
+                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-8 h-8 sm:w-10 sm:h-10 bg-white/60 backdrop-blur-md rounded-full shadow-lg border border-white/40" />
+                  
+                  {/* Decorative Corner Elements */}
+                  <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-white/30 to-transparent rounded-tl-lg" />
+                  <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tl from-white/20 to-transparent rounded-br-lg" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Image Gallery Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-1 md:gap-1">
+        {!loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-1 md:gap-1">
           {works.map((item) => (
             <Link
               key={item.id}
               href={`/house/${item.id}`}
               prefetch={true}
-              className="group relative w-full h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px] rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-500 border border-gray-200 hover:border-yellow-400 block cursor-pointer bg-white active:scale-[0.98]"
+              onClick={(e) => handleCardClick(e, item.id || '')}
+              className={`group relative w-full h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px] rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-500 border border-gray-200 hover:border-yellow-400 block cursor-pointer bg-white active:scale-[0.98] ${targetHouseId === item.id ? 'ring-2 ring-blue-400 ring-offset-2' : ''}`}
             >
               <Image
                 src={item.mainImage || '/placeholder.jpg'} // ใช้รูปหลักจาก DB
@@ -195,7 +262,9 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
             </Link>
           ))}
         </div>
+        )}
       </div>
     </section>
+    </>
   );
 }

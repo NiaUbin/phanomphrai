@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { db } from '@/lib/firebase'; 
 import { doc, getDoc } from 'firebase/firestore';
 import ImageGallery from '@/components/ImageGallery';
+import PageLoadingOverlay from '@/components/PageLoadingOverlay';
 
 interface HouseData {
   id: string;
@@ -58,6 +59,16 @@ export default function HouseDetailClient() {
         if (houseIndex !== -1 && pathParts[houseIndex + 1]) {
           houseId = pathParts[houseIndex + 1];
         }
+      }
+    }
+    
+    // Decode URL encoded characters (สำคัญสำหรับ ID ที่เป็นภาษาไทย)
+    if (houseId) {
+      try {
+        houseId = decodeURIComponent(houseId);
+      } catch (e) {
+        // ถ้า decode ไม่ได้ ใช้ค่าเดิม
+        console.warn('Failed to decode house ID:', e);
       }
     }
     
@@ -115,24 +126,9 @@ export default function HouseDetailClient() {
     });
   };
 
-  // Loading state
+  // Loading state - ใช้ PageLoadingOverlay component
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 flex items-center justify-center px-4">
-        <div className="text-center">
-          <div className="relative w-20 h-20 mx-auto mb-6">
-            <div className="absolute inset-0 rounded-full border-4 border-blue-100"></div>
-            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 animate-spin"></div>
-            <div className="absolute inset-3 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-white">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-              </svg>
-            </div>
-          </div>
-          <p className="text-gray-600 font-medium">กำลังโหลดข้อมูล...</p>
-        </div>
-      </div>
-    );
+    return <PageLoadingOverlay isVisible={true} />;
   }
 
   // Error state

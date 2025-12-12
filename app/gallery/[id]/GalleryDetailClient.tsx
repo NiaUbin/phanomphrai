@@ -46,6 +46,16 @@ export default function GalleryDetailClient() {
       }
     }
     
+    // Decode URL encoded characters (สำคัญสำหรับ ID ที่เป็นภาษาไทย)
+    if (galleryId) {
+      try {
+        galleryId = decodeURIComponent(galleryId);
+      } catch (e) {
+        // ถ้า decode ไม่ได้ ใช้ค่าเดิม
+        console.warn('Failed to decode gallery ID:', e);
+      }
+    }
+    
     setId(galleryId || null);
   }, [params, pathname]);
 
@@ -101,12 +111,55 @@ export default function GalleryDetailClient() {
     });
   };
 
+  // Loading state - Glassmorphism Style
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">กำลังโหลดข้อมูล...</p>
+      <div className="fixed inset-0 z-50 min-h-screen bg-gradient-to-br from-gray-100 via-amber-50/50 to-gray-100 flex items-center justify-center px-4">
+        {/* Glassmorphism Loading Card */}
+        <div className="relative bg-white/40 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-2xl shadow-white/20 p-8 sm:p-12 max-w-md w-full">
+          {/* Decorative Background Pattern */}
+          <div className="absolute inset-0 rounded-3xl opacity-10 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[length:30px_30px]" />
+          
+          {/* Corner Accents */}
+          <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-white/40 to-transparent rounded-tl-3xl" />
+          <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-white/30 to-transparent rounded-br-3xl" />
+          
+          <div className="relative text-center">
+            {/* Modern Spinning Loader */}
+            <div className="relative w-24 h-24 mx-auto mb-6">
+              {/* Outer Ring */}
+              <div className="absolute inset-0 rounded-full border-4 border-white/30 backdrop-blur-sm"></div>
+              
+              {/* Spinning Ring */}
+              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-white/80 border-r-white/60 animate-spin" style={{ animationDuration: '1s' }}></div>
+              
+              {/* Inner Spinning Ring (Counter Direction) */}
+              <div className="absolute inset-2 rounded-full border-3 border-transparent border-b-white/60 border-l-white/40 animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}></div>
+              
+              {/* Center Icon */}
+              <div className="absolute inset-4 rounded-full bg-white/50 backdrop-blur-md flex items-center justify-center shadow-lg border border-white/40">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-8 h-8 text-gray-700">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75c0 2.25 1.83 4.5 4.086 4.5.978 0 1.865-.342 2.564-.94l1.5-1.5a3.75 3.75 0 01-5.304-5.304l1.5-1.5a3.75 3.75 0 00-1.246-5.304M2.25 8.25c0-2.25 1.83-4.5 4.086-4.5.978 0 1.865.342 2.564.94l1.5 1.5a3.75 3.75 0 015.304 5.304l-1.5 1.5a3.75 3.75 0 001.246 5.304M9 12.75h3m-3-3h3m-3 6h3m6-9.75h3m-3-3h3m-3 6h3m6-9.75h3m-3-3h3m-3 6h3" />
+                </svg>
+              </div>
+              
+              {/* Floating Particles */}
+              <div className="absolute top-2 left-1/2 w-2 h-2 bg-white/60 rounded-full animate-pulse" style={{ animationDelay: '0s' }}></div>
+              <div className="absolute bottom-2 left-1/2 w-1.5 h-1.5 bg-white/50 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }}></div>
+              <div className="absolute left-2 top-1/2 w-1 h-1 bg-white/40 rounded-full animate-pulse" style={{ animationDelay: '0.6s' }}></div>
+              <div className="absolute right-2 top-1/2 w-1.5 h-1.5 bg-white/50 rounded-full animate-pulse" style={{ animationDelay: '0.9s' }}></div>
+            </div>
+            
+            {/* Loading Text */}
+            <div className="space-y-2">
+              <p className="text-gray-700 font-semibold text-lg sm:text-xl backdrop-blur-sm">กำลังโหลดข้อมูล...</p>
+              <div className="flex items-center justify-center gap-1">
+                <div className="w-2 h-2 bg-gray-400/60 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+                <div className="w-2 h-2 bg-gray-400/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-2 h-2 bg-gray-400/60 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

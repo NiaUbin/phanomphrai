@@ -11,14 +11,23 @@ export const viewport: Viewport = {
 };
 
 // ฟังก์ชันนี้จะทำงานตอน Build - จำเป็นสำหรับ static export
+// สร้าง static pages สำหรับ house IDs ที่มีอยู่ตอน build time
+// **สำคัญ:** เมื่อเพิ่มผลงานใหม่ใน Firebase ต้อง npm run build ใหม่แล้ว deploy
 export async function generateStaticParams() {
   try {
     const querySnapshot = await getDocs(collection(db, "houses"));
-    return querySnapshot.docs.map((doc) => ({
-      id: doc.id,
+    const params = querySnapshot.docs.map((docSnapshot) => ({
+      id: docSnapshot.id,
     }));
+    
+    // Log จำนวน houses ที่ generate ตอน build
+    console.log(`[generateStaticParams] Generated ${params.length} house pages`);
+    
+    return params;
   } catch (error) {
     console.error('Error generating static params:', error);
+    // Return empty array - build จะ fail ถ้าไม่มี params
+    // แต่นี่คือ expected behavior สำหรับ static export
     return [];
   }
 }

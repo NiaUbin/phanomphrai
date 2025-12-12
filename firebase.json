@@ -11,7 +11,11 @@
     "rewrites": [
       {
         "source": "/house/**",
-        "destination": "/index.html"
+        "destination": "/house/fallback.html"
+      },
+      {
+        "source": "/gallery/**",
+        "destination": "/gallery/fallback.html"
       },
       {
         "source": "**",

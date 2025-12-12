@@ -148,12 +148,13 @@ export default function PromotionSection() {
               {/* Main Image */}
               <div className="relative w-full h-[280px] sm:h-[320px] md:h-[380px] lg:h-[440px] rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
                 <Image
-                  src="http://p-construction.samplebigbang.com/user_file/p1hfls0k2j1keu1alu16bc1hd019td16.png"
+                  src="https://images.unsplash.com/photo-1704821341745-c38ff405d052?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8JUUwJUI4JUFBJUUwJUI4JUEzJUUwJUI5JTg5JUUwJUI4JUIyJUUwJUI4JTg3JUUwJUI4JTlBJUUwJUI5JTg5JUUwJUI4JUIyJUUwJUI4JTk5fGVufDB8fDB8fHww"
                   alt="วิศวกรควบคุมงานก่อสร้างบ้าน - PHANOMPHRAI รับสร้างบ้านครบวงจร"
                   fill
-                  loading="lazy"
                   className="object-cover"
+                  loading="lazy"
                   sizes="(max-width: 1024px) 100vw, 50vw"
+                  unoptimized
                 />
                 {/* Overlay Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />

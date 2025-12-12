@@ -64,8 +64,7 @@ export default function Home() {
     
     const hash = window.location.hash;
     if (hash) {
-      // รอให้ page render เสร็จก่อน
-      const timer = setTimeout(() => {
+      const scrollToElement = (attempts = 0) => {
         const element = document.getElementById(hash.substring(1));
         if (element) {
           const offset = 100;
@@ -75,8 +74,14 @@ export default function Home() {
             top: offsetPosition,
             behavior: 'smooth'
           });
+        } else if (attempts < 10) {
+          // Retry if element not found (lazy loading may take time)
+          setTimeout(() => scrollToElement(attempts + 1), 200);
         }
-      }, 100);
+      };
+      
+      // รอให้ page render เสร็จก่อน - เพิ่มเวลารอสำหรับ lazy loaded components
+      const timer = setTimeout(() => scrollToElement(), 300);
       
       return () => clearTimeout(timer);
     }

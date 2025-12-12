@@ -179,84 +179,115 @@ export default function HouseDetailClient() {
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6 pt-4">
+          <nav className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-4 pt-2 sm:pt-4">
             <Link 
               href="/" 
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.href = '/';
-              }}
               className="flex items-center gap-1 hover:text-blue-600 transition-colors"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3 sm:w-4 sm:h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
               </svg>
               หน้าแรก
             </Link>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
+
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-2.5 h-2.5 sm:w-3 sm:h-3">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
+
             <Link 
               href="/#portfolio" 
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.href = '/#portfolio';
-              }}
               className="hover:text-blue-600 transition-colors"
             >
               ผลงาน
             </Link>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
+
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-2.5 h-2.5 sm:w-3 sm:h-3">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
-            <span className="text-gray-400 truncate max-w-[150px] sm:max-w-xs">{house.title}</span>
+
+            <span className="text-gray-400 truncate max-w-[100px] sm:max-w-[150px] md:max-w-xs">
+              {house.title}
+            </span>
           </nav>
 
           {/* Title Section */}
-          <div className="mb-8">
-            <h1 className="text-xl text-center sm:text-2xl md:text-3xl font-bold text-blue-800 leading-tight mb-4">
-              {house.title}
-            </h1>
-            
-            {/* Quick Stats */}
-            <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4">
-              {house.price && house.price.trim() !== '' && (
-                <div className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100 rounded-xl">
-                  <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-white">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div className="mb-6">
+              <h1 className="text-xl text-center sm:text-5xl font-medium text-blue-800 leading-tight mb-3">
+                {house.title}
+              </h1>
+
+              {/* Quick Stats */}
+              <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-3">
+
+                {/* Price */}
+                {house.price && house.price.trim() !== '' && (
+                  <div className="flex items-center gap-1 px-1.5 py-0.5">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      strokeWidth={1.8} 
+                      stroke="currentColor" 
+                      className="w-4 h-4 text-gray-600"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+                      />
                     </svg>
+                    <span className="text-sm font-medium text-gray-700">{house.price}</span>
                   </div>
-                  <span className="font-bold text-amber-700">{house.price}</span>
-                </div>
-              )}
-              
-              {house.specifications && (
-                <>
-                  {house.specifications.bedrooms && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-100 rounded-lg shadow-sm">
-                      <span className="text-sm">🛏️</span>
-                      <span className="text-gray-600 text-sm">{house.specifications.bedrooms} ห้องนอน</span>
-                    </div>
-                  )}
-                  {house.specifications.bathrooms && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-100 rounded-lg shadow-sm">
-                      <span className="text-sm">🚿</span>
-                      <span className="text-gray-600 text-sm">{house.specifications.bathrooms} ห้องน้ำ</span>
-                    </div>
-                  )}
-                  {house.specifications.area && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-100 rounded-lg shadow-sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-gray-400">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-                      </svg>
-                      <span className="text-gray-600 text-sm">{house.specifications.area} ตร.ม.</span>
-                    </div>
-                  )}
-                </>
-              )}
+                )}
+
+                {/* Specifications */}
+                {house.specifications && (
+                  <div className="flex items-center flex-wrap gap-3 px-1 py-0.5">
+
+                    {house.specifications.bedrooms && (
+                      <div className="flex items-center gap-1">
+                        <span className="text-sm">🛏️</span>
+                        <span className="text-gray-600 text-sm">
+                          {house.specifications.bedrooms} ห้องนอน
+                        </span>
+                      </div>
+                    )}
+
+                    {house.specifications.bathrooms && (
+                      <div className="flex items-center gap-1">
+                        <span className="text-sm">🚿</span>
+                        <span className="text-gray-600 text-sm">
+                          {house.specifications.bathrooms} ห้องน้ำ
+                        </span>
+                      </div>
+                    )}
+
+                    {house.specifications.area && (
+                      <div className="flex items-center gap-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-4 h-4 text-blue-500"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"
+                          />
+                        </svg>
+                        <span className="text-gray-600 text-sm">
+                          {house.specifications.area} ตร.ม.
+                        </span>
+                      </div>
+                    )}
+
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
         </div>
       </section>
 
@@ -270,7 +301,7 @@ export default function HouseDetailClient() {
               
               {/* Main Image */}
               <div className="relative">
-                <div className="relative w-full aspect-[16/10] rounded-2xl sm:rounded-2xl overflow-hidden shadow-2xl shadow-gray-300/50 group">
+                <div className="relative w-full aspect-[16/10] overflow-hidden shadow-2xl shadow-gray-300/50 group">
                   {house.mainImage && (
                     <Image
                       src={house.mainImage}

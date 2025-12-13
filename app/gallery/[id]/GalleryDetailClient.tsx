@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { db } from '@/lib/firebase'; 
 import { doc, getDoc } from 'firebase/firestore';
+import PageLoadingOverlay from '@/components/PageLoadingOverlay';
 
 interface GalleryData {
   id: string;
@@ -61,14 +62,14 @@ export default function GalleryDetailClient() {
 
   useEffect(() => {
     const fetchGalleryData = async () => {
+      // ถ้ายังไม่มี ID ให้รอ ไม่ต้อง set error ทันที
       if (!id) {
-        setError('ไม่พบ ID');
-        setIsLoading(false);
         return;
       }
 
       try {
         setIsLoading(true);
+        setError(null);
         const docRef = doc(db, "gallery", id);
         const docSnap = await getDoc(docRef);
 
@@ -76,7 +77,7 @@ export default function GalleryDetailClient() {
           setGallery({ id: docSnap.id, ...docSnap.data() } as GalleryData);
           setError(null);
         } else {
-          setError('ไม่พบข้อมูล');
+          setError('ไม่พบข้อมูลการันตีคุณภาพนี้');
         }
       } catch (err) {
         console.error('Error fetching gallery data:', err);
@@ -126,71 +127,31 @@ export default function GalleryDetailClient() {
     });
   };
 
-  // Loading state - Glassmorphism Style
+  // Loading state - ใช้ PageLoadingOverlay component เหมือน House
   if (isLoading) {
-    return (
-      <div className="fixed inset-0 z-50 min-h-screen bg-gradient-to-br from-gray-100 via-amber-50/50 to-gray-100 flex items-center justify-center px-4">
-        {/* Glassmorphism Loading Card */}
-        <div className="relative bg-white/40 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-2xl shadow-white/20 p-8 sm:p-12 max-w-md w-full">
-          {/* Decorative Background Pattern */}
-          <div className="absolute inset-0 rounded-3xl opacity-10 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[length:30px_30px]" />
-          
-          {/* Corner Accents */}
-          <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-white/40 to-transparent rounded-tl-3xl" />
-          <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-white/30 to-transparent rounded-br-3xl" />
-          
-          <div className="relative text-center">
-            {/* Modern Spinning Loader */}
-            <div className="relative w-24 h-24 mx-auto mb-6">
-              {/* Outer Ring */}
-              <div className="absolute inset-0 rounded-full border-4 border-white/30 backdrop-blur-sm"></div>
-              
-              {/* Spinning Ring */}
-              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-white/80 border-r-white/60 animate-spin" style={{ animationDuration: '1s' }}></div>
-              
-              {/* Inner Spinning Ring (Counter Direction) */}
-              <div className="absolute inset-2 rounded-full border-3 border-transparent border-b-white/60 border-l-white/40 animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}></div>
-              
-              {/* Center Icon */}
-              <div className="absolute inset-4 rounded-full bg-white/50 backdrop-blur-md flex items-center justify-center shadow-lg border border-white/40">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-8 h-8 text-gray-700">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75c0 2.25 1.83 4.5 4.086 4.5.978 0 1.865-.342 2.564-.94l1.5-1.5a3.75 3.75 0 01-5.304-5.304l1.5-1.5a3.75 3.75 0 00-1.246-5.304M2.25 8.25c0-2.25 1.83-4.5 4.086-4.5.978 0 1.865.342 2.564.94l1.5 1.5a3.75 3.75 0 015.304 5.304l-1.5 1.5a3.75 3.75 0 001.246 5.304M9 12.75h3m-3-3h3m-3 6h3m6-9.75h3m-3-3h3m-3 6h3m6-9.75h3m-3-3h3m-3 6h3" />
-                </svg>
-              </div>
-              
-              {/* Floating Particles */}
-              <div className="absolute top-2 left-1/2 w-2 h-2 bg-white/60 rounded-full animate-pulse" style={{ animationDelay: '0s' }}></div>
-              <div className="absolute bottom-2 left-1/2 w-1.5 h-1.5 bg-white/50 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }}></div>
-              <div className="absolute left-2 top-1/2 w-1 h-1 bg-white/40 rounded-full animate-pulse" style={{ animationDelay: '0.6s' }}></div>
-              <div className="absolute right-2 top-1/2 w-1.5 h-1.5 bg-white/50 rounded-full animate-pulse" style={{ animationDelay: '0.9s' }}></div>
-            </div>
-            
-            {/* Loading Text */}
-            <div className="space-y-2">
-              <p className="text-gray-700 font-semibold text-lg sm:text-xl backdrop-blur-sm">กำลังโหลดข้อมูล...</p>
-              <div className="flex items-center justify-center gap-1">
-                <div className="w-2 h-2 bg-gray-400/60 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-                <div className="w-2 h-2 bg-gray-400/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                <div className="w-2 h-2 bg-gray-400/60 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <PageLoadingOverlay isVisible={true} />;
   }
 
+  // Error state - แสดงเฉพาะเมื่อมี error จริงๆ หลังจากโหลดเสร็จแล้ว
   if (error || !gallery) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-amber-50/50 flex items-center justify-center px-4">
         <div className="text-center max-w-md">
-          <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">ไม่พบข้อมูล</h1>
-          <p className="text-gray-600 mb-6">{error || 'ไม่พบข้อมูลการันตีคุณภาพนี้'}</p>
-          <Link
-            href="/"
-            className="inline-block px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
+          {/* Icon */}
+          <div className="w-28 h-28 bg-gradient-to-br from-amber-100 to-amber-200 rounded-2xl flex items-center justify-center mx-auto mb-8 rotate-3 shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-14 h-14 text-amber-500">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">ไม่พบข้อมูล</h1>
+          <p className="text-gray-600 mb-8">{error || 'ขออภัย ไม่พบข้อมูลการันตีคุณภาพที่คุณต้องการ'}</p>
+          <Link 
+            href="/" 
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-2xl font-semibold hover:shadow-lg hover:shadow-amber-500/30 transition-all hover:-translate-y-0.5"
           >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
             กลับหน้าหลัก
           </Link>
         </div>
@@ -199,9 +160,9 @@ export default function GalleryDetailClient() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white animate-fadeIn">
       {/* Title Section */}
-      <section className="pt-20 sm:pt-24 pb-6 sm:pb-8">
+      <section className="pt-20 sm:pt-24 pb-6 sm:pb-8 animate-slideUp" style={{ animationDelay: '0.1s' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Title */}
           <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-amber-700 mb-3 leading-tight">
@@ -256,7 +217,7 @@ export default function GalleryDetailClient() {
       </section>
 
       {/* Content Section */}
-      <section className="py-6 sm:py-8">
+      <section className="py-6 sm:py-8 animate-slideUp" style={{ animationDelay: '0.2s' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
             
@@ -368,6 +329,31 @@ export default function GalleryDetailClient() {
           </svg>
         </button>
       )}
+
+      {/* Animation Styles */}
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from { 
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.4s ease-out forwards;
+        }
+        .animate-slideUp {
+          animation: slideUp 0.5s ease-out forwards;
+          opacity: 0;
+        }
+      `}</style>
     </div>
   );
 }

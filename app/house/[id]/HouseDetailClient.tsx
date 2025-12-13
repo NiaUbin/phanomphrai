@@ -77,14 +77,14 @@ export default function HouseDetailClient() {
 
   useEffect(() => {
     const fetchHouseData = async () => {
+      // ถ้ายังไม่มี ID ให้รอ ไม่ต้อง set error ทันที
       if (!id) {
-        setError('ไม่พบ ID');
-        setIsLoading(false);
         return;
       }
 
       try {
         setIsLoading(true);
+        setError(null);
         const docRef = doc(db, "houses", id);
         const docSnap = await getDoc(docRef);
 
@@ -92,7 +92,7 @@ export default function HouseDetailClient() {
           setHouse({ id: docSnap.id, ...docSnap.data() } as HouseData);
           setError(null);
         } else {
-          setError('ไม่พบข้อมูล');
+          setError('ไม่พบข้อมูลบ้านที่คุณต้องการ');
         }
       } catch (err) {
         console.error('Error fetching house data:', err);
@@ -170,10 +170,10 @@ export default function HouseDetailClient() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 animate-fadeIn">
       
       {/* Hero Section with Main Image */}
-      <section className="relative pt-20 sm:pt-24">
+      <section className="relative pt-20 sm:pt-24 animate-slideUp" style={{ animationDelay: '0.1s' }}>
         {/* Background Decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent h-96 pointer-events-none"></div>
         
@@ -292,7 +292,7 @@ export default function HouseDetailClient() {
       </section>
 
       {/* Main Content */}
-      <section className="pb-12 sm:pb-16 lg:pb-20">
+      <section className="pb-12 sm:pb-16 lg:pb-20 animate-slideUp" style={{ animationDelay: '0.2s' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
             
@@ -574,6 +574,31 @@ export default function HouseDetailClient() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
         </svg>
       </button>
+
+      {/* Animation Styles */}
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from { 
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.4s ease-out forwards;
+        }
+        .animate-slideUp {
+          animation: slideUp 0.5s ease-out forwards;
+          opacity: 0;
+        }
+      `}</style>
     </div>
   );
 }

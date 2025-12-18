@@ -425,7 +425,7 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
       setSavedData({
         id: savedId,
         title: formData.title,
-        mainImage: mainImageUrl
+        mainImage: finalMainImageUrl
       });
       setShowSuccess(true);
       } else {
@@ -545,56 +545,7 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
 
       </div>
 
-      {/* Progress Steps - 3 Boxes */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* Step 1 */}
-        <div className="bg-white rounded-xl p-4 border-2 border-blue-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all group">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform">
-              1
-            </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-gray-900">ข้อมูลทั่วไป</h3>
-              <p className="text-xs text-gray-500">ชื่อ, ราคา, คำอธิบาย</p>
-            </div>
-            <div className="text-blue-500">
-              <Icons.Doc />
-            </div>
-          </div>
-        </div>
 
-        {/* Step 2 */}
-        <div className="bg-white rounded-xl p-4 border-2 border-emerald-200 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all group">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform">
-              2
-            </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-gray-900">สเปคบ้าน</h3>
-              <p className="text-xs text-gray-500">ห้องนอน, ห้องน้ำ, พื้นที่</p>
-            </div>
-            <div className="text-emerald-500">
-              <Icons.Stack />
-            </div>
-          </div>
-        </div>
-
-        {/* Step 3 */}
-        <div className="bg-white rounded-xl p-4 border-2 border-purple-200 shadow-sm hover:shadow-md hover:border-purple-300 transition-all group">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform">
-              3
-            </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-gray-900">รูปภาพ</h3>
-              <p className="text-xs text-gray-500">รูปหลัก, Gallery</p>
-            </div>
-            <div className="text-purple-500">
-              <Icons.Photo />
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Form Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">

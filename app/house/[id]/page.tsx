@@ -23,12 +23,19 @@ export async function generateStaticParams() {
     // Log จำนวน houses ที่ generate ตอน build
     console.log(`[generateStaticParams] Generated ${params.length} house pages`);
     
+    // ถ้าไม่มี params ให้ return fallback เพื่อให้ build ผ่าน
+    // หน้า fallback จะแสดง error message ให้ user
+    if (params.length === 0) {
+      console.warn('[generateStaticParams] No houses found, using fallback');
+      return [{ id: '_fallback' }];
+    }
+    
     return params;
   } catch (error) {
     console.error('Error generating static params:', error);
-    // Return empty array - build จะ fail ถ้าไม่มี params
-    // แต่นี่คือ expected behavior สำหรับ static export
-    return [];
+    // Return fallback ID แทน empty array เพื่อให้ build ผ่าน
+    // หน้า _fallback จะแสดง error message ให้ user
+    return [{ id: '_fallback' }];
   }
 }
 

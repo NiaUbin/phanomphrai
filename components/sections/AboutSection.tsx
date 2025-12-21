@@ -68,48 +68,58 @@ export default function AboutSection() {
             </svg>
             เกี่ยวกับเรา
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">PHANOMPHRAI</span>
+            <span className="block text-lg sm:text-xl md:text-2xl lg:text-2xl mt-1.5 sm:mt-2 text-gray-700 font-semibold">
+              บริษัทรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้างครบวงจร
+            </span>
           </h2>
-          <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
-            บริษัทรับสร้างบ้านและออกแบบบ้านครบวงจร ที่คุณไว้วางใจได้
+          <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
+            บริการรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้าง ต่อเติมบ้าน รีโนเวทบ้าน 
+            ด้วยทีมสถาปนิกและวิศวกรมืออาชีพ ประสบการณ์กว่า 10 ปี มากกว่า 100+ โครงการสำเร็จ
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left Side - Content */}
           <div>
-            {/* Description */}
-            <div className="mb-8">
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
-                ผู้เชี่ยวชาญด้านการ<span className="text-blue-600">ออกแบบ</span>และ<span className="text-amber-600">ก่อสร้างบ้าน</span>
+            {/* Description - Enhanced SEO Content */}
+            <div className="mb-6 sm:mb-8">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
+                ผู้เชี่ยวชาญด้านการ<span className="text-blue-600">ออกแบบบ้าน</span>และ<span className="text-amber-600">รับเหมาก่อสร้าง</span>
               </h3>
-              <p className="text-gray-700 leading-relaxed mb-4 text-base sm:text-lg">
-                เราเป็น<strong>บริษัทรับสร้างบ้านครบวงจร</strong> ให้บริการตั้งแต่ 
-                <span className="text-blue-600 font-medium"> ออกแบบบ้าน</span>, 
-                <span className="text-blue-600 font-medium"> รับเหมาก่อสร้าง</span>, 
-                <span className="text-blue-600 font-medium"> ต่อเติมบ้าน</span> 
-                ไปจนถึงการตกแต่งภายใน ด้วยทีมสถาปนิกและวิศวกรมืออาชีพ
+              <p className="text-gray-700 leading-relaxed mb-3 sm:mb-4 text-sm sm:text-base md:text-lg">
+                <strong className="text-gray-900">PHANOMPHRAI</strong> เป็น<strong className="text-gray-900">บริษัทรับสร้างบ้านครบวงจร</strong> 
+                ให้บริการ<strong className="text-blue-600"> ออกแบบบ้าน</strong>, 
+                <strong className="text-blue-600"> รับเหมาก่อสร้าง</strong>, 
+                <strong className="text-blue-600"> ต่อเติมบ้าน</strong>, 
+                <strong className="text-blue-600"> รีโนเวทบ้าน</strong> 
+                และการตกแต่งภายใน ด้วยทีมสถาปนิกและวิศวกรมืออาชีพ ประสบการณ์กว่า 10 ปี
               </p>
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
+              <p className="text-gray-700 leading-relaxed mb-3 sm:mb-4 text-sm sm:text-base md:text-lg">
                 เรามุ่งเน้นการใช้วัสดุคุณภาพสูงระดับพรีเมียม ทำงานด้วยความละเอียดรอบคอบ 
-                และให้บริการด้วยใจ เพื่อให้ลูกค้าได้รับผลงานที่ดีที่สุดตามความต้องการ
+                ราคายุติธรรม โปร่งใส ไม่มีค่าใช้จ่ายแอบแฝง และให้บริการด้วยใจ 
+                เพื่อให้ลูกค้าได้รับผลงานที่ดีที่สุดตามความต้องการ พร้อมรับประกันผลงานทุกโครงการ
+              </p>
+              <p className="text-gray-600 leading-relaxed text-xs sm:text-sm md:text-base">
+                บริการครอบคลุมทั่วประเทศไทย โดยเฉพาะพื้นที่อีสาน ร้อยเอ็ด พนมไพร 
+                และจังหวัดใกล้เคียง พร้อมให้คำปรึกษาฟรี ไม่มีค่าใช้จ่าย
               </p>
             </div>
 
             {/* Features */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {features.map((feature, index) => (
                 <div 
                   key={index} 
-                  className="group flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all duration-300"
+                  className="group flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all duration-300"
                 >
-                  <div className="shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
+                  <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
                     {feature.icon}
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">{feature.title}</h4>
-                    <p className="text-gray-500 text-sm">{feature.description}</p>
+                    <h4 className="font-bold text-gray-900 mb-0.5 sm:mb-1 text-sm sm:text-base">{feature.title}</h4>
+                    <p className="text-gray-500 text-xs sm:text-sm">{feature.description}</p>
                   </div>
                 </div>
               ))}

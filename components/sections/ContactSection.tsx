@@ -67,7 +67,7 @@ export default function ContactSection() {
         พร้อมให้บริการ
       </div>
 
-      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-blue-900 mb-4 leading-tight">
+      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-blue-900 mb-3 sm:mb-4 leading-tight">
         เริ่มต้นโครงการ
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800">
           บ้านในฝัน
@@ -75,8 +75,12 @@ export default function ContactSection() {
         ของคุณ
       </h2>
 
-      <p className="text-blue-700/90 text-base sm:text-lg lg:text-xl max-w-2xl mx-auto">
+      <p className="text-blue-700/90 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-2">
         ติดต่อเราวันนี้เพื่อรับคำปรึกษาฟรี ไม่มีค่าใช้จ่าย พร้อมประเมินราคาเบื้องต้น
+      </p>
+      <p className="text-blue-600/80 text-xs sm:text-sm md:text-base max-w-2xl mx-auto">
+        บริการรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้าง ต่อเติมบ้าน รีโนเวทบ้าน 
+        ด้วยทีมช่างมืออาชีพ ราคายุติธรรม รับประกันผลงาน
       </p>
     </div>
 

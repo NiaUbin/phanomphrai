@@ -86,13 +86,14 @@ export default function HeroSection() {
           >
             <Image
               src={image}
-              alt={`ผลงานก่อสร้างบ้าน PHANOMPHRAI ${index + 1}`}
+              alt={`ผลงานรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้าง PHANOMPHRAI - โครงการที่ ${index + 1} บริการครบวงจร ราคายุติธรรม`}
               fill
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
               className="object-cover"
               sizes="100vw"
               quality={index === 0 ? 90 : 75}
+              title={`ผลงานรับสร้างบ้าน PHANOMPHRAI - บริการออกแบบบ้าน รับเหมาก่อสร้างครบวงจร`}
             />
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
@@ -107,41 +108,54 @@ export default function HeroSection() {
       <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 md:px-8 pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 md:pb-28 max-w-5xl mx-auto">
         
         {/* Badge */}
-        <div className="text-fade-in mb-6 inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-          <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-          <span className="text-white/90 text-sm font-medium">ประสบการณ์กว่า 10 ปี • 100+ โครงการสำเร็จ</span>
+        <div className="text-fade-in mb-4 sm:mb-5 md:mb-6 inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+          <span className="text-white/90 text-xs sm:text-sm font-medium">ประสบการณ์กว่า 10 ปี • 100+ โครงการสำเร็จ</span>
         </div>
 
-        {/* Main Heading - SEO Optimized */}
-        <h1 className="text-fade-in text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight mb-4 sm:mb-6 px-4">
+        {/* Main Heading - SEO Optimized with Rich Keywords */}
+        <h1 className="text-fade-in text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight mb-3 sm:mb-4 md:mb-5 px-4">
           <span className="block">{content.title}</span>
+          <span className="block text-lg sm:text-xl md:text-2xl lg:text-3xl mt-1.5 sm:mt-2 text-white/95 font-semibold">
+            บริการรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้างครบวงจร
+          </span>
         </h1>
 
-        {/* Subtitle - SEO Content */}
-        <p className="text-fade-in-delay-1 text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-8 sm:mb-10 max-w-3xl leading-relaxed px-4">
+        {/* Subtitle - SEO Content with Rich Description */}
+        <p className="text-fade-in-delay-1 text-sm sm:text-base md:text-lg lg:text-xl text-white/90 mb-5 sm:mb-6 md:mb-7 max-w-3xl leading-relaxed px-4">
           {content.subtitle}
         </p>
+        
+        {/* Additional SEO Content - Hidden visually but accessible to screen readers and SEO */}
+        <div className="sr-only">
+          <p>
+            PHANOMPHRAI บริษัทรับสร้างบ้านและออกแบบบ้านครบวงจร ให้บริการรับเหมาก่อสร้าง 
+            ออกแบบบ้าน ต่อเติมบ้าน รีโนเวทบ้าน ด้วยทีมสถาปนิกและวิศวกรมืออาชีพ 
+            ประสบการณ์กว่า 10 ปี มากกว่า 100+ โครงการสำเร็จ ใช้วัสดุคุณภาพสูง 
+            ราคายุติธรรม รับประกันผลงาน บริการทั่วประเทศไทย
+          </p>
+        </div>
 
         {/* Trust Badges */}
-        <div className="text-fade-in-delay-1 flex flex-wrap justify-center gap-4 sm:gap-6 mb-8 sm:mb-10">
+        <div className="text-fade-in-delay-1 flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-5 mb-6 sm:mb-7 md:mb-8">
           {[
             { icon: "✓", text: "ราคายุติธรรม" },
             { icon: "✓", text: "รับประกันผลงาน" },
             { icon: "✓", text: "ปรึกษาฟรี" },
           ].map((badge, idx) => (
-            <div key={idx} className="flex items-center gap-2 text-white/90">
-              <span className="w-5 h-5 bg-emerald-500/80 rounded-full flex items-center justify-center text-xs font-bold">{badge.icon}</span>
-              <span className="text-sm sm:text-base">{badge.text}</span>
+            <div key={idx} className="flex items-center gap-1.5 sm:gap-2 text-white/90">
+              <span className="w-4 h-4 sm:w-5 sm:h-5 bg-emerald-500/80 rounded-full flex items-center justify-center text-xs font-bold">{badge.icon}</span>
+              <span className="text-xs sm:text-sm md:text-base">{badge.text}</span>
             </div>
           ))}
         </div>
 
         {/* CTA Buttons */}
-        <div className="text-fade-in-delay-2 flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto px-4">
+        <div className="text-fade-in-delay-2 flex flex-col sm:flex-row gap-2.5 sm:gap-3 md:gap-4 w-full sm:w-auto px-4">
           <a
             href={content.button1Link}
             onClick={(e) => handleButtonClick(e, content.button1Link)}
-            className="group w-full sm:w-auto min-w-[200px] px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-base sm:text-lg font-bold rounded-xl shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1 active:scale-95 transition-all duration-300 text-center flex items-center justify-center gap-2"
+            className="group w-full sm:w-auto min-w-[180px] sm:min-w-[200px] px-6 sm:px-8 md:px-10 py-3 sm:py-3.5 md:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm sm:text-base md:text-lg font-bold rounded-xl shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1 active:scale-95 transition-all duration-300 text-center flex items-center justify-center gap-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
@@ -154,7 +168,7 @@ export default function HeroSection() {
           <a
             href={content.button2Link}
             onClick={(e) => handleButtonClick(e, content.button2Link)}
-            className="group w-full sm:w-auto min-w-[200px] px-8 sm:px-10 py-4 sm:py-5 bg-white/10 backdrop-blur-md text-white border-2 border-white/30 text-base sm:text-lg font-bold rounded-xl hover:bg-white hover:text-gray-900 hover:-translate-y-1 active:scale-95 transition-all duration-300 text-center flex items-center justify-center gap-2"
+            className="group w-full sm:w-auto min-w-[180px] sm:min-w-[200px] px-6 sm:px-8 md:px-10 py-3 sm:py-3.5 md:py-4 bg-white/10 backdrop-blur-md text-white border-2 border-white/30 text-sm sm:text-base md:text-lg font-bold rounded-xl hover:bg-white hover:text-gray-900 hover:-translate-y-1 active:scale-95 transition-all duration-300 text-center flex items-center justify-center gap-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />

@@ -119,16 +119,17 @@ export default function ServicesSection() {
   return (
     <section id="services" className="py-8 sm:py-10 md:py-12 lg:py-16 bg-gray-100">
       <div className="max-w-[1920px] mx-auto">
-        {/* Header */}
-        <div className="text-center mb-6 sm:mb-8 md:mb-10 px-4">
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
-            การันตีคุณภาพ
+        {/* Header - SEO Optimized */}
+        <div className="text-center mb-5 sm:mb-6 md:mb-8 px-4">
+          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3">
+            ผลงานรับสร้างบ้านและการันตีคุณภาพ
           </h2>
-          <p className="text-gray-600 text-base sm:text-lg md:text-xl mb-3 sm:mb-4">
-            ด้วยผลงานของเรา
+          <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-3 sm:mb-4 max-w-3xl mx-auto">
+            ตัวอย่างผลงานการออกแบบบ้านและรับเหมาก่อสร้างที่ผ่านมา 
+            ด้วยทีมช่างมืออาชีพ วัสดุคุณภาพสูง ราคายุติธรรม
           </p>
           <div className="flex justify-center">
-            <div className="h-1 w-24 sm:w-28 md:w-32 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400" />
+            <div className="h-1 w-20 sm:w-24 md:w-28 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400" />
           </div>
         </div>
 
@@ -179,11 +180,12 @@ export default function ServicesSection() {
                       {/* Image */}
                       <Image
                         src={item.imageUrl}
-                        alt={item.description}
+                        alt={`${item.description} - ผลงานรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้าง PHANOMPHRAI`}
                         fill
                         loading="lazy"
                         className="object-cover transition-transform duration-700 ease-out hover:drop-shadow-lg"
                         sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 260px"
+                        title={`${item.description} - บริการรับสร้างบ้านครบวงจร`}
                       />
 
                       {/* Overlay Text Box */}

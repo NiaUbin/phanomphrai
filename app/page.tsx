@@ -96,9 +96,38 @@ export default function Home() {
     );
   }
 
-  // หน้าแรกปกติ
+  // หน้าแรกปกติ - SEO Optimized Structure
   return (
-    <div className={`min-h-screen bg-white text-gray-900 transition-opacity duration-200 ease-in-out ${isFading ? 'opacity-0' : 'opacity-100'}`}>
+    <main className={`min-h-screen bg-white text-gray-900 transition-opacity duration-200 ease-in-out ${isFading ? 'opacity-0' : 'opacity-100'}`}>
+      {/* Hidden SEO Content - Accessible to search engines and screen readers */}
+      <div className="sr-only">
+        <h1>PHANOMPHRAI - บริการรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้างครบวงจร</h1>
+        <p>
+          PHANOMPHRAI บริษัทรับสร้างบ้านและออกแบบบ้านครบวงจร ให้บริการรับเหมาก่อสร้าง 
+          ออกแบบบ้าน ต่อเติมบ้าน รีโนเวทบ้าน ด้วยทีมสถาปนิกและวิศวกรมืออาชีพ 
+          ประสบการณ์กว่า 10 ปี มากกว่า 100+ โครงการสำเร็จ ใช้วัสดุคุณภาพสูง 
+          ราคายุติธรรม รับประกันผลงาน บริการทั่วประเทศไทย โดยเฉพาะอีสาน ร้อยเอ็ด พนมไพร
+        </p>
+        <h2>บริการของเรา</h2>
+        <ul>
+          <li>รับออกแบบบ้าน - ออกแบบบ้านสวย ตามความต้องการของคุณ</li>
+          <li>รับสร้างบ้าน - สร้างบ้านใหม่ ครบวงจร ราคายุติธรรม</li>
+          <li>รับเหมาก่อสร้าง - รับเหมาก่อสร้างบ้าน ต่อเติมบ้าน รีโนเวทบ้าน</li>
+          <li>ต่อเติมบ้าน - ต่อเติมบ้าน เพิ่มพื้นที่ใช้สอย</li>
+          <li>รีโนเวทบ้าน - ปรับปรุงบ้านใหม่ ให้สวยงามทันสมัย</li>
+        </ul>
+        <h2>ทำไมต้องเลือก PHANOMPHRAI</h2>
+        <ul>
+          <li>ประสบการณ์กว่า 10 ปี ในวงการก่อสร้าง</li>
+          <li>มากกว่า 100+ โครงการสำเร็จ</li>
+          <li>ทีมช่างมืออาชีพ สถาปนิกและวิศวกร</li>
+          <li>วัสดุคุณภาพสูง มาตรฐานสูง</li>
+          <li>ราคายุติธรรม โปร่งใส ไม่มีค่าใช้จ่ายแอบแฝง</li>
+          <li>รับประกันผลงาน ทุกโครงการ</li>
+          <li>บริการทั่วประเทศไทย โดยเฉพาะอีสาน ร้อยเอ็ด พนมไพร</li>
+        </ul>
+      </div>
+
       <HeroSection />
       <ServicesSection />
       <Suspense fallback={<SectionLoader />}>
@@ -113,6 +142,6 @@ export default function Home() {
       <Suspense fallback={<SectionLoader />}>
         <ContactSection />
       </Suspense>
-    </div>
+    </main>
   );
 }

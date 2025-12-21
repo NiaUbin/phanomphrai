@@ -68,46 +68,52 @@ export default function PromotionSection() {
             </div>
 
             {/* Main Heading - SEO Optimized */}
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-5 md:mb-6 leading-tight">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                รับออกแบบ
+                รับออกแบบบ้าน
               </span>
               {" "}และ{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">
-                ก่อสร้างบ้าน
+                รับเหมาก่อสร้าง
               </span>
               <br />
-              <span className="text-gray-800">คุณภาพระดับพรีเมียม</span>
+              <span className="text-gray-800 text-lg sm:text-xl md:text-2xl">คุณภาพระดับพรีเมียม ราคายุติธรรม</span>
             </h2>
             
-            {/* Description - SEO Content */}
-            <div className="space-y-4 mb-8">
-              <p className="text-gray-700 leading-relaxed text-base sm:text-lg">
-                <strong className="text-gray-900">บริษัทรับสร้างบ้านครบวงจร</strong> ให้บริการ
-                <span className="text-blue-600 font-medium"> ออกแบบบ้าน</span>, 
-                <span className="text-blue-600 font-medium"> รับเหมาก่อสร้าง</span>, 
-                <span className="text-blue-600 font-medium"> ต่อเติมบ้าน</span> และ
-                <span className="text-blue-600 font-medium"> รีโนเวทบ้าน</span> ด้วยทีมสถาปนิกและวิศวกรมืออาชีพ 
-                ประสบการณ์กว่า <strong>10 ปี</strong> พร้อมผลงานมากกว่า <strong>100+ โครงการ</strong>
+            {/* Description - Enhanced SEO Content */}
+            <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+              <p className="text-gray-700 leading-relaxed text-sm sm:text-base md:text-lg">
+                <strong className="text-gray-900">PHANOMPHRAI</strong> เป็น<strong className="text-gray-900">บริษัทรับสร้างบ้านครบวงจร</strong> 
+                ให้บริการ<strong className="text-blue-600"> ออกแบบบ้าน</strong>, 
+                <strong className="text-blue-600"> รับเหมาก่อสร้าง</strong>, 
+                <strong className="text-blue-600"> ต่อเติมบ้าน</strong>, 
+                <strong className="text-blue-600"> รีโนเวทบ้าน</strong> และการตกแต่งภายใน 
+                ด้วยทีมสถาปนิกและวิศวกรมืออาชีพ ประสบการณ์กว่า <strong>10 ปี</strong> 
+                พร้อมผลงานมากกว่า <strong>100+ โครงการสำเร็จ</strong>
               </p>
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                เรามุ่งเน้นคุณภาพงานก่อสร้าง ใช้วัสดุมาตรฐาน ราคายุติธรรม ส่งมอบงานตรงเวลา 
-                พร้อมการรับประกันผลงาน ให้คุณมั่นใจในทุกขั้นตอน
+              <p className="text-gray-700 leading-relaxed text-sm sm:text-base md:text-lg">
+                เรามุ่งเน้นคุณภาพงานก่อสร้าง ใช้วัสดุมาตรฐานสูง ราคายุติธรรม โปร่งใส 
+                ไม่มีค่าใช้จ่ายแอบแฝง ส่งมอบงานตรงเวลา พร้อมการรับประกันผลงาน 
+                ให้คุณมั่นใจในทุกขั้นตอนการก่อสร้าง
+              </p>
+              <p className="text-gray-600 leading-relaxed text-xs sm:text-sm md:text-base">
+                บริการครอบคลุมทั่วประเทศไทย โดยเฉพาะพื้นที่อีสาน ร้อยเอ็ด พนมไพร 
+                และจังหวัดใกล้เคียง พร้อมให้คำปรึกษาฟรี ไม่มีค่าใช้จ่าย ตอบกลับภายใน 24 ชั่วโมง
               </p>
             </div>
 
             {/* Features Grid */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-8">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:gap-4 mb-6 sm:mb-8">
               {features.map((feature, idx) => (
                 <div 
                   key={idx}
-                  className="group flex items-center gap-3 p-3 sm:p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all duration-300"
+                  className="group flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 md:p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all duration-300"
                 >
-                  <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="shrink-0 w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     {feature.icon}
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 text-sm sm:text-base">{feature.title}</h3>
+                    <h3 className="font-bold text-gray-900 text-xs sm:text-sm md:text-base">{feature.title}</h3>
                     <p className="text-gray-500 text-xs sm:text-sm">{feature.desc}</p>
                   </div>
                 </div>
@@ -115,21 +121,21 @@ export default function PromotionSection() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-3 sm:gap-4">
+            <div className="flex flex-wrap gap-2.5 sm:gap-3 md:gap-4">
               <a 
                 href="tel:0922620227"
-                className="inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all duration-300"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all duration-300 text-sm sm:text-base"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
                 </svg>
                 โทรปรึกษาฟรี
               </a>
               <a 
                 href="#portfolio"
-                className="inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-white text-gray-700 border-2 border-gray-200 rounded-xl font-semibold hover:border-blue-500 hover:text-blue-600 hover:-translate-y-0.5 transition-all duration-300"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 bg-white text-gray-700 border-2 border-gray-200 rounded-xl font-semibold hover:border-blue-500 hover:text-blue-600 hover:-translate-y-0.5 transition-all duration-300 text-sm sm:text-base"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                 </svg>
                 ดูผลงานของเรา
@@ -149,12 +155,13 @@ export default function PromotionSection() {
               <div className="relative w-full h-[280px] sm:h-[320px] md:h-[380px] lg:h-[440px] rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
                 <Image
                   src="https://images.unsplash.com/photo-1704821341745-c38ff405d052?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8JUUwJUI4JUFBJUUwJUI4JUEzJUUwJUI5JTg5JUUwJUI4JUIyJUUwJUI4JTg3JUUwJUI4JTlBJUUwJUI5JTg5JUUwJUI4JUIyJUUwJUI4JTk5fGVufDB8fDB8fHww"
-                  alt="วิศวกรควบคุมงานก่อสร้างบ้าน - PHANOMPHRAI รับสร้างบ้านครบวงจร"
+                  alt="ทีมวิศวกรและช่างมืออาชีพควบคุมงานก่อสร้างบ้าน - PHANOMPHRAI บริการรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้างครบวงจร"
                   fill
                   className="object-cover"
                   loading="lazy"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   unoptimized
+                  title="ทีมช่างมืออาชีพ PHANOMPHRAI - บริการรับสร้างบ้านครบวงจร"
                 />
                 {/* Overlay Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />

@@ -129,18 +129,19 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
       
       <section id="portfolio" className="pt-6 sm:pt-8 md:pt-10 pb-10 sm:pb-12 md:pb-16 lg:pb-20 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
-          {/* Header */}
-          <div className="text-center mb-6 sm:mb-8 md:mb-10">
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
-            ผลงานของเรา
-          </h2>
-          <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-3 sm:mb-4">
-            ตัวอย่างผลงานที่ผ่านมา
-          </p>
-          <div className="flex justify-center">
-            <div className="h-1 w-20 sm:w-24 md:w-28 rounded-full bg-yellow-400" />
+          {/* Header - SEO Optimized */}
+          <div className="text-center mb-5 sm:mb-6 md:mb-8">
+            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3">
+              ผลงานรับสร้างบ้านและออกแบบบ้าน
+            </h2>
+            <p className="text-gray-600 text-xs sm:text-sm md:text-base mb-3 sm:mb-4 max-w-3xl mx-auto">
+              ตัวอย่างผลงานการรับเหมาก่อสร้าง ออกแบบบ้าน ต่อเติมบ้าน และรีโนเวทบ้านที่ผ่านมา 
+              ด้วยทีมช่างมืออาชีพ วัสดุคุณภาพสูง ราคายุติธรรม
+            </p>
+            <div className="flex justify-center">
+              <div className="h-1 w-20 sm:w-24 md:w-28 rounded-full bg-yellow-400" />
+            </div>
           </div>
-        </div>
 
         {/* Loading Skeleton - Glassmorphism Style */}
         {loading && (
@@ -199,11 +200,12 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
             >
               <Image
                 src={item.mainImage || '/placeholder.jpg'} // ใช้รูปหลักจาก DB
-                alt={item.title}
+                alt={`${item.title} - ผลงานรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้าง PHANOMPHRAI ${item.description ? `: ${item.description}` : ''}`}
                 fill
                 loading="lazy"
                 className="object-cover group-hover:scale-110 transition-transform duration-700"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                title={`${item.title} - บริการรับสร้างบ้านครบวงจร PHANOMPHRAI`}
               />
               
               {/* Gradient Overlay */}

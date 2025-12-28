@@ -1,31 +1,20 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 export default function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [key, setKey] = useState(0);
-  const prevPathname = useRef(pathname);
 
+  // Scroll to top when pathname changes
   useEffect(() => {
-    // Only animate if pathname actually changed (not on first render)
-    if (prevPathname.current !== pathname) {
-      prevPathname.current = pathname;
-      // Increment key to trigger CSS animation
-      setKey(k => k + 1);
-    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, [pathname]);
 
   return (
     <div
-      ref={containerRef}
-      key={key}
+      key={pathname}
       className="page-transition"
-      style={{
-        animation: key > 0 ? 'pageSlideIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none'
-      }}
     >
       {children}
       <style jsx global>{`
@@ -44,6 +33,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
         }
         
         .page-transition {
+          animation: pageSlideIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           will-change: opacity, transform;
         }
       `}</style>

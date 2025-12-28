@@ -1,3 +1,18 @@
+/**
+ * Footer Component
+ * 
+ * Footer ที่ด้านล่างของหน้าเว็บ ทำหน้าที่:
+ * 1. แสดงข้อมูลบริษัท (ชื่อ, tagline, description)
+ * 2. แสดงข้อมูลติดต่อ (ที่อยู่, เบอร์โทร, LINE, Social media)
+ * 3. แสดงผลงานล่าสุด (Featured houses)
+ * 4. แสดง SEO keywords และ services
+ * 
+ * หมายเหตุ:
+ * - โหลดข้อมูลจาก Firebase (footerContent collection)
+ * - แสดงเฉพาะในหน้าแรก (pathname === '/')
+ * - ใช้ memo เพื่อ optimize performance
+ */
+
 'use client';
 
 import React, { memo, useEffect, useState } from 'react';
@@ -7,12 +22,20 @@ import { usePathname } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, limit, doc, getDoc } from 'firebase/firestore';
 
+/**
+ * Interface สำหรับ Featured House
+ * ใช้สำหรับแสดงผลงานล่าสุดใน Footer
+ */
 interface FeaturedHouse {
   id: string;
   title: string;
   mainImage: string;
 }
 
+/**
+ * Interface สำหรับ Footer Data
+ * ข้อมูลที่ใช้แสดงใน Footer
+ */
 interface FooterData {
   companyName: string;
   tagline: string;
@@ -32,6 +55,10 @@ interface FooterData {
   warranty: string;
 }
 
+/**
+ * Default Footer Data
+ * ใช้เป็น fallback เมื่อยังไม่มีข้อมูลจาก Firebase
+ */
 const defaultFooterData: FooterData = {
   companyName: 'PHANOMPHRAI รับสร้างบ้าน',
   tagline: 'บริษัทรับเหมาก่อสร้างครบวงจร',
@@ -51,15 +78,30 @@ const defaultFooterData: FooterData = {
   warranty: 'รับประกันผลงาน',
 };
 
-// Document ID สำหรับ Footer (เหมือน heroContent)
+/**
+ * Document ID สำหรับ Footer
+ * ใช้สำหรับดึงข้อมูลจาก Firebase (เหมือน heroContent)
+ */
 const FOOTER_DOC_ID = 'main';
 
+/**
+ * Footer Component
+ * 
+ * Component หลักของ Footer
+ */
 function Footer() {
   const pathname = usePathname();
+  
+  // State สำหรับเก็บข้อมูล
   const [featuredHouses, setFeaturedHouses] = useState<FeaturedHouse[]>([]);
   const [footerData, setFooterData] = useState<FooterData>(defaultFooterData);
 
-  // โหลดข้อมูล Footer จาก Firebase
+  /**
+   * โหลดข้อมูล Footer จาก Firebase
+   * 
+   * ดึงข้อมูลจาก collection 'footerContent' document 'main'
+   * ถ้าไม่มีข้อมูลใน Firebase จะใช้ defaultFooterData
+   */
   useEffect(() => {
     const fetchFooterData = async () => {
       try {
@@ -67,24 +109,32 @@ function Footer() {
         const docSnap = await getDoc(docRef);
         
         if (docSnap.exists()) {
+          // Merge ข้อมูลจาก Firebase กับ default data
           setFooterData({ ...defaultFooterData, ...docSnap.data() as FooterData });
         }
       } catch (error) {
         console.error('Error fetching footer data:', error);
+        // ถ้าเกิด error จะใช้ defaultFooterData
       }
     };
 
     fetchFooterData();
   }, []);
 
+  /**
+   * โหลด Featured Houses จาก Firebase
+   * 
+   * ดึงบ้านที่ marked เป็น isFeatured = true
+   * แสดงสูงสุด 6 รายการ
+   */
   useEffect(() => {
     const fetchFeaturedHouses = async () => {
       try {
         const housesRef = collection(db, 'houses');
         const q = query(
           housesRef,
-          where('isFeatured', '==', true),
-          limit(6)
+          where('isFeatured', '==', true), // เฉพาะบ้านที่ marked เป็น featured
+          limit(6) // สูงสุด 6 รายการ
         );
         const snapshot = await getDocs(q);
         const houses = snapshot.docs.map(doc => ({
@@ -101,9 +151,15 @@ function Footer() {
     fetchFeaturedHouses();
   }, []);
 
+  // แสดง Footer เฉพาะในหน้าแรก
   if (pathname !== '/') return null;
 
-  // Format phone number for tel: link
+  /**
+   * Format Phone Number for tel: Link
+   * 
+   * ลบเครื่องหมาย - ออกจากเบอร์โทรเพื่อใช้ใน tel: link
+   * ตัวอย่าง: "092-262-0227" -> "0922620227"
+   */
   const phoneForLink = footerData.phone.replace(/-/g, '');
 
   return (

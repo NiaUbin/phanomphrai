@@ -560,25 +560,7 @@ export default function HouseDetailClient() {
         </div>
       </section>
 
-      {/* Scroll to Top Button */}
-      <button
-        onClick={scrollToTop}
-        className={`fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl shadow-2xl shadow-blue-500/30 transition-all duration-500 hover:shadow-blue-500/50 hover:scale-110 active:scale-95 group ${
-          showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
-        }`}
-        aria-label="กลับขึ้นด้านบน"
-      >
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          strokeWidth={2.5} 
-          stroke="currentColor" 
-          className="w-6 h-6 group-hover:-translate-y-1 transition-transform"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-        </svg>
-      </button>
+
 
       {/* Animation Styles */}
       <style jsx global>{`

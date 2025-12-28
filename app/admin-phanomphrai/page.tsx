@@ -1,3 +1,20 @@
+/**
+ * Admin Page Component
+ * 
+ * หน้า Admin Panel สำหรับจัดการเนื้อหาเว็บไซต์ ทำหน้าที่:
+ * 1. จัดการผลงาน (เพิ่ม, แก้ไข, ลบ houses)
+ * 2. จัดการการันตีคุณภาพ (เพิ่ม, แก้ไข, ลบ gallery items)
+ * 3. จัดการ Hero Section (แก้ไขข้อความหน้าแรก)
+ * 4. จัดการ Footer (แก้ไขข้อมูลติดต่อ, ที่อยู่, social media)
+ * 
+ * Structure:
+ * - Sidebar: Navigation menu (Desktop)
+ * - Mobile Header: Navigation tabs (Mobile)
+ * - Main Content: Form หรือ List ตาม active tab
+ * 
+ * หมายเหตุ: หน้า Admin ใช้ full-screen layout
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -9,8 +26,13 @@ import GalleryForm from '@/components/admin/GalleryForm';
 import GalleryList from '@/components/admin/GalleryList';
 import HeroForm from '@/components/admin/HeroForm';
 import FooterForm from '@/components/admin/FooterForm';
+import QuotationList from '@/components/admin/QuotationList';
 import { House } from '@/types';
 
+/**
+ * Interface สำหรับ Gallery Item
+ * ใช้สำหรับจัดการการันตีคุณภาพ
+ */
 interface GalleryItem {
   id?: string;
   description: string;
@@ -18,28 +40,58 @@ interface GalleryItem {
   order?: number;
 }
 
+/**
+ * AdminPage Component
+ * 
+ * Component หลักของหน้า Admin
+ */
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<'add' | 'edit' | 'gallery' | 'hero' | 'footer'>('add');
-  const [editingHouse, setEditingHouse] = useState<House | null>(null);
-  const [editingGallery, setEditingGallery] = useState<GalleryItem | null>(null);
-  const [galleryMode, setGalleryMode] = useState<'list' | 'add' | 'edit'>('list');
+  // State สำหรับจัดการ active tab และ editing state
+  const [activeTab, setActiveTab] = useState<'add' | 'edit' | 'gallery' | 'hero' | 'footer' | 'quotations'>('add');
+  const [editingHouse, setEditingHouse] = useState<House | null>(null); // บ้านที่กำลังแก้ไข
+  const [editingGallery, setEditingGallery] = useState<GalleryItem | null>(null); // gallery item ที่กำลังแก้ไข
+  const [galleryMode, setGalleryMode] = useState<'list' | 'add' | 'edit'>('list'); // mode ของ gallery (list/add/edit)
 
+  /**
+   * Handle Edit House
+   * 
+   * เมื่อคลิกแก้ไขบ้าน ให้เปลี่ยนไปที่ tab 'edit' และ set editingHouse
+   * 
+   * @param house - ข้อมูลบ้านที่ต้องการแก้ไข
+   */
   const handleEdit = (house: House) => {
     setEditingHouse(house);
     setActiveTab('edit');
   };
 
+  /**
+   * Handle Edit Gallery
+   * 
+   * เมื่อคลิกแก้ไข gallery item ให้เปลี่ยนไปที่ galleryMode 'edit' และ set editingGallery
+   * 
+   * @param item - ข้อมูล gallery item ที่ต้องการแก้ไข
+   */
   const handleEditGallery = (item: GalleryItem) => {
     setEditingGallery(item);
     setGalleryMode('edit');
   };
 
+  /**
+   * Handle Success (House)
+   * 
+   * เมื่อบันทึกบ้านสำเร็จ ให้ reset editingHouse
+   */
   const handleSuccess = () => {
     if (activeTab === 'edit') {
       setEditingHouse(null);
     }
   };
 
+  /**
+   * Handle Gallery Success
+   * 
+   * เมื่อบันทึก gallery item สำเร็จ ให้ reset editingGallery และกลับไปที่ list mode
+   */
   const handleGallerySuccess = () => {
     setEditingGallery(null);
     setGalleryMode('list');
@@ -163,6 +215,29 @@ export default function AdminPage() {
             <div className="flex-1 text-left">
               <span className="font-semibold block text-sm">จัดการ Footer</span>
               <span className={`text-xs ${activeTab === 'footer' ? 'text-teal-100' : 'text-gray-400'}`}>ที่อยู่ / เบอร์ / LINE</span>
+            </div>
+          </button>
+
+          <div className="pt-4 mt-2 border-t border-gray-100">
+            <p className="px-3 mb-3 text-xs font-bold text-gray-400 uppercase tracking-wider">ข้อมูลลูกค้า</p>
+          </div>
+
+          <button
+            onClick={() => setActiveTab('quotations')}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${
+              activeTab === 'quotations' 
+                ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/30' 
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
+          >
+            <div className={`p-2 rounded-lg ${activeTab === 'quotations' ? 'bg-white/20' : 'bg-gray-100'}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+              </svg>
+            </div>
+            <div className="flex-1 text-left">
+              <span className="font-semibold block text-sm">ใบเสนอราคา</span>
+              <span className={`text-xs ${activeTab === 'quotations' ? 'text-emerald-100' : 'text-gray-400'}`}>คำขอจากลูกค้า</span>
             </div>
           </button>
 
@@ -294,6 +369,20 @@ export default function AdminPage() {
             </svg>
             Footer
           </button>
+
+          <button
+            onClick={() => setActiveTab('quotations')}
+            className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${
+              activeTab === 'quotations' 
+                ? 'bg-emerald-500 text-white shadow-lg' 
+                : 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+            </svg>
+            ใบเสนอราคา
+          </button>
         </div>
       </div>
 
@@ -374,6 +463,10 @@ export default function AdminPage() {
 
             {activeTab === 'footer' && (
               <FooterForm />
+            )}
+
+            {activeTab === 'quotations' && (
+              <QuotationList />
             )}
           </div>
         </div>

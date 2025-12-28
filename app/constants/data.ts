@@ -1,17 +1,47 @@
-// รูปภาพสำหรับ Hero Section (ส่วนหัวของหน้าเว็บ)
-export const constructionImages = [
+/**
+ * Constants Data
+ * 
+ * ไฟล์นี้เก็บข้อมูล constants ที่ใช้ในแอปพลิเคชัน:
+ * - รูปภาพสำหรับ Hero Section
+ * - ข้อมูล Services Section
+ * - ข้อมูล Portfolio Section
+ * 
+ * หมายเหตุ: ข้อมูลเหล่านี้เป็น fallback data
+ * ข้อมูลจริงจะถูกโหลดจาก Firebase ในแต่ละ component
+ */
+
+/**
+ * รูปภาพสำหรับ Hero Section (ส่วนหัวของหน้าเว็บ)
+ * ใช้เป็น background images สำหรับ hero slider
+ */
+export const constructionImages: string[] = [
   'https://img.iproperty.com.my/angel/1110x624-crop/wp-content/uploads/sites/6/2023/07/Construction-residential-new-house-in-progress-at-building-site-budjet.jpg',
-  'https://plus.unsplash.com/premium_photo-1683121330629-4a158551f37f?q=80&w=2342&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', // เปลี่ยนรูปที่มีปัญหาเป็นรูปก่อสร้างสวยๆ จาก Unsplash
+  'https://plus.unsplash.com/premium_photo-1683121330629-4a158551f37f?q=80&w=2342&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   'https://plus.unsplash.com/premium_photo-1682141511588-b40e020dac54?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEwfHx8ZW58MHx8fHx8',
   'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1920&q=80',
   'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1920&q=80',
 ];
 
-// รูปภาพสำหรับ Slider ใน Hero Section (ใช้ 3 รูปแรก)
-export const sliderImages = constructionImages.slice(0, 4);
+/**
+ * รูปภาพสำหรับ Slider ใน Hero Section
+ * ใช้ 4 รูปแรกจาก constructionImages
+ */
+export const sliderImages: string[] = constructionImages.slice(0, 4);
 
-// ข้อมูลสำหรับ Services Section (ส่วนการันตีคุณภาพ - Carousel)
-export const services = [
+/**
+ * Interface สำหรับ Service Item
+ */
+interface ServiceItem {
+  id: number;
+  title: string;
+  image: string;
+}
+
+/**
+ * ข้อมูลสำหรับ Services Section (ส่วนการันตีคุณภาพ - Carousel)
+ * แสดงผลงานที่ผ่านมาเพื่อสร้างความน่าเชื่อถือ
+ */
+export const services: ServiceItem[] = [
   {
     id: 1,
     title: 'โครงการสร้างบ้านพักอาศัย 1 ชั้น บ้านสวย หมองงหม่า',
@@ -44,8 +74,22 @@ export const services = [
   },
 ];
 
-// ข้อมูลสำหรับ Portfolio Section (ส่วนผลงานของเรา - Image Gallery)
-export const portfolioItems = [
+/**
+ * Interface สำหรับ Portfolio Item
+ */
+interface PortfolioItem {
+  id: string;
+  src: string;
+  alt: string;
+  title: string;
+  description: string;
+}
+
+/**
+ * ข้อมูลสำหรับ Portfolio Section (ส่วนผลงานของเรา - Image Gallery)
+ * ใช้เป็น fallback data เมื่อยังไม่มีข้อมูลจาก Firebase
+ */
+export const portfolioItems: PortfolioItem[] = [
   {
     id: '1',
     src: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',

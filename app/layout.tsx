@@ -1,3 +1,16 @@
+/**
+ * Root Layout Component
+ * 
+ * ไฟล์นี้เป็น Root Layout ของ Next.js App Router
+ * ทำหน้าที่:
+ * 1. กำหนด Fonts (Geist, Geist Mono, Kanit)
+ * 2. กำหนด Metadata และ SEO settings
+ * 3. เพิ่ม Structured Data (JSON-LD) สำหรับ SEO
+ * 4. กำหนดโครงสร้าง HTML พื้นฐาน (Navbar, Footer, PageTransition)
+ * 
+ * หมายเหตุ: ไฟล์นี้จะถูกใช้เป็น template สำหรับทุกหน้าในแอปพลิเคชัน
+ */
+
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Kanit } from "next/font/google";
 import "./globals.css";
@@ -6,6 +19,10 @@ import Footer from "@/components/Footer";
 import DynamicTitle from "@/components/DynamicTitle";
 import PageTransition from "@/components/PageTransition";
 
+/**
+ * Geist Sans Font
+ * ใช้สำหรับข้อความทั่วไป (Body text)
+ */
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -13,6 +30,10 @@ const geistSans = Geist({
   preload: true,
 });
 
+/**
+ * Geist Mono Font
+ * ใช้สำหรับ code หรือข้อความที่ต้องการ monospace
+ */
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -20,6 +41,11 @@ const geistMono = Geist_Mono({
   preload: false,
 });
 
+/**
+ * Kanit Font
+ * ใช้สำหรับข้อความภาษาไทย (รองรับทั้ง Latin และ Thai)
+ * มีหลาย weights: 300, 400, 500, 600, 700
+ */
 const kanit = Kanit({
   weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin", "thai"],
@@ -28,7 +54,12 @@ const kanit = Kanit({
   preload: true,
 });
 
-// แยก viewport ออกมาตาม Next.js 16 recommendation
+/**
+ * Viewport Configuration
+ * กำหนดการแสดงผลบนอุปกรณ์ต่างๆ
+ * 
+ * ตาม Next.js 16 recommendation: แยก viewport ออกมาเป็น export แยก
+ */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -36,6 +67,18 @@ export const viewport: Viewport = {
   themeColor: "#1e40af",
 };
 
+/**
+ * Metadata Configuration
+ * 
+ * กำหนดข้อมูล SEO สำหรับเว็บไซต์:
+ * - Title และ Description
+ * - Keywords สำหรับ SEO
+ * - Open Graph (Facebook, LINE sharing)
+ * - Twitter Cards
+ * - Robots configuration
+ * 
+ * หมายเหตุ: metadataBase จำเป็นสำหรับ Open Graph และ Twitter images
+ */
 export const metadata: Metadata = {
   // ===== METADATA BASE (สำคัญสำหรับ Open Graph/Twitter images) =====
   metadataBase: new URL("https://phanomphrai-c99bd.web.app"),
@@ -153,6 +196,18 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * JSON-LD Structured Data
+ * 
+ * ใช้สำหรับบอก search engines (Google, Bing) เกี่ยวกับธุรกิจ
+ * ช่วยให้ search engines เข้าใจข้อมูลธุรกิจได้ดีขึ้น
+ * 
+ * มี 3 schemas:
+ * 1. LocalBusiness - ข้อมูลธุรกิจท้องถิ่น
+ * 2. Organization - ข้อมูลองค์กร
+ * 3. WebSite - ข้อมูลเว็บไซต์
+ */
+
 // JSON-LD Structured Data สำหรับ Local Business
 const jsonLd = {
   "@context": "https://schema.org",
@@ -162,7 +217,7 @@ const jsonLd = {
   alternateName: "พนมไพร รับสร้างบ้าน",
   description: "PHANOMPHRAI บริการรับออกแบบบ้าน สร้างบ้าน รับเหมาก่อสร้างครบวงจร ด้วยทีมช่างมืออาชีพ ประสบการณ์กว่า 10 ปี มากกว่า 100+ โครงการสำเร็จ วัสดุคุณภาพสูง ราคายุติธรรม รับประกันผลงาน",
   url: "https://phanomphrai-c99bd.web.app",
-  telephone: "+66-XX-XXX-XXXX", // ใส่เบอร์โทรจริง
+  telephone: "+66-92-262-0227",
   image: "https://phanomphrai-c99bd.web.app/og-image.jpg",
   priceRange: "฿฿",
   address: {
@@ -257,6 +312,18 @@ const websiteJsonLd = {
   },
 };
 
+/**
+ * RootLayout Component
+ * 
+ * Component หลักที่ wrap ทุกหน้าในแอปพลิเคชัน
+ * 
+ * @param children - React Node ที่จะถูก render ในแต่ละหน้า
+ * 
+ * Structure:
+ * - <html> - Root HTML element (lang="th" สำหรับภาษาไทย)
+ * - <head> - เพิ่ม JSON-LD structured data และ preconnect links
+ * - <body> - ประกอบด้วย Navbar, PageTransition (children), Footer
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -265,20 +332,24 @@ export default function RootLayout({
   return (
     <html lang="th">
       <head>
-        {/* JSON-LD Structured Data */}
+        {/* JSON-LD Structured Data - สำหรับ SEO */}
+        {/* LocalBusiness Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* Organization Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
+        {/* WebSite Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
-        {/* Preconnect to important origins */}
+        
+        {/* Preconnect to important origins - เพิ่มความเร็วในการโหลด */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://firebasestorage.googleapis.com" />
@@ -286,11 +357,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${kanit.variable} antialiased`}
       >
+        {/* DynamicTitle - จัดการ title ของหน้าเว็บแบบ dynamic */}
         <DynamicTitle />
+        
+        {/* Navbar - Navigation bar ที่ด้านบน */}
         <Navbar />
+        
+        {/* PageTransition - เพิ่ม transition effect เมื่อเปลี่ยนหน้า */}
         <PageTransition>
           {children}
         </PageTransition>
+        
+        {/* Footer - Footer ที่ด้านล่าง */}
         <Footer />
       </body>
     </html>

@@ -1,3 +1,16 @@
+/**
+ * Navbar Component
+ * 
+ * Navigation bar ที่ด้านบนของหน้าเว็บ ทำหน้าที่:
+ * 1. แสดง navigation links (หน้าหลัก, การันตีคุณภาพ, ผลงาน, เกี่ยวกับเรา, ติดต่อเรา)
+ * 2. จัดการ active section highlighting (เมื่อ scroll ไปที่ section ไหน)
+ * 3. จัดการ mobile menu (hamburger menu)
+ * 4. จัดการ scroll behavior (เปลี่ยนสี navbar เมื่อ scroll)
+ * 5. แสดง CTA button (โทรเลย)
+ * 
+ * หมายเหตุ: Navbar จะไม่แสดงในหน้า admin (/admin-phanomphrai)
+ */
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -5,28 +18,52 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
+  // State สำหรับจัดการ UI behavior
+  const [isScrolled, setIsScrolled] = useState(false); // ตรวจสอบว่า scroll แล้วหรือยัง
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // เปิด/ปิด mobile menu
+  const [activeSection, setActiveSection] = useState(''); // section ที่กำลัง active
 
+  /**
+   * Handle Scroll Event
+   * 
+   * จัดการ scroll behavior:
+   * 1. ตรวจสอบว่า scroll แล้วหรือยัง (เพื่อเปลี่ยนสี navbar)
+   * 2. ตรวจสอบ section ที่กำลัง active (เพื่อ highlight navigation link)
+   * 3. ปิด mobile menu เมื่อ scroll
+   * 4. จัดการ hash navigation (scroll to section เมื่อมี #hash)
+   */
   useEffect(() => {
+    /**
+     * Scroll Handler Function
+     * 
+     * ตรวจสอบ:
+     * - Scroll position เพื่อเปลี่ยนสี navbar
+     * - Active section เพื่อ highlight navigation link
+     */
     const handleScroll = () => {
+      // ตรวจสอบว่า scroll แล้วหรือยัง (มากกว่า 80px)
       const scrolled = window.scrollY > 80;
       setIsScrolled(scrolled);
+      
+      // ปิด mobile menu เมื่อ scroll
       if (scrolled) {
         setIsMobileMenuOpen(false);
       }
 
+      // ตรวจสอบ section ที่กำลัง active
       const sections = ['services', 'about', 'portfolio', 'contact'];
       let current = '';
       
+      // ถ้ายัง scroll ไม่ถึง 100px ให้ active เป็น 'home'
       if (window.scrollY < 100) {
         current = 'home';
       } else {
+        // ตรวจสอบว่า section ไหนอยู่ใน viewport
         for (const section of sections) {
           const element = document.getElementById(section);
           if (element) {
             const rect = element.getBoundingClientRect();
+            // ถ้า section อยู่ใน viewport (top <= 150 และ bottom >= 150)
             if (rect.top <= 150 && rect.bottom >= 150) {
               current = section;
               break;
@@ -37,15 +74,17 @@ export default function Navbar() {
       setActiveSection(current || 'home');
     };
 
+    // เพิ่ม event listener สำหรับ scroll
     window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    handleScroll(); // เรียกครั้งแรกเพื่อ set initial state
     
+    // จัดการ hash navigation (scroll to section เมื่อมี #hash)
     if (typeof window !== 'undefined' && window.location.hash) {
       const hash = window.location.hash.substring(1);
       setTimeout(() => {
         const element = document.getElementById(hash);
         if (element) {
-          const offset = 100;
+          const offset = 100; // offset สำหรับ navbar
           const elementPosition = element.getBoundingClientRect().top;
           const offsetPosition = elementPosition + window.pageYOffset - offset;
           window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
@@ -53,16 +92,29 @@ export default function Navbar() {
       }, 100);
     }
     
+    // Cleanup: ลบ event listener เมื่อ component unmount
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const pathname = usePathname();
   const router = useRouter();
   
+  // ไม่แสดง Navbar ในหน้า admin
   if (pathname?.startsWith('/admin-phanomphrai')) {
     return null;
   }
 
+  /**
+   * Navigation Links Configuration
+   * 
+   * กำหนด navigation links ที่จะแสดงใน navbar
+   * แต่ละ link มี:
+   * - href: URL path
+   * - id: section id (ใช้สำหรับ active highlighting)
+   * - label: ข้อความที่แสดง
+   * - icon: SVG icon
+   */
+  // Navigation links หลัก (ไม่รวมใบเสนอราคา)
   const navLinks = [
     { href: '/', id: 'home', label: 'หน้าหลัก', icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -91,34 +143,66 @@ export default function Navbar() {
     )},
   ];
 
+  // ตรวจสอบว่าอยู่หน้า quotation หรือไม่
+  const isQuotationPage = pathname === '/quotation';
+
+  /**
+   * Handle Navigation Click
+   * 
+   * จัดการการคลิก navigation link:
+   * - ถ้าเป็น link ไปหน้าแรก และไม่ได้อยู่หน้าแรก ให้ navigate ไปหน้าแรก
+   * - ถ้าเป็น hash link (#section) ให้ scroll ไปที่ section นั้น
+   * 
+   * @param e - Mouse event
+   * @param href - URL path
+   */
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // ถ้าเป็น link ไปหน้าแรก และไม่ได้อยู่หน้าแรก
     if (href === '/' && pathname !== '/') {
       e.preventDefault();
       router.push('/');
       return;
     }
     
+    // ถ้าเป็น hash link (#section)
     if (href.includes('#')) {
       e.preventDefault();
       const hash = href.split('#')[1];
       
+      // ถ้าไม่ได้อยู่หน้าแรก ให้ navigate ไปหน้าแรกพร้อม hash
       if (pathname !== '/') {
         router.push(href);
       } else {
+        // ถ้าอยู่หน้าแรกแล้ว ให้ scroll ไปที่ section
         const element = document.getElementById(hash);
         if (element) {
-          const offset = 100;
+          const offset = 100; // offset สำหรับ navbar
           const elementPosition = element.getBoundingClientRect().top;
           const offsetPosition = elementPosition + window.pageYOffset - offset;
           window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
         } else {
+          // ถ้าไม่เจอ element ให้ navigate ไปที่ hash
           router.push(href);
         }
       }
     }
   };
 
+  /**
+   * Check if Link is Active
+   * 
+   * ตรวจสอบว่า navigation link นี้ active หรือไม่
+   * (ใช้สำหรับ highlighting)
+   * 
+   * @param linkId - ID ของ link
+   * @returns true ถ้า link active
+   */
   const isActive = (linkId: string) => {
+    // ถ้าเป็น quotation page ให้เช็ค pathname
+    if (linkId === 'quotation' && pathname === '/quotation') {
+      return true;
+    }
+    // ถ้าไม่ได้อยู่หน้าแรก ไม่มี link ไหน active (ยกเว้น quotation)
     if (pathname !== '/') {
       return false; 
     }
@@ -128,7 +212,15 @@ export default function Navbar() {
   // ตรวจสอบว่าอยู่หน้าแรกหรือไม่
   const isHomePage = pathname === '/';
   
-  // แสดง Navbar แบบสีเข้มเมื่อ: scroll แล้ว หรือ ไม่ได้อยู่หน้าแรก
+  /**
+   * Should Show Solid Navbar
+   * 
+   * แสดง Navbar แบบสีเข้ม (solid) เมื่อ:
+   * - Scroll แล้ว (isScrolled)
+   * - ไม่ได้อยู่หน้าแรก (!isHomePage)
+   * 
+   * หมายเหตุ: หน้าแรกจะแสดง navbar แบบ transparent เมื่อยังไม่ scroll
+   */
   const shouldShowSolid = isScrolled || !isHomePage;
 
   return (
@@ -212,7 +304,7 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className={`relative px-4 py-2.5 text-sm font-medium transition-all duration-300 rounded-xl group ${
+                    className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 rounded-lg ${
                       active 
                         ? shouldShowSolid 
                           ? 'text-blue-600 bg-blue-50' 
@@ -223,15 +315,24 @@ export default function Navbar() {
                     }`}
                   >
                     {link.label}
-                    {/* Active Indicator */}
-                    {active && (
-                      <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${
-                        shouldShowSolid ? 'bg-blue-600' : 'bg-white'
-                      }`} />
-                    )}
                   </Link>
                 );
               })}
+              
+              {/* Quotation CTA Button - Desktop */}
+              <Link
+                href="/quotation"
+                className={`ml-2 flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${
+                  isQuotationPage
+                    ? 'bg-orange-600 text-white'
+                    : 'bg-orange-500 text-white hover:bg-orange-600 shadow-md hover:shadow-lg'
+                }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                </svg>
+                ขอใบเสนอราคา
+              </Link>
             </div>
 
             {/* Right Section: CTA + Hamburger */}
@@ -323,8 +424,26 @@ export default function Navbar() {
                 );
               })}
               
-              {/* Mobile CTA */}
-              <div className="pt-4 border-t border-gray-100 mt-2">
+              {/* Mobile CTA - Quotation */}
+              <div className="pt-3 mt-2">
+                <Link
+                  href="/quotation"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold shadow-lg transition-colors ${
+                    isQuotationPage
+                      ? 'bg-orange-600 text-white'
+                      : 'bg-orange-500 text-white hover:bg-orange-600'
+                  }`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                  </svg>
+                  ขอใบเสนอราคา
+                </Link>
+              </div>
+              
+              {/* Mobile CTA - Phone */}
+              <div className="pt-2">
                 <a
                   href="tel:0922620227"
                   className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold shadow-lg"

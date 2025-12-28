@@ -1,7 +1,20 @@
 /**
- * HeroSection - ส่วนหัวของหน้าเว็บ (Hero Section)
- * SEO: รับสร้างบ้าน, ออกแบบบ้าน, รับเหมาก่อสร้าง
+ * HeroSection Component
+ * 
+ * ส่วนหัวของหน้าเว็บ (Hero Section) ทำหน้าที่:
+ * 1. แสดง background image slider (auto-rotate ทุก 5 วินาที)
+ * 2. แสดงข้อความ Hero (title, subtitle, buttons) - โหลดจาก Firebase
+ * 3. จัดการ navigation (previous/next buttons, dots indicator)
+ * 4. จัดการ button clicks (scroll to section หรือ navigate)
+ * 
+ * SEO Keywords: รับสร้างบ้าน, ออกแบบบ้าน, รับเหมาก่อสร้าง
+ * 
+ * หมายเหตุ:
+ * - ใช้ Next.js Image component สำหรับ optimize images
+ * - โหลด Hero content จาก Firebase (collection: heroContent, document: main)
+ * - มี fallback content ถ้ายังไม่มีข้อมูลจาก Firebase
  */
+
 'use client';
 
 import Image from 'next/image';
@@ -11,6 +24,10 @@ import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { HeroContent } from '@/types';
 
+/**
+ * Default Hero Content
+ * ใช้เป็น fallback เมื่อยังไม่มีข้อมูลจาก Firebase
+ */
 const defaultContent: HeroContent = {
   title: 'สร้างบ้านในฝันของคุณ',
   subtitle: 'บริการรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้างครบวงจร ด้วยทีมช่างมืออาชีพ วัสดุคุณภาพ ราคายุติธรรม',
@@ -20,10 +37,22 @@ const defaultContent: HeroContent = {
   button2Link: '#portfolio',
 };
 
+/**
+ * HeroSection Component
+ * 
+ * Component หลักของ Hero Section
+ */
 export default function HeroSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [content, setContent] = useState<HeroContent>(defaultContent);
+  // State สำหรับจัดการ slider
+  const [currentIndex, setCurrentIndex] = useState(0); // index ของรูปที่กำลังแสดง
+  const [content, setContent] = useState<HeroContent>(defaultContent); // Hero content จาก Firebase
 
+  /**
+   * โหลด Hero Content จาก Firebase
+   * 
+   * ดึงข้อมูลจาก collection 'heroContent' document 'main'
+   * ถ้าไม่มีข้อมูลใน Firebase จะใช้ defaultContent
+   */
   useEffect(() => {
     const fetchContent = async () => {
       try {
@@ -34,44 +63,80 @@ export default function HeroSection() {
         }
       } catch (error) {
         console.error('Error fetching hero content:', error);
+        // ถ้าเกิด error จะใช้ defaultContent
       }
     };
     fetchContent();
   }, []);
 
+  /**
+   * Auto-rotate Slider
+   * 
+   * เปลี่ยนรูปอัตโนมัติทุก 5 วินาที
+   * ใช้ modulo operator เพื่อวนกลับไปรูปแรกเมื่อถึงรูปสุดท้าย
+   */
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % sliderImages.length);
-    }, 5000);
+    }, 5000); // เปลี่ยนรูปทุก 5 วินาที
+    
+    // Cleanup: ลบ interval เมื่อ component unmount
     return () => clearInterval(interval);
   }, []);
 
+  /**
+   * Navigation Functions
+   * 
+   * ฟังก์ชันสำหรับควบคุม slider:
+   * - goToSlide: ไปที่รูปที่กำหนด
+   * - goToPrevious: ไปรูปก่อนหน้า (วนกลับไปรูปสุดท้ายถ้าอยู่รูปแรก)
+   * - goToNext: ไปรูปถัดไป (วนกลับไปรูปแรกถ้าอยู่รูปสุดท้าย)
+   */
   const goToSlide = (index: number) => setCurrentIndex(index);
   const goToPrevious = () => setCurrentIndex((prevIndex) => (prevIndex - 1 + sliderImages.length) % sliderImages.length);
   const goToNext = () => setCurrentIndex((prevIndex) => (prevIndex + 1) % sliderImages.length);
 
+  /**
+   * Scroll to Section
+   * 
+   * Scroll ไปที่ section ที่กำหนด (ใช้สำหรับ hash links)
+   * 
+   * @param sectionId - ID ของ section ที่ต้องการ scroll ไป
+   */
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const offset = 100;
+      const offset = 100; // offset สำหรับ navbar
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
   };
 
+  /**
+   * Handle Button Click
+   * 
+   * จัดการการคลิกปุ่ม Hero:
+   * - ถ้าเป็น hash link (#section) ให้ scroll ไปที่ section
+   * - ถ้าเป็น external link ให้ navigate ไปที่ URL นั้น
+   * 
+   * @param e - Mouse event
+   * @param link - URL หรือ hash link
+   */
   const handleButtonClick = (e: React.MouseEvent, link: string) => {
     e.preventDefault();
     if (link.startsWith('#')) {
+      // Hash link - scroll to section
       scrollToSection(link.substring(1));
     } else {
+      // External link - navigate to URL
       window.location.href = link;
     }
   };
 
   return (
     <section 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-[75vh] sm:min-h-[85vh] md:min-h-screen flex items-center justify-center overflow-hidden"
       aria-label="รับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้าง"
     >
       {/* Background Slider */}
@@ -177,26 +242,6 @@ export default function HeroSection() {
           </a>
         </div>
       </div>
-
-      {/* Navigation Buttons */}
-      <button
-        onClick={goToPrevious}
-        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full p-3 sm:p-4 transition-all duration-300 hover:scale-110 border border-white/20"
-        aria-label="รูปก่อนหน้า"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-white">
-          <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-      <button
-        onClick={goToNext}
-        className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full p-3 sm:p-4 transition-all duration-300 hover:scale-110 border border-white/20"
-        aria-label="รูปถัดไป"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-white">
-          <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
 
       {/* Dots Indicator */}
       <div className="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">

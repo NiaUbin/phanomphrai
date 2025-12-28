@@ -164,7 +164,7 @@ export default function QuotationPage() {
 
   return (
     <div className="min-h-screen bg-slate-100 pt-16 sm:pt-20 pb-8 sm:pb-12">
-      <div className="w-full max-w-4xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div className="w-full max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 mt-2">
         
         {/* Company Header */}
         <div className="bg-white border-b-4 border-blue-800 shadow-sm">
@@ -378,7 +378,7 @@ export default function QuotationPage() {
                         className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-100 text-blue-800 text-xs sm:text-sm rounded-full"
                       >
                         {type}
-                        <button
+                        <button title="ลบ"
                           type="button"
                           onClick={() => handleWorkTypeChange(type)}
                           className="text-blue-600 hover:text-blue-800"

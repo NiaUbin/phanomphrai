@@ -4,8 +4,7 @@
  * หน้า Admin Panel สำหรับจัดการเนื้อหาเว็บไซต์ ทำหน้าที่:
  * 1. จัดการผลงาน (เพิ่ม, แก้ไข, ลบ houses)
  * 2. จัดการการันตีคุณภาพ (เพิ่ม, แก้ไข, ลบ gallery items)
- * 3. จัดการ Hero Section (แก้ไขข้อความหน้าแรก)
- * 4. จัดการ Footer (แก้ไขข้อมูลติดต่อ, ที่อยู่, social media)
+ * 3. จัดการใบเสนอราคา (ดูคำขอจากลูกค้า)
  * 
  * Structure:
  * - Sidebar: Navigation menu (Desktop)
@@ -24,8 +23,6 @@ import HouseForm from '@/components/admin/HouseForm';
 import HouseList from '@/components/admin/HouseList';
 import GalleryForm from '@/components/admin/GalleryForm';
 import GalleryList from '@/components/admin/GalleryList';
-import HeroForm from '@/components/admin/HeroForm';
-import FooterForm from '@/components/admin/FooterForm';
 import QuotationList from '@/components/admin/QuotationList';
 import { House } from '@/types';
 
@@ -47,7 +44,7 @@ interface GalleryItem {
  */
 export default function AdminPage() {
   // State สำหรับจัดการ active tab และ editing state
-  const [activeTab, setActiveTab] = useState<'add' | 'edit' | 'gallery' | 'hero' | 'footer' | 'quotations'>('add');
+  const [activeTab, setActiveTab] = useState<'add' | 'edit' | 'gallery' | 'quotations'>('add');
   const [editingHouse, setEditingHouse] = useState<House | null>(null); // บ้านที่กำลังแก้ไข
   const [editingGallery, setEditingGallery] = useState<GalleryItem | null>(null); // gallery item ที่กำลังแก้ไข
   const [galleryMode, setGalleryMode] = useState<'list' | 'add' | 'edit'>('list'); // mode ของ gallery (list/add/edit)
@@ -177,48 +174,6 @@ export default function AdminPage() {
           </button>
 
           <div className="pt-4 mt-2 border-t border-gray-100">
-            <p className="px-3 mb-3 text-xs font-bold text-gray-400 uppercase tracking-wider">ตั้งค่าหน้าเว็บ</p>
-          </div>
-
-          <button
-            onClick={() => setActiveTab('hero')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${
-              activeTab === 'hero' 
-                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30' 
-                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-            }`}
-          >
-            <div className={`p-2 rounded-lg ${activeTab === 'hero' ? 'bg-white/20' : 'bg-gray-100'}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-              </svg>
-            </div>
-            <div className="flex-1 text-left">
-              <span className="font-semibold block text-sm">Hero Section</span>
-              <span className={`text-xs ${activeTab === 'hero' ? 'text-purple-100' : 'text-gray-400'}`}>แก้ไขข้อความหน้าแรก</span>
-            </div>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('footer')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${
-              activeTab === 'footer' 
-                ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/30' 
-                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-            }`}
-          >
-            <div className={`p-2 rounded-lg ${activeTab === 'footer' ? 'bg-white/20' : 'bg-gray-100'}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
-              </svg>
-            </div>
-            <div className="flex-1 text-left">
-              <span className="font-semibold block text-sm">จัดการ Footer</span>
-              <span className={`text-xs ${activeTab === 'footer' ? 'text-teal-100' : 'text-gray-400'}`}>ที่อยู่ / เบอร์ / LINE</span>
-            </div>
-          </button>
-
-          <div className="pt-4 mt-2 border-t border-gray-100">
             <p className="px-3 mb-3 text-xs font-bold text-gray-400 uppercase tracking-wider">ข้อมูลลูกค้า</p>
           </div>
 
@@ -343,34 +298,6 @@ export default function AdminPage() {
           </button>
 
           <button
-            onClick={() => setActiveTab('hero')}
-            className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${
-              activeTab === 'hero' 
-                ? 'bg-purple-500 text-white shadow-lg' 
-                : 'bg-gray-100 text-gray-600'
-            }`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-            </svg>
-            Hero Section
-          </button>
-
-          <button
-            onClick={() => setActiveTab('footer')}
-            className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${
-              activeTab === 'footer' 
-                ? 'bg-teal-500 text-white shadow-lg' 
-                : 'bg-gray-100 text-gray-600'
-            }`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
-            </svg>
-            Footer
-          </button>
-
-          <button
             onClick={() => setActiveTab('quotations')}
             className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'quotations' 
@@ -457,13 +384,7 @@ export default function AdminPage() {
               </div>
             )}
 
-            {activeTab === 'hero' && (
-              <HeroForm />
-            )}
 
-            {activeTab === 'footer' && (
-              <FooterForm />
-            )}
 
             {activeTab === 'quotations' && (
               <QuotationList />

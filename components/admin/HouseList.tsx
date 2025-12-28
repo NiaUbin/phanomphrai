@@ -23,22 +23,15 @@ export default function HouseList({ onEdit }: HouseListProps) {
         id: doc.id,
         ...doc.data()
       } as House));
-      // เรียงลำดับตาม order (1, 2, 3, ... ถ้าไม่มี order = แสดงท้ายสุด)
       housesData.sort((a, b) => {
-        // แปลง order เป็น number ถ้ายังเป็น string
         const orderA = typeof a.order === 'number' ? a.order : (a.order ? parseInt(String(a.order), 10) : 999999);
         const orderB = typeof b.order === 'number' ? b.order : (b.order ? parseInt(String(b.order), 10) : 999999);
-        
-        // ถ้า order เท่ากัน ให้เรียงตาม createdAt (ถ้ามี) หรือ id
         if (orderA === orderB) {
           const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
           const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-          if (dateA !== dateB) {
-            return dateB - dateA; // ใหม่ก่อน
-          }
+          if (dateA !== dateB) return dateB - dateA;
           return (a.id || '').localeCompare(b.id || '');
         }
-        
         return orderA - orderB;
       });
       setHouses(housesData);
@@ -56,7 +49,6 @@ export default function HouseList({ onEdit }: HouseListProps) {
 
   const handleDelete = async (id: string) => {
     if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้?')) return;
-    
     try {
       await deleteDoc(doc(db, 'houses', id));
       setHouses(prev => prev.filter(h => h.id !== id));
@@ -67,12 +59,9 @@ export default function HouseList({ onEdit }: HouseListProps) {
     }
   };
 
-  // Toggle featured status
   const toggleFeatured = async (id: string, currentStatus: boolean) => {
     try {
-      await updateDoc(doc(db, 'houses', id), {
-        isFeatured: !currentStatus
-      });
+      await updateDoc(doc(db, 'houses', id), { isFeatured: !currentStatus });
       setHouses(prev => prev.map(h => 
         h.id === id ? { ...h, isFeatured: !currentStatus } : h
       ));
@@ -85,237 +74,151 @@ export default function HouseList({ onEdit }: HouseListProps) {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600"></div>
-        <p className="mt-4 text-gray-500 font-medium">กำลังโหลดข้อมูล...</p>
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-blue-600"></div>
+        <p className="mt-4 text-gray-500 text-sm">กำลังโหลดข้อมูล...</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 sm:p-8 border border-blue-100/50 shadow-sm">
+      {/* Header */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-white rounded-xl shadow-sm border border-blue-100">
-              <div className="w-6 h-6 text-blue-600">
-                <Icons.List />
-              </div>
-            </div>
-        <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-            รายการผลงานทั้งหมด
-          </h1>
-              <p className="text-sm text-gray-600 mt-1">
-                จัดการข้อมูลผลงานที่คุณต้องการแสดงบนหน้าเว็บไซต์
-              </p>
-            </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">จัดการผลงาน</h1>
+            <p className="text-gray-500 text-sm mt-1">ผลงานทั้งหมด {houses.length} รายการ</p>
+          </div>
+          <button 
+            onClick={fetchHouses} 
+            className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+              <path d="M16 16h5v5"/>
+            </svg>
+            รีเฟรช
+          </button>
         </div>
-        <button 
-          onClick={fetchHouses} 
-            className="group flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-md hover:shadow-lg"
-            aria-label="รีเฟรชข้อมูล"
-        >
-          <span className="group-hover:rotate-180 transition-transform duration-500">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                <path d="M3 3v5h5"/>
-                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
-                <path d="M16 16h5v5"/>
-              </svg>
-          </span>
-          รีเฟรช
-        </button>
-      </div>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">ทั้งหมด</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{houses.length}</p>
-              </div>
-              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
-                <Icons.List />
-              </div>
-            </div>
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-100">
+          <div className="text-center">
+            <p className="text-2xl font-bold text-gray-900">{houses.length}</p>
+            <p className="text-xs text-gray-500 mt-1">ผลงานทั้งหมด</p>
           </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">รูปภาพ</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {houses.reduce((acc, h) => acc + (h.images?.length || 0), 0)}
-                </p>
-              </div>
-              <div className="p-2 bg-purple-100 rounded-lg text-purple-600">
-                <Icons.Photo />
-              </div>
-            </div>
+          <div className="text-center border-x border-gray-100">
+            <p className="text-2xl font-bold text-gray-900">
+              {houses.reduce((acc, h) => acc + (h.images?.length || 0), 0)}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">รูปภาพ</p>
           </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">อัปเดตล่าสุด</p>
-                <p className="text-sm font-semibold text-gray-700 mt-1">วันนี้</p>
-              </div>
-              <div className="p-2 bg-green-100 rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-green-600">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-blue-600">
+              {houses.filter(h => h.isFeatured).length}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">แสดงใน Footer</p>
           </div>
         </div>
       </div>
 
-      {/* Table Section */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      {/* Table */}
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         {houses.length === 0 ? (
-          <div className="py-20 text-center">
-            <div className="flex flex-col items-center justify-center">
-              <div className="p-6 bg-gray-50 rounded-full mb-4 text-gray-400">
-                <Icons.List />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">ยังไม่มีข้อมูลผลงาน</h3>
-              <p className="text-gray-500 max-w-md">
-                เริ่มสร้างผลงานใหม่โดยคลิกที่ปุ่ม &quot;เพิ่มผลงาน&quot; ในเมนูด้านซ้าย
-              </p>
+          <div className="py-16 text-center">
+            <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-4">
+              <Icons.List />
             </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">ยังไม่มีผลงาน</h3>
+            <p className="text-gray-500 text-sm">เริ่มเพิ่มผลงานใหม่โดยคลิกที่ &quot;เพิ่มผลงาน&quot;</p>
           </div>
         ) : (
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-                <tr className="bg-gradient-to-r from-gray-50 to-gray-50/50 border-b-2 border-gray-200">
-                  <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider w-20">ลำดับ</th>
-                  <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider w-32">รูปภาพ</th>
-                  <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider min-w-[200px]">ชื่อโครงการ</th>
-                  <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider">รายละเอียด</th>
-                  <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider">ราคา</th>
-                  <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider text-center">ผลงานล่าสุด</th>
-                  <th className="py-4 px-6 text-xs font-bold text-gray-600 uppercase tracking-wider text-right">จัดการ</th>
-            </tr>
-          </thead>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="py-3 px-4 text-left text-xs font-semibold text-gray-500 uppercase w-16">#</th>
+                  <th className="py-3 px-4 text-left text-xs font-semibold text-gray-500 uppercase w-20">รูป</th>
+                  <th className="py-3 px-4 text-left text-xs font-semibold text-gray-500 uppercase">ชื่อโครงการ</th>
+                  <th className="py-3 px-4 text-left text-xs font-semibold text-gray-500 uppercase hidden md:table-cell">ราคา</th>
+                  <th className="py-3 px-4 text-center text-xs font-semibold text-gray-500 uppercase w-24">แสดง Footer</th>
+                  <th className="py-3 px-4 text-right text-xs font-semibold text-gray-500 uppercase w-28">จัดการ</th>
+                </tr>
+              </thead>
               <tbody className="divide-y divide-gray-100">
-            {houses.map((house) => (
-                  <tr 
-                    key={house.id} 
-                    className="group hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/30 transition-all duration-200"
-                  >
-                    <td className="py-5 px-6">
-                      <div className="flex items-center justify-center">
-                        {house.order ? (
-                          <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-200 text-gray-700 font-semibold text-sm border border-gray-300">
-                            {house.order}
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 text-gray-400 font-medium text-xs border border-gray-200">
-                            -
-                          </span>
-                        )}
-                      </div>
+                {houses.map((house, index) => (
+                  <tr key={house.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="py-4 px-4">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 text-gray-600 font-medium text-sm">
+                        {house.order || index + 1}
+                      </span>
                     </td>
-                    <td className="py-5 px-6">
-                      <div className="relative w-24 h-16 sm:w-28 sm:h-20 rounded-lg overflow-hidden bg-gray-100 shadow-sm border border-gray-200 group-hover:shadow-md group-hover:border-blue-200 transition-all">
-                    {house.mainImage ? (
+                    <td className="py-4 px-4">
+                      <div className="relative w-16 h-12 rounded-lg overflow-hidden bg-gray-100">
+                        {house.mainImage ? (
                           <Image 
                             src={house.mainImage} 
                             alt={house.title} 
                             fill
-                            className="object-cover transform group-hover:scale-110 transition-transform duration-500" 
-                            sizes="(max-width: 640px) 96px, 112px"
-                            loading="lazy"
+                            className="object-cover" 
+                            sizes="64px"
                           />
-                    ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-300 bg-gray-50">
-                            <div className="w-8 h-8">
-                        <Icons.Photo />
-                            </div>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-300">
+                            <Icons.Photo />
                           </div>
                         )}
                       </div>
                     </td>
-                    <td className="py-5 px-6">
-                      <div className="font-bold text-gray-900 group-hover:text-blue-700 transition-colors text-base">
-                        {house.title}
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1 line-clamp-2">
+                    <td className="py-4 px-4">
+                      <div className="font-medium text-gray-900 text-sm">{house.title}</div>
+                      <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">
                         {house.description || 'ไม่มีคำอธิบาย'}
                       </div>
                     </td>
-                    <td className="py-5 px-6">
-                      <div className="space-y-1">
-                        {house.specifications?.bedrooms && (
-                          <div className="text-xs text-gray-600 flex items-center gap-1">
-                            <span className="font-medium">ห้องนอน:</span>
-                            <span>{house.specifications.bedrooms}</span>
-                          </div>
-                        )}
-                        {house.specifications?.bathrooms && (
-                          <div className="text-xs text-gray-600 flex items-center gap-1">
-                            <span className="font-medium">ห้องน้ำ:</span>
-                            <span>{house.specifications.bathrooms}</span>
-                          </div>
-                        )}
-                        {house.specifications?.area && (
-                          <div className="text-xs text-gray-600 flex items-center gap-1">
-                            <span className="font-medium">พื้นที่:</span>
-                            <span>{house.specifications.area} ตร.ม.</span>
-                          </div>
-                        )}
-                        {!house.specifications?.bedrooms && !house.specifications?.bathrooms && !house.specifications?.area && (
-                          <span className="text-xs text-gray-400">-</span>
-                    )}
-                  </div>
-                </td>
-                    <td className="py-5 px-6">
-                      <div className="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200 shadow-sm">
+                    <td className="py-4 px-4 hidden md:table-cell">
+                      <span className="text-sm text-gray-900 font-medium">
                         {house.price || '-'}
-                  </div>
-                </td>
-                    <td className="py-5 px-6">
+                      </span>
+                    </td>
+                    <td className="py-4 px-4">
                       <div className="flex justify-center">
                         <button
                           onClick={() => house.id && toggleFeatured(house.id, house.isFeatured || false)}
-                          className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
-                            house.isFeatured 
-                              ? 'bg-blue-500' 
-                              : 'bg-gray-300'
+                          className={`relative w-10 h-5 rounded-full transition-colors ${
+                            house.isFeatured ? 'bg-blue-600' : 'bg-gray-300'
                           }`}
-                          title={house.isFeatured ? 'แสดงอยู่ใน Footer' : 'คลิกเพื่อแสดงใน Footer'}
                         >
-                          <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 ${
-                            house.isFeatured ? 'translate-x-6' : 'translate-x-0'
+                          <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                            house.isFeatured ? 'translate-x-5' : 'translate-x-0'
                           }`}></span>
                         </button>
                       </div>
                     </td>
-                    <td className="py-5 px-6">
+                    <td className="py-4 px-4">
                       <div className="flex justify-end gap-2">
-                    <button
-                      onClick={() => onEdit(house)}
-                          className="p-2.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all shadow-sm hover:shadow-md hover:scale-105"
-                          aria-label={`แก้ไข ${house.title}`}
-                      title="แก้ไข"
-                    >
-                      <Icons.Pencil />
-                    </button>
-                    <button
-                      onClick={() => house.id && handleDelete(house.id)}
-                          className="p-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-all shadow-sm hover:shadow-md hover:scale-105"
-                          aria-label={`ลบ ${house.title}`}
-                      title="ลบ"
-                    >
-                      <Icons.XMark />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                        <button
+                          onClick={() => onEdit(house)}
+                          className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="แก้ไข"
+                        >
+                          <Icons.Pencil />
+                        </button>
+                        <button
+                          onClick={() => house.id && handleDelete(house.id)}
+                          className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="ลบ"
+                        >
+                          <Icons.XMark />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>

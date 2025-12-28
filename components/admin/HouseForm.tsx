@@ -505,35 +505,27 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
 
   return (
     <div className="space-y-6">
-      {/* Header Card */}
-      <div className={`rounded-2xl p-6 sm:p-8 border shadow-sm ${
-        initialData 
-          ? 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-100/50' 
-          : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100/50'
-      }`}>
+      {/* Header */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className={`p-4 rounded-2xl shadow-sm border ${
-            initialData 
-              ? 'bg-white border-amber-100 text-amber-600' 
-              : 'bg-white border-blue-100 text-blue-600'
-          }`}>
+          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
             {initialData ? <Icons.Pencil /> : <Icons.Plus />}
           </div>
           <div className="flex-1">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              {initialData ? 'แก้ไขข้อมูลบ้าน' : 'เพิ่มผลงานใหม่'}
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+              {initialData ? 'แก้ไขผลงาน' : 'เพิ่มผลงานใหม่'}
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-gray-500 text-sm mt-1">
               {initialData 
                 ? `กำลังแก้ไข: ${initialData.title}` 
-                : 'กรอกข้อมูลโครงการใหม่เพื่อนำขึ้นเว็บไซต์'}
+                : 'กรอกข้อมูลโครงการใหม่'}
             </p>
           </div>
           {onCancel && (
             <button
               type="button"
               onClick={onCancel}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-gray-50 rounded-xl border border-gray-200 transition-all shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
@@ -542,26 +534,18 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
             </button>
           )}
         </div>
-
       </div>
 
 
 
       {/* Form Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <form onSubmit={handleSubmit}>
           
           {/* Section 1: ข้อมูลทั่วไป */}
-          <div className="p-6 sm:p-8 border-b border-gray-100">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2.5 bg-blue-100 rounded-xl text-blue-600">
-                <Icons.Doc />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">ข้อมูลทั่วไป</h2>
-                <p className="text-sm text-gray-500">ชื่อโครงการและรายละเอียด</p>
-              </div>
-            </div> 
+          <div className="p-6 border-b border-gray-100">
+            <h2 className="text-base font-bold text-gray-900 mb-1">ข้อมูลทั่วไป</h2>
+            <p className="text-sm text-gray-500 mb-6">ชื่อโครงการและรายละเอียด</p> 
             
             <div className="space-y-5">
               {/* ID ผลงาน - แสดงเฉพาะตอนสร้างใหม่ */}
@@ -737,159 +721,105 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
           </div>
 
           {/* Section 2: สเปคบ้าน */}
-          <div className="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-emerald-50/30 to-green-50/30">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2.5 bg-emerald-100 rounded-xl text-emerald-600">
-                <Icons.Stack />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">สเปคบ้าน</h2>
-                <p className="text-sm text-gray-500">รายละเอียดห้องและพื้นที่ใช้สอย</p>
-              </div>
-            </div>
+          <div className="p-6 border-b border-gray-100">
+            <h2 className="text-base font-bold text-gray-900 mb-1">สเปคบ้าน</h2>
+            <p className="text-sm text-gray-500 mb-6">รายละเอียดห้อง พื้นที่ และงานเพิ่มเติม</p>
             
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
+            <div className="grid grid-cols-3 gap-4 mb-6">
               {/* ห้องนอน */}
-              <div className="bg-white rounded-xl p-4 border border-emerald-100 shadow-sm hover:shadow-md transition-all">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-xl">
-                    🛏️
-                  </div>
-                  <label htmlFor="bedrooms" className="text-sm font-bold text-gray-700">ห้องนอน</label>
-                </div>
+              <div>
+                <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-700 mb-2">ห้องนอน</label>
                 <input 
                   id="bedrooms" 
                   type="text" 
                   placeholder="เช่น 3"
-                  className="w-full rounded-lg border-gray-200 p-3 border-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition-all text-gray-900 text-center text-lg font-semibold"
+                  className="w-full rounded-lg border-gray-200 p-3 border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all text-gray-900 text-center font-medium"
                   value={formData.bedrooms} 
                   onChange={(e) => setFormData({...formData, bedrooms: e.target.value})} 
                 />
               </div>
 
               {/* ห้องน้ำ */}
-              <div className="bg-white rounded-xl p-4 border border-emerald-100 shadow-sm hover:shadow-md transition-all">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-xl">
-                    🚽
-                  </div>
-                  <label htmlFor="bathrooms" className="text-sm font-bold text-gray-700">ห้องน้ำ</label>
-                </div>
+              <div>
+                <label htmlFor="bathrooms" className="block text-sm font-medium text-gray-700 mb-2">ห้องน้ำ</label>
                 <input 
                   id="bathrooms" 
                   type="text" 
                   placeholder="เช่น 2"
-                  className="w-full rounded-lg border-gray-200 p-3 border-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all text-gray-900 text-center text-lg font-semibold"
+                  className="w-full rounded-lg border-gray-200 p-3 border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all text-gray-900 text-center font-medium"
                   value={formData.bathrooms} 
                   onChange={(e) => setFormData({...formData, bathrooms: e.target.value})} 
                 />
               </div>
 
               {/* พื้นที่ */}
-              <div className="bg-white rounded-xl p-4 border border-emerald-100 shadow-sm hover:shadow-md transition-all">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-amber-600">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-                    </svg>
-                  </div>
-                  <label htmlFor="area" className="text-sm font-bold text-gray-700">พื้นที่</label>
-                </div>
-                <div className="relative">
-                  <input 
-                    id="area" 
-                    type="text" 
-                    placeholder="เช่น 150"
-                    className="w-full rounded-lg border-gray-200 p-3 pr-16 border-2 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none transition-all text-gray-900 text-center text-lg font-semibold"
-                    value={formData.area} 
-                    onChange={(e) => setFormData({...formData, area: e.target.value})} 
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 font-medium">ตร.ม.</span>
-                </div>
+              <div>
+                <label htmlFor="area" className="block text-sm font-medium text-gray-700 mb-2">พื้นที่ (ตร.ม.)</label>
+                <input 
+                  id="area" 
+                  type="text" 
+                  placeholder="เช่น 150"
+                  className="w-full rounded-lg border-gray-200 p-3 border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all text-gray-900 text-center font-medium"
+                  value={formData.area} 
+                  onChange={(e) => setFormData({...formData, area: e.target.value})} 
+                />
               </div>
             </div>
 
             {/* รายละเอียดงานเพิ่มเติม */}
-            <div className="border-t border-emerald-100 pt-6">
-              <div className="flex items-center gap-2 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-emerald-600">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
-                </svg>
-                <h3 className="text-sm font-bold text-gray-700">รายละเอียดงานเพิ่มเติม</h3>
-                <span className="text-xs text-gray-400">(สามารถแก้ไขชื่อหัวข้อได้)</span>
-              </div>
+            <div className="border-t border-gray-100 pt-6">
+              <p className="text-sm font-medium text-gray-700 mb-4">รายละเอียดงานเพิ่มเติม <span className="text-gray-400 font-normal">(ไม่บังคับ)</span></p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* งานที่ 1 */}
-                <div className="bg-white rounded-xl p-4 border border-yellow-100 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-yellow-600">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                      </svg>
-                    </div>
-                    <input 
-                      type="text"
-                      placeholder="ชื่อหัวข้อ เช่น งานไฟฟ้า"
-                      className="flex-1 rounded-lg border-yellow-200 p-2 border-2 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 focus:outline-none transition-all text-gray-900 text-sm font-bold"
-                      value={formData.work1Label} 
-                      onChange={(e) => setFormData({...formData, work1Label: e.target.value})} 
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <input 
+                    type="text"
+                    placeholder="หัวข้อ เช่น งานไฟฟ้า"
+                    className="w-full rounded-lg border-gray-200 p-2.5 border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-gray-900 text-sm font-medium"
+                    value={formData.work1Label} 
+                    onChange={(e) => setFormData({...formData, work1Label: e.target.value})} 
+                  />
                   <textarea 
-                    rows={3}
-                    placeholder="เช่น เดินสายไฟ 10 จุด, ต่อสายไฟ 3 เฟส, ติดตั้งปลั๊กไฟ 20 จุด"
-                    className="w-full rounded-lg border-gray-200 p-3 border-2 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 focus:outline-none transition-all text-gray-900 text-sm resize-none"
+                    rows={2}
+                    placeholder="รายละเอียด..."
+                    className="w-full rounded-lg border-gray-200 p-2.5 border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-gray-900 text-sm resize-none"
                     value={formData.work1Detail} 
                     onChange={(e) => setFormData({...formData, work1Detail: e.target.value})} 
                   />
                 </div>
 
                 {/* งานที่ 2 */}
-                <div className="bg-white rounded-xl p-4 border border-cyan-100 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-cyan-600">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
-                      </svg>
-                    </div>
-                    <input 
-                      type="text"
-                      placeholder="ชื่อหัวข้อ เช่น งานประปา"
-                      className="flex-1 rounded-lg border-cyan-200 p-2 border-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 focus:outline-none transition-all text-gray-900 text-sm font-bold"
-                      value={formData.work2Label} 
-                      onChange={(e) => setFormData({...formData, work2Label: e.target.value})} 
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <input 
+                    type="text"
+                    placeholder="หัวข้อ เช่น งานประปา"
+                    className="w-full rounded-lg border-gray-200 p-2.5 border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-gray-900 text-sm font-medium"
+                    value={formData.work2Label} 
+                    onChange={(e) => setFormData({...formData, work2Label: e.target.value})} 
+                  />
                   <textarea 
-                    rows={3}
-                    placeholder="เช่น เดินท่อน้ำ PVC, ติดตั้งปั๊มน้ำ, ติดตั้งถังเก็บน้ำ 1000 ลิตร"
-                    className="w-full rounded-lg border-gray-200 p-3 border-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 focus:outline-none transition-all text-gray-900 text-sm resize-none"
+                    rows={2}
+                    placeholder="รายละเอียด..."
+                    className="w-full rounded-lg border-gray-200 p-2.5 border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-gray-900 text-sm resize-none"
                     value={formData.work2Detail} 
                     onChange={(e) => setFormData({...formData, work2Detail: e.target.value})} 
                   />
                 </div>
 
                 {/* งานที่ 3 */}
-                <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-all sm:col-span-2 lg:col-span-1">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-600">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                      </svg>
-                    </div>
-                    <input 
-                      type="text"
-                      placeholder="ชื่อหัวข้อ เช่น งานอื่นๆ"
-                      className="flex-1 rounded-lg border-gray-300 p-2 border-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-400 focus:outline-none transition-all text-gray-900 text-sm font-bold"
-                      value={formData.work3Label} 
-                      onChange={(e) => setFormData({...formData, work3Label: e.target.value})} 
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <input 
+                    type="text"
+                    placeholder="หัวข้อ เช่น งานอื่นๆ"
+                    className="w-full rounded-lg border-gray-200 p-2.5 border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-gray-900 text-sm font-medium"
+                    value={formData.work3Label} 
+                    onChange={(e) => setFormData({...formData, work3Label: e.target.value})} 
+                  />
                   <textarea 
-                    rows={3}
-                    placeholder="เช่น ทาสีบ้าน, ปูกระเบื้อง, ติดตั้งประตู-หน้าต่าง, งานเหล็กดัด"
-                    className="w-full rounded-lg border-gray-200 p-3 border-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-400 focus:outline-none transition-all text-gray-900 text-sm resize-none"
+                    rows={2}
+                    placeholder="รายละเอียด..."
+                    className="w-full rounded-lg border-gray-200 p-2.5 border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-gray-900 text-sm resize-none"
                     value={formData.work3Detail} 
                     onChange={(e) => setFormData({...formData, work3Detail: e.target.value})} 
                   />
@@ -899,16 +829,9 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
           </div>
 
           {/* Section 3: รูปภาพ */}
-          <div className="p-6 sm:p-8 bg-gradient-to-r from-purple-50/30 to-pink-50/30">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2.5 bg-purple-100 rounded-xl text-purple-600">
-                <Icons.Photo />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">รูปภาพ</h2>
-                <p className="text-sm text-gray-500">อัปโหลดรูปภาพโครงการ</p>
-              </div>
-            </div>
+          <div className="p-6 border-t border-gray-100">
+            <h2 className="text-base font-bold text-gray-900 mb-1">รูปภาพ</h2>
+            <p className="text-sm text-gray-500 mb-6">อัปโหลดรูปภาพโครงการ</p>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Main Image */}
@@ -1112,34 +1035,29 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
           </div>
 
           {/* Submit Section */}
-          <div className="p-6 sm:p-8 bg-gray-50 border-t border-gray-100">
-            <div className="flex flex-col sm:flex-row gap-4">
+          <div className="p-6 bg-gray-50 border-t border-gray-100">
+            <div className="flex flex-col sm:flex-row gap-3">
               {onCancel && (
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="flex-1 sm:flex-none px-8 py-4 rounded-xl text-gray-700 font-bold border-2 border-gray-300 hover:bg-white hover:border-gray-400 transition-all flex items-center justify-center gap-2"
+                  className="px-6 py-3 rounded-lg text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
                   ยกเลิก
                 </button>
               )}
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`flex-1 py-4 px-8 rounded-xl text-white font-bold text-lg shadow-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 ${
+                className={`flex-1 py-3 px-6 rounded-lg text-white font-medium transition-colors flex items-center justify-center gap-2 ${
                   isLoading 
-                    ? 'bg-gray-400 cursor-not-allowed shadow-none' 
-                    : initialData
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600'
-                      : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-blue-600 hover:bg-blue-700'
                 }`}
               >
                 {isLoading ? (
                   <>
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
@@ -1147,10 +1065,10 @@ export default function HouseForm({ initialData, onSuccess, onCancel }: HouseFor
                   </>
                 ) : (
                   <>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                     </svg>
-                    {initialData ? 'บันทึกการแก้ไข' : 'บันทึกข้อมูลโครงการ'}
+                    {initialData ? 'บันทึกการแก้ไข' : 'บันทึกผลงาน'}
                   </>
                 )}
               </button>

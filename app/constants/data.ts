@@ -134,3 +134,49 @@ export const portfolioItems: PortfolioItem[] = [
   },
 ];
 
+/**
+ * Work Type Options
+ * 
+ * รายการลักษณะงานที่ลูกค้าสามารถเลือกได้ในฟอร์มขอใบเสนอราคา
+ */
+export const WORK_TYPE_OPTIONS = [
+  'สร้างบ้าน',
+  'ต่อเติมบ้าน อาคาร อื่นๆ',
+  'รีโนเวทบ้าน อาคาร อื่นๆ',
+  'ตกแต่งภายใน บิ้วอิน ผ้าม่าน วอลเปเปอร์',
+  'งานหลังคา กันสาด',
+  'งานมุ้งลวด เหล็กดัด',
+] as const;
+
+/**
+ * Quotation Status Options
+ * 
+ * รายการสถานะของคำขอใบเสนอราคา พร้อม label และสี
+ */
+export interface StatusOption {
+  value: string;
+  label: string;
+  color: string;
+}
+
+export const QUOTATION_STATUS_OPTIONS: StatusOption[] = [
+  { value: 'pending', label: 'รอดำเนินการ', color: 'bg-yellow-100 text-yellow-800' },
+  { value: 'contacted', label: 'ติดต่อแล้ว', color: 'bg-blue-100 text-blue-800' },
+  { value: 'quoted', label: 'ส่งใบเสนอราคาแล้ว', color: 'bg-purple-100 text-purple-800' },
+  { value: 'completed', label: 'เสร็จสิ้น', color: 'bg-green-100 text-green-800' },
+  { value: 'cancelled', label: 'ยกเลิก', color: 'bg-gray-100 text-gray-600' },
+];
+
+/**
+ * Get Status Badge
+ * 
+ * หา status option จาก value
+ * 
+ * @param status - สถานะที่ต้องการหา
+ * @returns StatusOption - ข้อมูลสถานะพร้อม label และสี
+ */
+export function getStatusBadge(status: string): StatusOption {
+  const statusOption = QUOTATION_STATUS_OPTIONS.find(s => s.value === status);
+  return statusOption || { value: status, label: status, color: 'bg-gray-100 text-gray-600' };
+}
+

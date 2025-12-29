@@ -1,38 +1,19 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import Link from 'next/link';
+import { QuotationFormData } from '@/types';
+import PersonalInfoSection from '@/components/quotation/PersonalInfoSection';
+import WorkTypeSection from '@/components/quotation/WorkTypeSection';
+import ProjectDetailsSection from '@/components/quotation/ProjectDetailsSection';
 
 /**
  * Quotation Page - หน้าใบเสนอราคา
  * 
  * ฟอร์มสำหรับลูกค้าขอใบเสนอราคา - ดีไซน์มืออาชีพ
  */
-
-interface QuotationFormData {
-  name: string;
-  phone: string;
-  email: string;
-  lineId: string;
-  workTypes: string[];
-  otherWorkType: string;
-  area: string;
-  subDistrict: string;
-  district: string;
-  province: string;
-  additionalDetails: string;
-}
-
-const workTypeOptions = [
-  'สร้างบ้าน',
-  'ต่อเติมบ้าน อาคาร อื่นๆ',
-  'รีโนเวทบ้าน อาคาร อื่นๆ',
-  'ตกแต่งภายใน บิ้วอิน ผ้าม่าน วอลเปเปอร์',
-  'งานหลังคา กันสาด',
-  'งานมุ้งลวด เหล็กดัด',
-];
 
 export default function QuotationPage() {
   const [formData, setFormData] = useState<QuotationFormData>({
@@ -52,21 +33,11 @@ export default function QuotationPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [pdpaConsent, setPdpaConsent] = useState(false);
-  
-  // Dropdown state
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const handleFieldChange = (field: keyof QuotationFormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleWorkTypeChange = (workType: string) => {
     setFormData((prev) => {
@@ -151,16 +122,6 @@ export default function QuotationPage() {
     }
   };
 
-  // Get display text for selected work types
-  const getSelectedWorkTypesText = () => {
-    if (formData.workTypes.length === 0) {
-      return 'เลือกลักษณะงานที่สนใจ';
-    }
-    if (formData.workTypes.length === 1) {
-      return formData.workTypes[0];
-    }
-    return `เลือกแล้ว ${formData.workTypes.length} รายการ`;
-  };
 
   return (
     <div className="min-h-screen bg-slate-100 pt-16 sm:pt-20 pb-8 sm:pb-12">
@@ -222,263 +183,24 @@ export default function QuotationPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
+              <PersonalInfoSection 
+                formData={formData} 
+                onChange={handleFieldChange} 
+              />
               
-              {/* Section 1: Personal Information */}
-              <div className="px-4 sm:px-8 py-5 sm:py-7 border-b border-slate-200">
-                <div className="flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-5">
-                  <span className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 bg-blue-800 text-white text-xs sm:text-sm font-bold rounded-full flex items-center justify-center">
-                    1
-                  </span>
-                  <h3 className="font-semibold text-sm sm:text-base text-slate-800">ข้อมูลผู้ติดต่อ</h3>
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
-                      ชื่อ-นามสกุล <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="ระบุชื่อ-นามสกุล"
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-800 text-sm sm:text-base"
-                      required
-                    />
-                  </div>
+              <WorkTypeSection
+                formData={formData}
+                isDropdownOpen={isDropdownOpen}
+                onDropdownToggle={() => setIsDropdownOpen(!isDropdownOpen)}
+                onWorkTypeChange={handleWorkTypeChange}
+                onOtherWorkTypeChange={(value) => handleFieldChange('otherWorkType', value)}
+                onDropdownClose={() => setIsDropdownOpen(false)}
+              />
 
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
-                      เบอร์โทรศัพท์ <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="0XX-XXX-XXXX"
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-800 text-sm sm:text-base"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
-                      อีเมล <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="example@email.com"
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-800 text-sm sm:text-base"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
-                      Line ID <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.lineId}
-                      onChange={(e) => setFormData({ ...formData, lineId: e.target.value })}
-                      placeholder="ระบุ Line ID"
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-800 text-sm sm:text-base"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Work Type - Dropdown */}
-              <div className="px-4 sm:px-8 py-5 sm:py-7 border-b border-slate-200">
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
-                  <span className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 bg-blue-800 text-white text-xs sm:text-sm font-bold rounded-full flex items-center justify-center">
-                    2
-                  </span>
-                  <h3 className="font-semibold text-sm sm:text-base text-slate-800">ลักษณะงานที่สนใจ</h3>
-                  <span className="text-[10px] sm:text-xs text-slate-500">(เลือกได้มากกว่า 1 ข้อ)</span>
-                </div>
-                
-                {/* Dropdown */}
-                <div className="relative" ref={dropdownRef}>
-                  <button
-                    type="button"
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded text-left flex items-center justify-between transition-colors text-sm sm:text-base ${
-                      formData.workTypes.length > 0 
-                        ? 'border-blue-500 bg-blue-50 text-slate-800' 
-                        : 'border-slate-300 text-slate-500 hover:border-slate-400'
-                    } ${isDropdownOpen ? 'ring-2 ring-blue-500' : ''}`}
-                  >
-                    <span className={formData.workTypes.length > 0 ? 'text-slate-800' : ''}>
-                      {getSelectedWorkTypesText()}
-                    </span>
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      strokeWidth={2} 
-                      stroke="currentColor" 
-                      className={`w-4 h-4 sm:w-5 sm:h-5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </button>
-
-                  {/* Dropdown Menu */}
-                  {isDropdownOpen && (
-                    <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-64 overflow-y-auto">
-                      {workTypeOptions.map((workType) => (
-                        <label
-                          key={workType}
-                          className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
-                            formData.workTypes.includes(workType)
-                              ? 'bg-blue-50'
-                              : 'hover:bg-slate-50'
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={formData.workTypes.includes(workType)}
-                            onChange={() => handleWorkTypeChange(workType)}
-                            className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
-                          />
-                          <span className="text-sm sm:text-base text-slate-700">{workType}</span>
-                        </label>
-                      ))}
-                      
-                      {/* อื่นๆ */}
-                      <label
-                        className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors border-t border-slate-100 ${
-                          formData.workTypes.includes('อื่นๆ')
-                            ? 'bg-blue-50'
-                            : 'hover:bg-slate-50'
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={formData.workTypes.includes('อื่นๆ')}
-                          onChange={() => handleWorkTypeChange('อื่นๆ')}
-                          className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
-                        />
-                        <span className="text-sm sm:text-base text-slate-700">อื่นๆ (โปรดระบุ)</span>
-                      </label>
-                    </div>
-                  )}
-                </div>
-
-                {/* Show selected items as tags */}
-                {formData.workTypes.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {formData.workTypes.map((type) => (
-                      <span
-                        key={type}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-100 text-blue-800 text-xs sm:text-sm rounded-full"
-                      >
-                        {type}
-                        <button title="ลบ"
-                          type="button"
-                          onClick={() => handleWorkTypeChange(type)}
-                          className="text-blue-600 hover:text-blue-800"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {/* Input for "อื่นๆ" */}
-                {formData.workTypes.includes('อื่นๆ') && (
-                  <div className="mt-3">
-                    <input
-                      type="text"
-                      value={formData.otherWorkType}
-                      onChange={(e) => setFormData({ ...formData, otherWorkType: e.target.value })}
-                      placeholder="กรุณาระบุลักษณะงาน"
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-800 text-sm sm:text-base"
-                      required={formData.workTypes.includes('อื่นๆ')}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Section 3: Project Details */}
-              <div className="px-4 sm:px-8 py-5 sm:py-7 border-b border-slate-200">
-                <div className="flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-5">
-                  <span className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 bg-blue-800 text-white text-xs sm:text-sm font-bold rounded-full flex items-center justify-center">
-                    3
-                  </span>
-                  <h3 className="font-semibold text-sm sm:text-base text-slate-800">รายละเอียดโครงการ</h3>
-                </div>
-                
-                <div className="space-y-4 sm:space-y-5">
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
-                      ขนาดพื้นที่โดยประมาณ <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.area}
-                      onChange={(e) => setFormData({ ...formData, area: e.target.value })}
-                      placeholder="เช่น 50 ตร.ม., 100 ตร.วา"
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-800 text-sm sm:text-base"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
-                      สถานที่ตั้งโครงการ <span className="text-red-500">*</span>
-                    </label>
-                    <div className="grid grid-cols-1 gap-2 sm:gap-4">
-                      <input
-                        type="text"
-                        value={formData.subDistrict}
-                        onChange={(e) => setFormData({ ...formData, subDistrict: e.target.value })}
-                        placeholder="ตำบล/แขวง"
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-800 text-sm sm:text-base"
-                        required
-                      />
-                      <div className="grid grid-cols-2 gap-2 sm:gap-4">
-                        <input
-                          type="text"
-                          value={formData.district}
-                          onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                          placeholder="อำเภอ/เขต"
-                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-800 text-sm sm:text-base"
-                          required
-                        />
-                        <input
-                          type="text"
-                          value={formData.province}
-                          onChange={(e) => setFormData({ ...formData, province: e.target.value })}
-                          placeholder="จังหวัด"
-                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-800 text-sm sm:text-base"
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
-                      รายละเอียดเพิ่มเติม <span className="text-slate-400 text-[10px] sm:text-xs">(ถ้ามี)</span>
-                    </label>
-                    <textarea
-                      value={formData.additionalDetails}
-                      onChange={(e) => setFormData({ ...formData, additionalDetails: e.target.value })}
-                      placeholder="อธิบายความต้องการเพิ่มเติม เช่น งบประมาณ, ระยะเวลาที่ต้องการ, รายละเอียดงานอื่นๆ"
-                      rows={4}
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-800 text-sm sm:text-base resize-none"
-                    />
-                  </div>
-                </div>
-              </div>
+              <ProjectDetailsSection 
+                formData={formData} 
+                onChange={handleFieldChange} 
+              />
 
               {/* PDPA Consent & Submit */}
               <div className="px-4 sm:px-8 py-5 sm:py-7 bg-slate-50">

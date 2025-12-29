@@ -24,18 +24,7 @@ import HouseList from '@/components/admin/HouseList';
 import GalleryForm from '@/components/admin/GalleryForm';
 import GalleryList from '@/components/admin/GalleryList';
 import QuotationList from '@/components/admin/QuotationList';
-import { House } from '@/types';
-
-/**
- * Interface สำหรับ Gallery Item
- * ใช้สำหรับจัดการการันตีคุณภาพ
- */
-interface GalleryItem {
-  id?: string;
-  description: string;
-  imageUrl: string;
-  order?: number;
-}
+import { House, GalleryItem } from '@/types';
 
 /**
  * AdminPage Component

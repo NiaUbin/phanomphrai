@@ -55,7 +55,7 @@ export default function PromotionSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           {/* Left - Image */}
-          <div className="relative order-2 lg:order-1">
+          <div className="relative order-1 lg:order-1">
             <div className="relative w-full h-[300px] sm:h-[360px] lg:h-[440px] rounded-2xl overflow-hidden shadow-xl">
               <Image
                 src="https://images.unsplash.com/photo-1704821341745-c38ff405d052?w=900&auto=format&fit=crop&q=60"
@@ -87,7 +87,7 @@ export default function PromotionSection() {
           </div>
 
           {/* Right - Content */}
-          <div className="order-1 lg:order-2">
+          <div className="order-2 lg:order-2">
             <p className="text-blue-600 font-semibold text-sm uppercase tracking-wider mb-2">บริการของเรา</p>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               รับสร้างบ้าน<span className="text-blue-600">ครบวงจร</span>

@@ -70,3 +70,73 @@ export interface HeroContent {
     button2Link: string; // ลิงก์ปุ่มที่ 2 (เช่น "#portfolio" หรือ "/path")
     updatedAt?: Date | string; // วันที่อัปเดตล่าสุด
 }
+
+/**
+ * Quotation Request Status
+ * สถานะของคำขอใบเสนอราคา
+ */
+export type QuotationStatus = 'pending' | 'contacted' | 'quoted' | 'completed' | 'cancelled';
+
+/**
+ * Quotation Request Interface
+ * 
+ * ข้อมูลใบเสนอราคา - ข้อมูลทุกฟิลด์ตรงกับที่ลูกค้ากรอกในฟอร์ม quotation/page.tsx
+ * 
+ * หมายเหตุ:
+ * - ข้อมูลนี้ถูกเก็บใน Firebase Firestore (collection: 'quotationRequests')
+ * - สามารถจัดการได้จาก Admin Panel
+ */
+export interface QuotationRequest {
+  id: string;
+  // ข้อมูลผู้ติดต่อ
+  name: string;
+  phone: string;
+  email: string;
+  lineId: string;
+  // ลักษณะงาน
+  workTypes: string[];
+  otherWorkType: string;
+  // รายละเอียดโครงการ
+  area: string;
+  subDistrict: string;
+  district: string;
+  province: string;
+  additionalDetails: string;
+  // ข้อมูลระบบ
+  pdpaConsent: boolean;
+  pdpaConsentDate: Date | import('firebase/firestore').Timestamp;
+  status: QuotationStatus;
+  createdAt: Date | import('firebase/firestore').Timestamp;
+  notes?: string;
+}
+
+/**
+ * Quotation Form Data Interface
+ * 
+ * ข้อมูลสำหรับฟอร์มขอใบเสนอราคา
+ */
+export interface QuotationFormData {
+  name: string;
+  phone: string;
+  email: string;
+  lineId: string;
+  workTypes: string[];
+  otherWorkType: string;
+  area: string;
+  subDistrict: string;
+  district: string;
+  province: string;
+  additionalDetails: string;
+}
+
+/**
+ * Gallery Item Interface
+ * 
+ * ข้อมูลการันตีคุณภาพ
+ */
+export interface GalleryItem {
+  id?: string;
+  description: string;
+  imageUrl: string;
+  order?: number;
+}

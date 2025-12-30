@@ -1,14 +1,21 @@
 'use client';
 
+import { createPortal } from 'react-dom';
+
 interface PageLoadingOverlayProps {
   isVisible: boolean;
 }
 
 export default function PageLoadingOverlay({ isVisible }: PageLoadingOverlayProps) {
-  // แสดงทันทีเมื่อ isVisible = true
-  if (!isVisible) return null;
+  // ตรวจสอบว่าอยู่ฝั่ง client หรือไม่ (ไม่ใช้ state เพื่อหลีกเลี่ยง cascading renders)
+  const isClient = typeof window !== 'undefined';
 
-  return (
+  // ไม่แสดงถ้ายังไม่ได้อยู่ฝั่ง client หรือ isVisible = false
+  if (!isClient || !isVisible) return null;
+
+  // ใช้ createPortal เพื่อ render ที่ document.body โดยตรง
+  // ทำให้ position: fixed ทำงานถูกต้องเสมอ
+  return createPortal(
     <div 
       className="fixed top-0 left-0 right-0 bottom-0 z-[9999] overflow-hidden"
       style={{ 
@@ -323,6 +330,7 @@ export default function PageLoadingOverlay({ isVisible }: PageLoadingOverlayProp
           animation: draw-line 1s ease-out forwards;
         }
       `}</style>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -19,15 +19,21 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
   const [targetHouseId, setTargetHouseId] = useState<string | null>(null);
 
   // Handle card click - show loading overlay before navigation
-  const handleCardClick = (e: React.MouseEvent, houseId: string) => {
+  // รองรับทั้ง touch และ mouse events
+  const handleCardClick = (e: React.MouseEvent | React.TouchEvent, houseId: string) => {
     e.preventDefault();
+    e.stopPropagation();
+    
+    // ป้องกันการกดซ้ำระหว่างกำลังโหลด
+    if (isNavigating) return;
+    
     setIsNavigating(true);
     setTargetHouseId(houseId);
     
-    // แสดง loading animation สักครู่ให้ลูกค้าเห็น (1.5 วินาที)
+    // แสดง loading animation สั้นๆ แล้วนำทางทันที (ลดจาก 1.5 วิเป็น 0.8 วิ)
     setTimeout(() => {
       router.push(`/house/${houseId}`);
-    }, 1500);
+    }, 800);
   };
 
   useEffect(() => {
@@ -196,6 +202,8 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
               href={`/house/${item.id}`}
               prefetch={true}
               onClick={(e) => handleCardClick(e, item.id || '')}
+              onTouchEnd={(e) => handleCardClick(e, item.id || '')}
+              style={{ touchAction: 'manipulation' }}
               className={`group relative w-full h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px] rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-500 border border-gray-200 hover:border-yellow-400 block cursor-pointer bg-white active:scale-[0.98] ${targetHouseId === item.id ? 'ring-2 ring-blue-400 ring-offset-2' : ''}`}
             >
               <Image

@@ -223,7 +223,12 @@ export default function ServicesSection() {
                       data-service-card
                       className="shrink-0 snap-center pt-2 sm:pt-4"
                     >
-                      <Link href={`/gallery/${item.id}`} prefetch={true} className="block">
+                      <Link 
+                        href={`/gallery/${item.id}`} 
+                        prefetch={true} 
+                        className="block"
+                        style={{ touchAction: 'manipulation' }}
+                      >
                         {CardContent}
                       </Link>
                     </div>

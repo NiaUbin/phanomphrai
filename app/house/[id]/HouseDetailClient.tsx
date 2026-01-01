@@ -543,10 +543,6 @@ export default function HouseDetailClient() {
                 {/* Back Button */}
                 <Link 
                   href="/#portfolio" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.location.href = '/#portfolio';
-                  }}
                   className="mt-5 sm:mt-6 flex items-center justify-center gap-2 w-full py-3 sm:py-4 text-sm sm:text-base text-gray-500 hover:text-blue-600 transition-colors group"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform">

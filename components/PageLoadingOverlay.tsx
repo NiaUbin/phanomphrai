@@ -1,22 +1,31 @@
 'use client';
 
 import { createPortal } from 'react-dom';
+import { useState, useEffect } from 'react';
 
 interface PageLoadingOverlayProps {
   isVisible: boolean;
 }
 
 export default function PageLoadingOverlay({ isVisible }: PageLoadingOverlayProps) {
-  // ตรวจสอบว่าอยู่ฝั่ง client หรือไม่ (ไม่ใช้ state เพื่อหลีกเลี่ยง cascading renders)
-  const isClient = typeof window !== 'undefined';
+  // ใช้ state เพื่อให้ initial render บน server และ client ตรงกัน (ทั้งคู่ return null)
+  const [isMounted, setIsMounted] = useState(false);
 
-  // ไม่แสดงถ้ายังไม่ได้อยู่ฝั่ง client หรือ isVisible = false
-  if (!isClient || !isVisible) return null;
+  useEffect(() => {
+    // ใช้ requestAnimationFrame เพื่อหลีกเลี่ยง cascading renders
+    const id = requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  // ไม่แสดงถ้ายังไม่ได้ mount หรือ isVisible = false
+  if (!isMounted || !isVisible) return null;
 
   // ใช้ createPortal เพื่อ render ที่ document.body โดยตรง
   // ทำให้ position: fixed ทำงานถูกต้องเสมอ
   return createPortal(
-    <div 
+    <div
       className="fixed top-0 left-0 right-0 bottom-0 z-[9999] overflow-hidden"
       style={{ 
         position: 'fixed',

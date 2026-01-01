@@ -6,7 +6,6 @@
 'use client';
 
 import React, { memo, useState, useEffect } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { db } from '@/lib/firebase';
@@ -159,7 +158,7 @@ function Footer() {
             ) : featuredHouses.length > 0 ? (
               <div className="grid grid-cols-6 gap-1.5">
                 {featuredHouses.map((house) => (
-                  <Link 
+                  <a 
                     key={house.id} 
                     href={`/house/${house.id}`}
                     className="group relative aspect-square rounded overflow-hidden bg-slate-800"
@@ -171,17 +170,17 @@ function Footer() {
                       className="object-cover"
                       sizes="50px"
                     />
-                  </Link>
+                  </a>
                 ))}
               </div>
             ) : null}
             <div className="text-center mt-3">
-              <Link 
-                href="/#portfolio" 
+              <a 
+                href={`/#portfolio`}
                 className="inline-flex items-center gap-1 text-xs font-medium text-amber-400"
               >
                 ดูผลงานทั้งหมด →
-              </Link>
+              </a>
             </div>
           </div>
 
@@ -234,7 +233,7 @@ function Footer() {
             ) : featuredHouses.length > 0 ? (
               <div className="grid grid-cols-3 gap-1.5">
                 {featuredHouses.map((house) => (
-                  <Link 
+                  <a 
                     key={house.id} 
                     href={`/house/${house.id}`}
                     className="group relative aspect-square rounded overflow-hidden bg-slate-800"
@@ -246,15 +245,15 @@ function Footer() {
                       className="object-cover group-hover:scale-110 transition-transform duration-300"
                       sizes="60px"
                     />
-                  </Link>
+                  </a>
                 ))}
               </div>
             ) : (
               <p className="text-slate-500 text-xs">ยังไม่มีผลงาน</p>
             )}
-            <Link href="/#portfolio" className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-amber-400 hover:text-amber-300">
+            <a href={`/#portfolio`} className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-amber-400 hover:text-amber-300">
               ดูทั้งหมด →
-            </Link>
+            </a>
           </div>
 
           <FooterServices services={footerData.services} />
@@ -280,7 +279,7 @@ function Footer() {
       <div className="border-t border-slate-800 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-[11px] sm:text-xs text-slate-500">
-            <p>© {new Date().getFullYear()} {footerData.companyName} - รับสร้างบ้าน ออกแบบบ้าน ทั่วประเทศ</p>
+            <p>© 2025 {footerData.companyName} - รับสร้างบ้าน ออกแบบบ้าน ทั่วประเทศ</p>
             <div className="flex items-center gap-3 sm:gap-4">
               <span className="flex items-center gap-1">
                 <svg className="w-3 h-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>

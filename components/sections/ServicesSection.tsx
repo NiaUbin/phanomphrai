@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
@@ -223,14 +222,12 @@ export default function ServicesSection() {
                       data-service-card
                       className="shrink-0 snap-center pt-2 sm:pt-4"
                     >
-                      <Link 
+                      <a 
                         href={`/gallery/${item.id}`} 
-                        prefetch={true} 
                         className="block"
-                        style={{ touchAction: 'manipulation' }}
                       >
                         {CardContent}
-                      </Link>
+                      </a>
                     </div>
                   );
                 })}

@@ -2,39 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { House } from '@/types';
-import PageLoadingOverlay from '@/components/PageLoadingOverlay';
 
 // รับ props ชื่อ works มาจากหน้าหลัก (Optional)
 export default function PortfolioSection({ works: initialWorks }: { works?: House[] }) {
-  const router = useRouter();
   const [works, setWorks] = useState<House[]>(initialWorks || []);
   const [loading, setLoading] = useState<boolean>(!initialWorks);
-  const [error, setError] = useState<string | null>(null);
-  const [isNavigating, setIsNavigating] = useState(false);
-  const [targetHouseId, setTargetHouseId] = useState<string | null>(null);
-
-  // Handle card click - show loading overlay before navigation
-  // รองรับทั้ง touch และ mouse events
-  const handleCardClick = (e: React.MouseEvent | React.TouchEvent, houseId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // ป้องกันการกดซ้ำระหว่างกำลังโหลด
-    if (isNavigating) return;
-    
-    setIsNavigating(true);
-    setTargetHouseId(houseId);
-    
-    // แสดง loading animation สั้นๆ แล้วนำทางทันที (ลดจาก 1.5 วิเป็น 0.8 วิ)
-    setTimeout(() => {
-      router.push(`/house/${houseId}`);
-    }, 800);
-  };
 
   useEffect(() => {
     // ถ้ามีข้อมูลจาก props แล้ว ไม่ต้อง fetch ใหม่
@@ -92,7 +67,6 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
         setWorks(fetchedWorks);
       } catch (err) {
         console.error("Error fetching portfolio items:", err);
-        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
       }
@@ -100,15 +74,6 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
 
     fetchWorks();
   }, [initialWorks]);
-
-  if (error) {
-    return (
-      <section id="portfolio" className="py-10 bg-gray-100 text-center text-red-600">
-        <p>Error loading portfolio: {error}</p>
-        <p className="text-sm text-gray-500 mt-2">Please check your Firestore Security Rules.</p>
-      </section>
-    );
-  }
 
   // ถ้าโหลดเสร็จแล้วและไม่มีข้อมูลเลย ให้แสดงข้อความว่าไม่มีข้อมูล
   if (!loading && (!works || works.length === 0)) {
@@ -129,10 +94,6 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
   }
 
   return (
-    <>
-      {/* Page Loading Overlay - แสดงเหนือทุกอย่าง */}
-      <PageLoadingOverlay isVisible={isNavigating} />
-      
       <section id="portfolio" className="pt-6 sm:pt-8 md:pt-10 pb-10 sm:pb-12 md:pb-16 lg:pb-20 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
           {/* Header - SEO Optimized */}
@@ -197,14 +158,10 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
         {!loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-1 md:gap-1">
           {works.map((item) => (
-            <Link
+            <a
               key={item.id}
               href={`/house/${item.id}`}
-              prefetch={true}
-              onClick={(e) => handleCardClick(e, item.id || '')}
-              onTouchEnd={(e) => handleCardClick(e, item.id || '')}
-              style={{ touchAction: 'manipulation' }}
-              className={`group relative w-full h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px] rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-500 border border-gray-200 hover:border-yellow-400 block cursor-pointer bg-white active:scale-[0.98] ${targetHouseId === item.id ? 'ring-2 ring-blue-400 ring-offset-2' : ''}`}
+              className="group relative w-full h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px] rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-500 border border-gray-200 hover:border-yellow-400 block cursor-pointer bg-white active:scale-[0.98] active:opacity-80"
             >
               <Image
                 src={item.mainImage || '/placeholder.jpg'} // ใช้รูปหลักจาก DB
@@ -269,12 +226,11 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
                   <path d="M7 17L17 7M7 7h10v10" />
                 </svg>
               </div>
-            </Link>
+            </a>
           ))}
         </div>
         )}
       </div>
     </section>
-    </>
   );
 }

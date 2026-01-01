@@ -173,10 +173,6 @@ export default function GalleryDetailClient() {
           <nav className="flex items-center justify-center gap-2 text-sm text-gray-500 mb-8">
             <Link 
               href="/" 
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.href = '/';
-              }}
               className="hover:text-amber-600 transition-colors"
             >
               Home
@@ -184,10 +180,6 @@ export default function GalleryDetailClient() {
             <span>/</span>
             <Link 
               href="/#services" 
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.href = '/#services';
-              }}
               className="hover:text-amber-600 transition-colors"
             >
               การันตีคุณภาพ

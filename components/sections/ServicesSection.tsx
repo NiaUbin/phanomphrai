@@ -140,26 +140,26 @@ export default function ServicesSection() {
         ) : (
           <>
             {/* Service Carousel Wrapper */}
-            <div className="relative w-full px-4">
-              {/* Navigation Buttons */}
+            <div className="relative w-full px-4 md:px-16 group/carousel">
+              {/* Navigation Buttons - Arrow Only, Show on Hover */}
               <button
                 type="button"
                 onClick={() => scrollServices('left')}
                 aria-label="เลื่อนไปซ้าย"
-                className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-30 h-12 w-12 items-center justify-center rounded-full bg-white/90 text-gray-800 shadow-md hover:bg-white transition-all duration-300"
+                className="hidden md:flex absolute left-4 lg:left-6 top-1/2 -translate-y-[55%] z-30 p-2 items-center justify-center text-gray-700 opacity-0 -translate-x-4 group-hover/carousel:opacity-100 group-hover/carousel:translate-x-0 hover:text-gray-900 hover:scale-110 transition-all duration-300 ease-out cursor-pointer"
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M15 18L9 12L15 6" />
+                <svg width="20" height="75" viewBox="0 0 20 75" fill="currentColor" aria-hidden="true" className="drop-shadow-lg">
+                  <path d="M18 0 L0 37.5 L18 75 L18 47 L8 37.5 L18 28 Z" />
                 </svg>
               </button>
               <button
                 type="button"
                 onClick={() => scrollServices('right')}
                 aria-label="เลื่อนไปขวา"
-                className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-30 h-12 w-12 items-center justify-center rounded-full bg-white/90 text-gray-800 shadow-md hover:bg-white transition-all duration-300"
+                className="hidden md:flex absolute right-4 lg:right-6 top-1/2 -translate-y-[55%] z-30 p-2 items-center justify-center text-gray-700 opacity-0 translate-x-4 group-hover/carousel:opacity-100 group-hover/carousel:translate-x-0 hover:text-gray-900 hover:scale-110 transition-all duration-300 ease-out cursor-pointer"
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M9 6l6 6-6 6" />
+                <svg width="20" height="75" viewBox="0 0 20 75" fill="currentColor" aria-hidden="true" className="drop-shadow-lg">
+                  <path d="M2 0 L20 37.5 L2 75 L2 47 L12 37.5 L2 28 Z" />
                 </svg>
               </button>
 
@@ -174,43 +174,27 @@ export default function ServicesSection() {
               >
                 {sortedItems.map((item) => {
                   const CardContent = (
-                    <div className="relative w-[200px] sm:w-[240px] md:w-[260px] aspect-[4/5] bg-gray-200 group rounded-lg shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
+                    <div className="relative w-[200px] sm:w-[240px] md:w-[260px] aspect-[4/5] group cursor-pointer">
                       
-                      {/* Image */}
-                      <Image
-                        src={item.imageUrl}
-                        alt={`${item.description} - ผลงานรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้าง PHANOMPHRAI`}
-                        fill
-                        loading="lazy"
-                        className="object-cover transition-transform duration-700 ease-out hover:drop-shadow-lg"
-                        sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 260px"
-                        title={`${item.description} - บริการรับสร้างบ้านครบวงจร`}
-                      />
+                      {/* 1. ส่วนรูปภาพและ Overlay (แยกกรอบ เพื่อให้ซูมได้โดยไม่ล้น และไม่ตัดกล่องข้อความ) */}
+                      <div className="relative w-full h-full  overflow-hidden bg-gray-200 shadow-sm group-hover:shadow-xl transition-all duration-300">
+                        
+                        {/* Image */}
+                        <Image
+                          src={item.imageUrl}
+                          alt={`${item.description} - ผลงานรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้าง PHANOMPHRAI`}
+                          fill
+                          loading="lazy"
+                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                          sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 260px"
+                        />
+                      </div>
 
-                      {/* Overlay Text Box */}
-                      <div className="absolute bottom-0 left-3 right-3 sm:left-4 sm:right-4 translate-y-1/2 bg-white p-2 sm:p-3 shadow-lg flex items-center justify-center h-[90px] sm:h-[110px] z-20">
+                      {/* 2. ส่วนกล่องข้อความ (อยู่นอกกรอบรูป จึงยื่นออกมาได้เหมือนเดิม) */}
+                      <div className="absolute bottom-0 left-3 right-3 sm:left-4 sm:right-4 translate-y-1/2 bg-white p-2 sm:p-3 shadow-lg flex items-center justify-center h-[90px] sm:h-[110px] z-40">
                         <p className="text-blue-800 text-xs sm:text-sm font-medium text-center leading-relaxed line-clamp-3 sm:line-clamp-4">
                           {item.description}
                         </p>
-                      </div>
-
-                      {/* View More Indicator */}
-                      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
-                        <div className="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-md">
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="text-gray-800"
-                          >
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                          </svg>
-                        </div>
                       </div>
 
                     </div>

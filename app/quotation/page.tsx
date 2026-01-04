@@ -133,7 +133,7 @@ export default function QuotationPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
               <div className="text-center sm:text-left">
                 <h1 className="text-xl sm:text-2xl font-bold text-slate-800">
-                  พนมไพร โฮม
+                  Phanomphrai Home
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">
                   รับเหมาก่อสร้าง ต่อเติม รีโนเวท ครบวงจร
@@ -141,7 +141,7 @@ export default function QuotationPage() {
               </div>
               <div className="text-center sm:text-right text-xs sm:text-sm text-slate-600">
                 <p>โทร: 092-262-0227</p>
-                <p>Line: @phanomphrai</p>
+                <p>Line: <a href="https://line.me/ti/p/@phanomphrai">@phanomphrai</a></p>
               </div>
             </div>
           </div>

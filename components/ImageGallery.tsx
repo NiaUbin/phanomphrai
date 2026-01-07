@@ -115,10 +115,10 @@ function ImageGallery({ images, title }: ImageGalleryProps) {
           {selectedIndex !== null && (
             <motion.div 
               initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-              animate={{ opacity: 1, backdropFilter: 'blur(18px)' }}
+              animate={{ opacity: 1, backdropFilter: 'blur(12px)' }}
               exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed inset-0 bg-black/90" // เพิ่มความเข้มพื้นหลังเล็กน้อย
+              className="fixed inset-0 bg-black/60" // เพิ่มความเข้มพื้นหลังเล็กน้อย
               style={{ 
                 zIndex: 2147483647,
                 // ... (styles เดิม)
@@ -142,7 +142,7 @@ function ImageGallery({ images, title }: ImageGalleryProps) {
                     <span className="text-white/40">/</span>
                     <span className="text-white/80">{images.length}</span>
                   </div>
-                  <span className="text-white/60 text-sm hidden sm:block">ใช้ ← → เพื่อเปลี่ยนรูป, ดับเบิ้ลคลิกเพื่อซูม</span>
+                  <span className="text-white/60 text-sm font-medium hidden sm:block">ใช้ ← → เพื่อเปลี่ยนรูป, ดับเบิ้ลคลิกเพื่อซูม</span>
                 </div>
 
                 {/* Close Button */}

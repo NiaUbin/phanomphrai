@@ -157,14 +157,19 @@ export default function Navbar() {
    * @param href - URL path
    */
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // ถ้าเป็น link ไปหน้าแรก และไม่ได้อยู่หน้าแรก
-    if (href === '/' && pathname !== '/') {
+    // กรณีที่ 1: คลิกปุ่ม "หน้าหลัก" (href คือ /)
+    if (href === '/') {
       e.preventDefault();
-      router.push('/');
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // เลื่อนขึ้นบนสุดเสมอ
+
+      // ถ้าตัวเราไม่ได้อยู่หน้าแรก ให้เปลี่ยนหน้าไปด้วย
+      if (pathname !== '/') {
+        setTimeout(() => router.push('/'), 300);
+      }
       return;
     }
     
-    // ถ้าเป็น hash link (#section)
+    // กรณีที่ 2: ถ้าเป็น hash link (#section)
     if (href.includes('#')) {
       e.preventDefault();
       const hash = href.split('#')[1];
@@ -181,7 +186,6 @@ export default function Navbar() {
           const offsetPosition = elementPosition + window.pageYOffset - offset;
           window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
         } else {
-          // ถ้าไม่เจอ element ให้ navigate ไปที่ hash
           router.push(href);
         }
       }
@@ -236,12 +240,14 @@ export default function Navbar() {
           <div className={`flex items-center justify-between transition-all duration-300 ${shouldShowSolid ? 'py-3' : 'py-4'}`}>
             
             {/* Logo Section */}
-            <Link 
+<Link 
               href="/" 
               onClick={(e) => {
+                e.preventDefault(); // ป้องกันการโหลดหน้าใหม่แบบปกติ
+                window.scrollTo({ top: 0, behavior: 'smooth' }); // สั่งให้เลื่อนขึ้นบนสุดเสมอ
+                
+                // ถ้าไม่ได้อยู่หน้าแรก ให้เปลี่ยนหน้าหลังจากเริ่มเลื่อนแล้ว
                 if (pathname !== '/') {
-                  e.preventDefault();
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
                   setTimeout(() => router.push('/'), 300);
                 }
               }}

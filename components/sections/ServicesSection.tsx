@@ -146,7 +146,7 @@ export default function ServicesSection() {
                 type="button"
                 onClick={() => scrollServices('left')}
                 aria-label="เลื่อนไปซ้าย"
-                className="hidden md:flex absolute left-4 lg:left-6 top-1/2 -translate-y-[55%] z-30 p-2 items-center justify-center text-gray-700 opacity-0 -translate-x-4 group-hover/carousel:opacity-100 group-hover/carousel:translate-x-0 hover:text-gray-900 hover:scale-110 transition-all duration-300 ease-out cursor-pointer"
+                className="hidden md:flex absolute left-4 lg:left-6 top-1/2 -translate-y-[55%] z-30 p-2 items-center justify-center text-black opacity-0 -translate-x-4 group-hover/carousel:opacity-100 group-hover/carousel:translate-x-0 hover:text-blue-600 hover:scale-110 transition-all duration-300 ease-out cursor-pointer"
               >
                 <svg width="20" height="75" viewBox="0 0 20 75" fill="currentColor" aria-hidden="true" className="drop-shadow-lg">
                   <path d="M18 0 L0 37.5 L18 75 L18 47 L8 37.5 L18 28 Z" />
@@ -156,7 +156,7 @@ export default function ServicesSection() {
                 type="button"
                 onClick={() => scrollServices('right')}
                 aria-label="เลื่อนไปขวา"
-                className="hidden md:flex absolute right-4 lg:right-6 top-1/2 -translate-y-[55%] z-30 p-2 items-center justify-center text-gray-700 opacity-0 translate-x-4 group-hover/carousel:opacity-100 group-hover/carousel:translate-x-0 hover:text-gray-900 hover:scale-110 transition-all duration-300 ease-out cursor-pointer"
+                className="hidden md:flex absolute right-4 lg:right-6 top-1/2 -translate-y-[55%] z-30 p-2 items-center justify-center text-black opacity-0 translate-x-4 group-hover/carousel:opacity-100 group-hover/carousel:translate-x-0 hover:text-blue-600 hover:scale-110 transition-all duration-300 ease-out cursor-pointer"
               >
                 <svg width="20" height="75" viewBox="0 0 20 75" fill="currentColor" aria-hidden="true" className="drop-shadow-lg">
                   <path d="M2 0 L20 37.5 L2 75 L2 47 L12 37.5 L2 28 Z" />

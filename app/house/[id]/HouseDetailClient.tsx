@@ -40,7 +40,6 @@ export default function HouseDetailClient() {
   const [house, setHouse] = useState<HouseData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     let houseId = params?.id as string;
@@ -117,26 +116,7 @@ export default function HouseDetailClient() {
     };
   }, [house?.title]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (typeof window !== 'undefined') {
-        const scrollY = window.scrollY;
-        setShowScrollTop(scrollY > 300);
-      }
-    };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
 
   // Loading state - ใช้ PageLoadingOverlay component
   if (isLoading) {

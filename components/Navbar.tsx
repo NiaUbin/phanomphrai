@@ -240,7 +240,7 @@ export default function Navbar() {
           <div className={`flex items-center justify-between transition-all duration-300 ${shouldShowSolid ? 'py-3' : 'py-4'}`}>
             
             {/* Logo Section */}
-<Link 
+            <Link 
               href="/" 
               onClick={(e) => {
                 e.preventDefault(); // ป้องกันการโหลดหน้าใหม่แบบปกติ

@@ -7,12 +7,14 @@ import Link from 'next/link';
 import { db } from '@/lib/firebase'; 
 import { doc, getDoc } from 'firebase/firestore';
 import PageLoadingOverlay from '@/components/PageLoadingOverlay';
+import ImageGallery from '@/components/ImageGallery';
 
 interface GalleryData {
   id: string;
   title?: string;
   description: string;
   imageUrl: string;
+  images?: string[];
   order?: number;
   houseId?: string;
 }
@@ -159,6 +161,11 @@ export default function GalleryDetailClient() {
     );
   }
 
+  // รวมรูปภาพทั้งหมด (รูปหลัก + รูปเพิ่มเติม)
+  const allImages = gallery.images && gallery.images.length > 0 
+    ? [gallery.imageUrl, ...gallery.images]
+    : [gallery.imageUrl];
+
   return (
     <div className="min-h-screen bg-white animate-fadeIn">
       {/* Title Section */}
@@ -216,6 +223,21 @@ export default function GalleryDetailClient() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-5 sm:space-y-6">
               
+              {/* Gallery Grid - แสดงเมื่อมีรูปภาพเพิ่มเติม */}
+              {gallery.images && gallery.images.length > 0 && (
+                <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100">
+                  <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                      </svg>
+                    </div>
+                    <span className="text-sm sm:text-base">รูปภาพผลงาน ({allImages.length} รูป)</span>
+                  </h2>
+                  <ImageGallery images={allImages} title={gallery.title || gallery.description} />
+                </div>
+              )}
+
               {/* Description */}
               <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
                 <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
@@ -349,4 +371,3 @@ export default function GalleryDetailClient() {
     </div>
   );
 }
-

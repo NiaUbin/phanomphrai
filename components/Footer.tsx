@@ -148,7 +148,7 @@ function Footer() {
 
           {/* ผลงานล่าสุด - Full Width on Mobile */}
           <div>
-            <h4 className="text-sm font-bold text-white mb-4 text-center">ผลงานล่าสุด</h4>
+            <h4 className="text-sm font-bold text-white mb-4 text-center">ผลงานล่าสุดในปี 2026</h4>
             {loading ? (
               <div className="grid grid-cols-6 gap-1.5">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -223,7 +223,7 @@ function Footer() {
 
           {/* ผลงานล่าสุด */}
           <div>
-            <h4 className="text-sm font-bold text-white mb-4">ผลงานล่าสุด</h4>
+            <h4 className="text-sm font-bold text-white mb-4">ผลงานล่าสุดในปี 2026</h4>
             {loading ? (
               <div className="grid grid-cols-3 gap-1.5">
                 {[1, 2, 3, 4, 5, 6].map((i) => (

@@ -352,7 +352,7 @@ export default function RootLayout({
         {/* Preconnect to important origins - เพิ่มความเร็วในการโหลด */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://firebasestorage.googleapis.com" />
+
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${kanit.variable} antialiased`}

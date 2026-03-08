@@ -8,9 +8,7 @@
 import React, { memo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { db } from '@/lib/firebase';
-import { collection, query, where, limit, getDocs } from 'firebase/firestore';
-import { House } from '@/types';
+import { portfolioItems } from '@/app/constants/data';
 import FooterBrand from './footer/FooterBrand';
 import FooterContact from './footer/FooterContact';
 import FooterServices from './footer/FooterServices';
@@ -71,33 +69,16 @@ function Footer() {
   const pathname = usePathname();
   const footerData = defaultFooterData;
   
-  const [featuredHouses, setFeaturedHouses] = useState<House[]>([]);
+  const [featuredHouses, setFeaturedHouses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFeaturedHouses = async () => {
-      try {
-        const housesRef = collection(db, 'houses');
-        const q = query(
-          housesRef,
-          where('isFeatured', '==', true),
-          limit(6)
-        );
-        const snapshot = await getDocs(q);
-        const houses = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as House[];
-        houses.sort((a, b) => (a.order || 0) - (b.order || 0));
-        setFeaturedHouses(houses.slice(0, 6));
-      } catch (error) {
-        console.error('Error fetching featured houses:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFeaturedHouses();
+    // Simulate loading for realistic UX
+    const timer = setTimeout(() => {
+      setFeaturedHouses(portfolioItems.slice(0, 6));
+      setLoading(false);
+    }, 300);
+    return () => clearTimeout(timer);
   }, []);
 
   if (pathname !== '/') return null;
@@ -160,11 +141,11 @@ function Footer() {
                 {featuredHouses.map((house) => (
                   <a 
                     key={house.id} 
-                    href={`/house/${house.id}`}
+                    href={`#`}
                     className="group relative aspect-square rounded overflow-hidden bg-white/5"
                   >
                     <Image
-                      src={house.mainImage}
+                      src={house.src}
                       alt={house.title}
                       fill
                       className="object-cover"
@@ -235,11 +216,11 @@ function Footer() {
                 {featuredHouses.map((house) => (
                   <a 
                     key={house.id} 
-                    href={`/house/${house.id}`}
+                    href={`#`}
                     className="group relative aspect-square rounded overflow-hidden bg-slate-800"
                   >
                     <Image
-                      src={house.mainImage}
+                      src={house.src}
                       alt={house.title}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-300"

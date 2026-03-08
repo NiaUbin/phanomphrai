@@ -10,9 +10,7 @@
  * 
  * ข้อมูลบ้าน/ผลงานที่แสดงในเว็บไซต์
  * 
- * หมายเหตุ:
- * - ข้อมูลนี้ถูกเก็บใน Firebase Firestore (collection: 'houses')
- * - สามารถจัดการได้จาก Admin Panel
+ * ข้อมูลบ้าน/ผลงานที่แสดงในเว็บไซต์
  */
 export interface House {
   id?: string; // Document ID จาก Firestore
@@ -56,9 +54,7 @@ export interface House {
  * 
  * ข้อมูล Hero Section (ส่วนหัวของหน้าเว็บ)
  * 
- * หมายเหตุ:
- * - ข้อมูลนี้ถูกเก็บใน Firebase Firestore (collection: 'heroContent', document: 'main')
- * - สามารถแก้ไขได้จาก Admin Panel
+ * ข้อมูล Hero Section (ส่วนหัวของหน้าเว็บ)
  */
 export interface HeroContent {
   id?: string; // Document ID จาก Firestore
@@ -80,11 +76,8 @@ export type QuotationStatus = 'pending' | 'contacted' | 'quoted' | 'completed' |
 /**
  * Quotation Request Interface
  * 
- * ข้อมูลใบเสนอราคา - ข้อมูลทุกฟิลด์ตรงกับที่ลูกค้ากรอกในฟอร์ม quotation/page.tsx
  * 
- * หมายเหตุ:
- * - ข้อมูลนี้ถูกเก็บใน Firebase Firestore (collection: 'quotationRequests')
- * - สามารถจัดการได้จาก Admin Panel
+ * ข้อมูลใบเสนอราคา - ข้อมูลทุกฟิลด์ตรงกับที่ลูกค้ากรอกในฟอร์ม quotation/page.tsx
  */
 export interface QuotationRequest {
   id: string;
@@ -104,9 +97,9 @@ export interface QuotationRequest {
   additionalDetails: string;
   // ข้อมูลระบบ
   pdpaConsent: boolean;
-  pdpaConsentDate: Date | import('firebase/firestore').Timestamp;
+  pdpaConsentDate: Date | string;
   status: QuotationStatus;
-  createdAt: Date | import('firebase/firestore').Timestamp;
+  createdAt: Date | string;
   notes?: string;
 }
 

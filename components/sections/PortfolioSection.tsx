@@ -2,78 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { House } from '@/types';
+import { portfolioItems } from '@/app/constants/data';
 
 // รับ props ชื่อ works มาจากหน้าหลัก (Optional)
-export default function PortfolioSection({ works: initialWorks }: { works?: House[] }) {
-  const [works, setWorks] = useState<House[]>(initialWorks || []);
-  const [loading, setLoading] = useState<boolean>(!initialWorks);
+export default function PortfolioSection() {
+  const [works, setWorks] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // ถ้ามีข้อมูลจาก props แล้ว ไม่ต้อง fetch ใหม่
-    if (initialWorks) {
-      // เรียงลำดับตาม order (1, 2, 3, ... ถ้าไม่มี order = แสดงท้ายสุด)
-      const sortedWorks = [...initialWorks].sort((a, b) => {
-        // แปลง order เป็น number ถ้ายังเป็น string
-        const orderA = typeof a.order === 'number' ? a.order : (a.order ? parseInt(String(a.order), 10) : 999999);
-        const orderB = typeof b.order === 'number' ? b.order : (b.order ? parseInt(String(b.order), 10) : 999999);
-        
-        // ถ้า order เท่ากัน ให้เรียงตาม createdAt (ถ้ามี) หรือ id
-        if (orderA === orderB) {
-          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-          if (dateA !== dateB) {
-            return dateB - dateA; // ใหม่ก่อน
-          }
-          return (a.id || '').localeCompare(b.id || '');
-        }
-        
-        return orderA - orderB;
-      });
-      setWorks(sortedWorks);
+    // Simulate loading for the skeleton effect
+    const timer = setTimeout(() => {
+      setWorks(portfolioItems);
       setLoading(false);
-      return;
-    }
-
-    const fetchWorks = async () => {
-      try {
-        // ดึงข้อมูลทั้งหมดจาก houses
-        const q = collection(db, 'houses');
-        const querySnapshot = await getDocs(q);
-        const fetchedWorks = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        } as House));
-        // เรียงลำดับตาม order (1, 2, 3, ... ถ้าไม่มี order = แสดงท้ายสุด)
-        fetchedWorks.sort((a, b) => {
-          // แปลง order เป็น number ถ้ายังเป็น string
-          const orderA = typeof a.order === 'number' ? a.order : (a.order ? parseInt(String(a.order), 10) : 999999);
-          const orderB = typeof b.order === 'number' ? b.order : (b.order ? parseInt(String(b.order), 10) : 999999);
-          
-          // ถ้า order เท่ากัน ให้เรียงตาม createdAt (ถ้ามี) หรือ id
-          if (orderA === orderB) {
-            const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-            const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-            if (dateA !== dateB) {
-              return dateB - dateA; // ใหม่ก่อน
-            }
-            return (a.id || '').localeCompare(b.id || '');
-          }
-          
-          return orderA - orderB;
-        });
-        setWorks(fetchedWorks);
-      } catch (err) {
-        console.error("Error fetching portfolio items:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWorks();
-  }, [initialWorks]);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // ถ้าโหลดเสร็จแล้วและไม่มีข้อมูลเลย ให้แสดงข้อความว่าไม่มีข้อมูล
   if (!loading && (!works || works.length === 0)) {
@@ -160,11 +103,11 @@ export default function PortfolioSection({ works: initialWorks }: { works?: Hous
           {works.map((item) => (
             <a
               key={item.id}
-              href={`/house/${item.id}`}
+              href={`#`}
               className="group relative w-full h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px] rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-500 border border-gray-200 hover:border-yellow-400 block cursor-pointer bg-white active:scale-[0.98] active:opacity-80"
             >
               <Image
-                src={item.mainImage || '/placeholder.jpg'} // ใช้รูปหลักจาก DB
+                src={item.src || '/placeholder.jpg'} // ใช้รูปจาก fallback
                 alt={`${item.title} - ผลงานรับสร้างบ้าน ออกแบบบ้าน รับเหมาก่อสร้าง PHANOMPHRAI ${item.description ? `: ${item.description}` : ''}`}
                 fill
                 loading="lazy"

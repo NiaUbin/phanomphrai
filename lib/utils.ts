@@ -4,18 +4,8 @@
  * ฟังก์ชันช่วยเหลือที่ใช้ร่วมกันในแอปพลิเคชัน
  */
 
-import { Timestamp } from 'firebase/firestore';
-
-/**
- * Format Date
- * 
- * แปลงวันที่จาก Timestamp หรือ Date เป็น string ภาษาไทย
- * 
- * @param date - วันที่ที่ต้องการแปลง (Timestamp หรือ Date)
- * @returns string - วันที่ที่ format แล้ว (เช่น "1 ม.ค. 2567, 10:30")
- */
-export function formatDate(date: Timestamp | Date): string {
-  const d = date instanceof Timestamp ? date.toDate() : new Date(date);
+export function formatDate(date: Date | string | number): string {
+  const d = new Date(date);
   return d.toLocaleDateString('th-TH', {
     year: 'numeric',
     month: 'short',

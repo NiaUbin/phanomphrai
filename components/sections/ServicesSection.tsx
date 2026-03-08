@@ -2,8 +2,6 @@
 
 import Image from 'next/image';
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
-import { db } from '@/lib/firebase';
-import { collection, getDocs } from 'firebase/firestore';
 import { services as fallbackServices } from '@/app/constants/data';
 
 interface GalleryItem {
@@ -21,41 +19,17 @@ export default function ServicesSection() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    const fetchGallery = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'gallery'));
-        const data: GalleryItem[] = [];
-        querySnapshot.forEach((doc) => {
-          data.push({ id: doc.id, ...doc.data() } as GalleryItem);
-        });
-        
-        // Sort data
-        data.sort((a, b) => (a.order || 0) - (b.order || 0));
-        
-        if (data.length > 0) {
-          setItems(data);
-        } else {
-          setItems(fallbackServices.map((s, i) => ({
-            id: String(s.id),
-            description: s.title,
-            imageUrl: s.image,
-            order: i
-          })));
-        }
-      } catch (error) {
-        console.error('Error fetching gallery:', error);
-        setItems(fallbackServices.map((s, i) => ({
-          id: String(s.id),
-          description: s.title,
-          imageUrl: s.image,
-          order: i
-        })));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchGallery();
+    // Simulate loading
+    const timer = setTimeout(() => {
+      setItems(fallbackServices.map((s, i) => ({
+        id: String(s.id),
+        description: s.title,
+        imageUrl: s.image,
+        order: i
+      })));
+      setIsLoading(false);
+    }, 500);
+    return () => clearTimeout(timer);
   }, []);
 
   // Memoize sorted items to prevent unnecessary re-renders
@@ -207,7 +181,7 @@ export default function ServicesSection() {
                       className="shrink-0 snap-center pt-2 sm:pt-4"
                     >
                       <a 
-                        href={`/gallery/${item.id}`} 
+                        href={`#`} 
                         className="block"
                       >
                         {CardContent}

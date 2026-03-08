@@ -6,8 +6,8 @@
  * - ข้อมูล Services Section
  * - ข้อมูล Portfolio Section
  * 
- * หมายเหตุ: ข้อมูลเหล่านี้เป็น fallback data
- * ข้อมูลจริงจะถูกโหลดจาก Firebase ในแต่ละ component
+ * 
+ * หมายเหตุ: ข้อมูลเหล่านี้ใช้เป็นข้อมูลหลัก
  */
 
 /**
@@ -87,7 +87,6 @@ interface PortfolioItem {
 
 /**
  * ข้อมูลสำหรับ Portfolio Section (ส่วนผลงานของเรา - Image Gallery)
- * ใช้เป็น fallback data เมื่อยังไม่มีข้อมูลจาก Firebase
  */
 export const portfolioItems: PortfolioItem[] = [
   {

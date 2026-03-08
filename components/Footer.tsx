@@ -103,16 +103,16 @@ function Footer() {
   if (pathname !== '/') return null;
 
   return (
-    <footer className="bg-slate-900 text-white" itemScope itemType="https://schema.org/Organization">
+    <footer className="bg-black text-white" itemScope itemType="https://schema.org/Organization">
       
       {/* SEO Section */}
-      <div className="border-b border-slate-800">
+      <div className="border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3">
-              รับสร้างบ้าน<span className="text-blue-400">ทั่วประเทศ</span>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 tracking-tight">
+              รับสร้างบ้าน<span className="text-secondary">ทั่วประเทศ</span>
             </h2>
-            <p className="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
+            <p className="text-gray-400 text-xs sm:text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-light">
               {footerData.seoText}
             </p>
           </div>
@@ -122,7 +122,7 @@ function Footer() {
             {footerData.keywords.map((keyword) => (
               <span 
                 key={keyword} 
-                className="px-2.5 py-1 bg-slate-800 border border-slate-700 text-slate-400 text-[10px] sm:text-xs rounded-full"
+                className="px-3 py-1 bg-white/5 border border-white/10 text-gray-400 text-[10px] sm:text-xs rounded-full hover:border-secondary/50 hover:text-secondary transition-colors"
               >
                 {keyword}
               </span>
@@ -138,7 +138,7 @@ function Footer() {
         <div className="space-y-8 sm:hidden">
           
           {/* Brand - Full Width on Mobile */}
-          <div className="text-center pb-6 border-b border-slate-800">
+          <div className="text-center pb-6 border-b border-white/10">
             <FooterBrand
               companyName={footerData.companyName}
               tagline={footerData.tagline}
@@ -152,7 +152,7 @@ function Footer() {
             {loading ? (
               <div className="grid grid-cols-6 gap-1.5">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="aspect-square bg-slate-800 rounded animate-pulse" />
+                  <div key={i} className="aspect-square bg-white/5 rounded animate-pulse" />
                 ))}
               </div>
             ) : featuredHouses.length > 0 ? (
@@ -161,7 +161,7 @@ function Footer() {
                   <a 
                     key={house.id} 
                     href={`/house/${house.id}`}
-                    className="group relative aspect-square rounded overflow-hidden bg-slate-800"
+                    className="group relative aspect-square rounded overflow-hidden bg-white/5"
                   >
                     <Image
                       src={house.mainImage}
@@ -177,7 +177,7 @@ function Footer() {
             <div className="text-center mt-3">
               <a 
                 href={`/#portfolio`}
-                className="inline-flex items-center gap-1 text-xs font-medium text-amber-400"
+                className="inline-flex items-center gap-1 text-xs font-medium text-secondary"
               >
                 ดูผลงานทั้งหมด →
               </a>
@@ -185,7 +185,7 @@ function Footer() {
           </div>
 
           {/* 2 Columns: บริการ + ติดต่อ */}
-          <div className="grid grid-cols-2 gap-6 py-6 border-y border-slate-800">
+          <div className="grid grid-cols-2 gap-6 py-6 border-y border-white/10">
             <FooterServices services={footerData.services} />
             <FooterContact
               address={footerData.address}
@@ -227,7 +227,7 @@ function Footer() {
             {loading ? (
               <div className="grid grid-cols-3 gap-1.5">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="aspect-square bg-slate-800 rounded animate-pulse" />
+                  <div key={i} className="aspect-square bg-white/5 rounded animate-pulse" />
                 ))}
               </div>
             ) : featuredHouses.length > 0 ? (
@@ -249,9 +249,9 @@ function Footer() {
                 ))}
               </div>
             ) : (
-              <p className="text-slate-500 text-xs">ยังไม่มีผลงาน</p>
+              <p className="text-gray-500 text-xs">ยังไม่มีผลงาน</p>
             )}
-            <a href={`/#portfolio`} className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-amber-400 hover:text-amber-300">
+            <a href={`/#portfolio`} className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-secondary hover:text-amber-500">
               ดูทั้งหมด →
             </a>
           </div>
@@ -276,9 +276,9 @@ function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-slate-800 bg-slate-950">
+      <div className="border-t border-white/10 bg-[#020617]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-[11px] sm:text-xs text-slate-500">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-[11px] sm:text-xs text-gray-400">
             <p>© 2025 {footerData.companyName} - รับสร้างบ้าน ออกแบบบ้าน ทั่วประเทศ</p>
             <div className="flex items-center gap-3 sm:gap-4">
               <span className="flex items-center gap-1">
@@ -297,4 +297,4 @@ function Footer() {
   );
 }
 
-export default memo(Footer);
+export default (Footer);

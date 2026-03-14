@@ -16,7 +16,7 @@ import { useEffect, useState, lazy, Suspense } from 'react';
 import { usePathname } from 'next/navigation';
 import HeroSection from '@/components/sections/HeroSection';
 import ServicesSection from '@/components/sections/ServicesSection';
-import HouseDetailClient from '@/app/house/[id]/HouseDetailClient';
+
 
 /**
  * Lazy Load Sections Below the Fold
@@ -151,7 +151,7 @@ export default function Home() {
   if (shouldShowHouseDetail) {
     return (
       <div className={`transition-opacity duration-200 ease-in-out ${isFading ? 'opacity-0' : 'opacity-100'}`}>
-        <HouseDetailClient />
+        
       </div>
     );
   }

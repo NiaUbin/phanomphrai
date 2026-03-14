@@ -11,7 +11,7 @@ interface FooterServicesProps {
 export default function FooterServices({ services }: FooterServicesProps) {
   return (
     <div>
-      <h4 className="text-sm font-bold text-white mb-4">บริการ</h4>
+      <h4 className="text-sm font-bold text-white mb-4">บริการของเรา</h4>
       <ul className="space-y-2">
         {services.map((service) => (
           <li key={service} className="flex items-center gap-1.5 text-slate-400 text-xs">
